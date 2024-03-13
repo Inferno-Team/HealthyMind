@@ -395,10 +395,6 @@
 @endsection
 
 @push('js')
-    <script>
-    let menu =`{!! json_encode($menuData)  !!}`
-    console.log(menu);
-    </script>
     <script src="./assets/js/plugins/chartjs.min.js"></script>
     <script>
         var ctx1 = document.getElementById("chart-line").getContext("2d");

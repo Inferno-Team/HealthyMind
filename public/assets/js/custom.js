@@ -757,3 +757,89 @@ window.darkMode = function(el) {
     el.removeAttribute("checked");
   }
 };
+
+
+
+
+$(document).ready(function () {
+  "use strict";
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll(".needs-validation");
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms).forEach(function (form) {
+    form.addEventListener(
+      "submit",
+      function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+
+        form.classList.add("was-validated");
+      },
+      false
+    );
+  });
+});
+function fillForm(fromID, data) {
+  $.each(data, function (index, value) {
+    if (index == "img") {
+      $(".img").attr("src", value);
+    }
+    if (typeof value == "object" && value != null)
+      var element = $(`#${fromID} input[name="${index}[]"]`);
+    else var element = $(`#${fromID} input[name="${index}"]`);
+
+    if ($(element).attr("type") == "radio") {
+      $(`#${fromID} input[name="${index}"]`).map(function (ind, radio) {
+        $(`#${fromID} #edit-${index}-${value}`).prop("checked", true);
+
+        if ($(radio).val() == value) {
+          $(`#${fromID} #edit-${index}-${value}`).prop("checked", true);
+        }
+      });
+    } else if ($(element).attr("type") == "checkbox") {
+      $.each(value, function (ind, element) {
+        console.log(index, element.id);
+        if (element.id)
+          $(`#${fromID} #edit-${index}-${element.id}`).prop("checked", true);
+        else
+          $(`#${fromID} #edit-${index}-${element.id}`).prop("checked", false);
+      });
+    } else if ($(element).attr("type") != "file") {
+      $(`#${fromID} input[name="${index}"]`).val(value);
+    }
+    $(`#${fromID} select[name="${index}"]`).val(value);
+  });
+}
+
+function showErrorsMessages(error) {
+  let message = "";
+  if (error.response) {
+    if (error.response.data.errors) {
+      $.each(error.response.data.errors, function (index, value) {
+        message += `<strong class="text-danger"> ${index}</strong> :${value}<br><br>`;
+      });
+
+      Swal.fire({
+        title: error.response.data.message,
+        html: message,
+        icon: "error",
+        confirmButtonText: "ok",
+      });
+    } else if (error.response.data.message) {
+      Swal.fire({
+        title: "Error!",
+        html: error.response.data.message,
+        icon: "error",
+        confirmButtonText: "ok",
+      });
+    }
+  } else console.log(error);
+}
+
+function isInArray(arr, searchItem, item) {
+  return arr.find((element) => {
+    return element[searchItem] == item;
+  });
+}

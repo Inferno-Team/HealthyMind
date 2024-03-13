@@ -1,7 +1,6 @@
 <aside id="layout-menu" class="bg-gray-100 layout-menu menu-vertical menu bg-menu-theme">
 
     <!-- ! Hide app brand if navbar-full -->
-    
 
     <div class="menu-inner-shadow"></div>
 
