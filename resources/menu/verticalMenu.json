@@ -1,0 +1,105 @@
+{
+    "menu": [
+        {
+            "url": "/admin/",
+            "name": "Dashboard",
+            "icon": "menu-icon tf-icons bx bx-home-circle",
+            "slug": "dashboard-analytics"
+        },
+        {
+            "menuHeader": "Pages"
+        },
+        {
+            "name": "Configuration",
+            "icon": "bx bxs-cog",
+            "url": "/admin/config/",
+            "slug": "participants-index"
+        },
+        {
+            "name": "Universities",
+            "icon": "menu-icon tf-icons bx bxs-buildings",
+            "slug": "universities",
+            "submenu": [
+                {
+                    "url": "/admin/universities/",
+                    "name": "All universities",
+                    "slug": "universities-all"
+                },
+                {
+                    "url": "/admin/universities/create",
+                    "name": "Add University",
+                    "slug": "university-create"
+                }
+
+            ]
+        },
+        {
+            "name": "Departments",
+            "icon": "menu-icon tf-icons bx bxs-institution",
+            "slug": "departments",
+            "submenu": [
+                {
+                    "url": "/admin/departments/",
+                    "name": "All departments",
+                    "slug": "departments-all"
+                },
+                {
+                    "url": "/admin/departments/create",
+                    "name": "Add Department",
+                    "slug": "department-create"
+                }
+            ]
+        },
+        {
+            "name": "Scales",
+            "icon": "menu-icon tf-icons bx bx-filter-alt",
+            "slug": "scales",
+            "submenu": [
+                {
+                    "url": "/admin/scales/",
+                    "name": "All scale",
+                    "slug": "scales-all"
+                },
+                {
+                    "url": "/admin/scales/create",
+                    "name": "Add scale",
+                    "slug": "scales-create"
+                }
+            ]
+        },
+        {
+            "name": "Answers",
+            "icon": "menu-icon tf-icons bx bx-notepad",
+            "slug": "answers",
+            "submenu": [
+                {
+                    "url": "/admin/answers/",
+                    "name": "All answers",
+                    "slug": "answers-all"
+                },
+                {
+                    "url": "/admin/answers/create",
+                    "name": "Add answer",
+                    "slug": "answers-create"
+                }
+            ]
+        },
+        {
+            "name": "Capabilities",
+            "icon": "bx bx-brain",
+            "slug": "capabilities-index",
+            "submenu": [
+                {
+                    "url": "/admin/capabilities/",
+                    "name": "All capabilities",
+                    "slug": "capabilities-all"
+                },
+                {
+                    "url": "/admin/capabilities/create",
+                    "name": "Add capabilities",
+                    "slug": "capabilities-create"
+                }
+            ]
+        }
+    ]
+}

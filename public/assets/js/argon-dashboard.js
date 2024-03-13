@@ -2817,8 +2817,8 @@ window.darkMode = function (el) {
   var card_border = document.querySelectorAll('.card.border');
   var card_border_dark = document.querySelectorAll('.card.border.border-dark');
   var svg = document.querySelectorAll('g');
-  var navbarBrand = document.querySelector('.navbar-brand-img');
-  var navbarBrandImg = navbarBrand.src;
+  // var navbarBrand = document.querySelector('.navbar-brand-img');
+  // var navbarBrandImg = navbarBrand.src;
   var navLinks = document.querySelectorAll('.navbar-main .nav-link, .navbar-main .breadcrumb-item, .navbar-main .breadcrumb-item a, .navbar-main h6');
   var cardNavLinksIcons = document.querySelectorAll('.card .nav .nav-link i');
   var cardNavSpan = document.querySelectorAll('.card .nav .nav-link span');
@@ -2826,10 +2826,10 @@ window.darkMode = function (el) {
   if (!el.getAttribute("checked")) {
     body.classList.add('dark-version');
 
-    if (navbarBrandImg.includes('logo-ct-dark.png')) {
-      var navbarBrandImgNew = navbarBrandImg.replace("logo-ct-dark", "logo-ct");
-      navbarBrand.src = navbarBrandImgNew;
-    }
+    // if (navbarBrandImg.includes('logo-ct-dark.png')) {
+    //   var navbarBrandImgNew = navbarBrandImg.replace("logo-ct-dark", "logo-ct");
+    //   navbarBrand.src = navbarBrandImgNew;
+    // }
 
     for (var i = 0; i < cardNavLinksIcons.length; i++) {
       if (cardNavLinksIcons[i].classList.contains('text-dark')) {
@@ -2923,12 +2923,12 @@ window.darkMode = function (el) {
     el.setAttribute("checked", "true");
   } else {
     body.classList.remove('dark-version');
-    sidebar.classList.add('bg-white');
+    // sidebar.classList.add('bg-white');
 
-    if (navbarBrandImg.includes('logo-ct.png')) {
-      var navbarBrandImgNew = navbarBrandImg.replace("logo-ct", "logo-ct-dark");
-      navbarBrand.src = navbarBrandImgNew;
-    }
+    // if (navbarBrandImg.includes('logo-ct.png')) {
+    //   var navbarBrandImgNew = navbarBrandImg.replace("logo-ct", "logo-ct-dark");
+    //   navbarBrand.src = navbarBrandImgNew;
+    // }
 
     for (var i = 0; i < navLinks.length; i++) {
       if (navLinks[i].classList.contains('text-dark')) {

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\admin\HomeController;
+use App\Http\Controllers\user\AuthenticatedSessionController;
+use App\Http\Controllers\user\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,9 +16,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('pages.dashboard');
-})->name('home');
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+Route::post('/login-store', [AuthenticatedSessionController::class, 'store'])->name('login.perform');
+
+Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout')->middleware('auth');
+
+Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('/register-store', [RegisteredUserController::class, 'store'])->name('register.perform');
+
+Route::group(['middleware' => ['auth', 'menu:admin']], function () {
+    Route::get('/', fn () => redirect('home'));
+    Route::get('/home', [HomeController::class, 'home'])->name('home');
+});
+
+
+
 Route::get('/sign-in-static', function () {
     return view('pages.sign-in-static');
 })->name('sign-in-static');

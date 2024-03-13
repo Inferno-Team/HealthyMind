@@ -1,0 +1,87 @@
+{
+    "menu": [
+        {
+            "url": "/admin/",
+            "name": "Dashboard",
+            "icon": "menu-icon tf-icons bx bx-home-circle",
+            "slug": "dashboard-analytics"
+        },
+        {
+            "menuHeader": "Pages"
+        },
+        {
+            "name": "Universities",
+            "icon": "menu-icon tf-icons bx bxs-buildings",
+            "slug": "universities",
+            "submenu": [
+                {
+                    "url": "/admin/universities/connect-survey",
+                    "name": "Connect Survey",
+                    "slug": "connect-survey"
+                },
+                {
+                    "url": "/admin/universities/univ-serveys-index",
+                    "name": "All Survey",
+                    "slug": "all-survey"
+                }
+            ]
+        },
+        {
+            "name": "Surveys",
+            "icon": "menu-icon tf-icons bx bx-copy",
+            "slug": "surveys",
+            "submenu": [
+                {
+                    "url": "/admin/surveys/",
+                    "name": "All surveys",
+                    "slug": "surveys-all"
+                },
+                {
+                    "url": "/admin/surveys/create",
+                    "name": "Add survey",
+                    "slug": "surveys-create"
+                }
+            ]
+        },
+        {
+            "name": "Questions",
+            "icon": "menu-icon tf-icons bx bx-collection",
+            "slug": "questions-index",
+            "submenu": [
+                {
+                    "url": "/admin/questions/",
+                    "name": "All questions",
+                    "slug": "questions-all"
+                },
+                {
+                    "url": "/admin/questions/create",
+                    "name": "Add question",
+                    "slug": "questions-create"
+                }
+            ]
+        },
+        {
+            "name": "Capabilities",
+            "icon": "bx bx-brain",
+            "slug": "capabilities-index",
+            "submenu": [
+                {
+                    "url": "/admin/capabilities/",
+                    "name": "All capabilities",
+                    "slug": "capabilities-all"
+                },
+                {
+                    "url": "/admin/capabilities/create",
+                    "name": "Add capabilities",
+                    "slug": "capabilities-create"
+                }
+            ]
+        },
+        {
+            "name": "Participants",
+            "icon": "bx bxs-user-detail",
+            "slug": "participants-index",
+            "url": "/admin/participants/"
+        }
+    ]
+}

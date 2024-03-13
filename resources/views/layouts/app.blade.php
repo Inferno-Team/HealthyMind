@@ -7,13 +7,14 @@
     <link rel="apple-touch-icon" sizes="76x76" href="./img/apple-icon.png">
     <link rel="icon" type="image/png" href="./img/favicon.png">
     <title>
-        Argon Dashboard 2 by Creative Tim
+        Healthy Mind
     </title>
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
     <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+    <link href="./assets/css/core.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
@@ -26,25 +27,37 @@
     @guest
         @yield('content')
     @endguest
-
-    @auth
-        @if (in_array(request()->route()->getName(), ['sign-in-static', 'sign-up-static', 'login', 'register', 'recover-password', 'rtl', 'virtual-reality']))
+    <div class="layout-wrapper layout-content-navbar ">
+        <div class="layout-container">
+            @include('layouts.menu.verticalMenu')
+             @auth
+        @if (in_array(request()->route()->getName(), [
+                'sign-in-static',
+                'sign-up-static',
+                'login',
+                'register',
+                'recover-password',
+                'rtl',
+                'virtual-reality',
+            ]))
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
                 <div class="min-height-300 bg-primary position-absolute w-100"></div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
-                <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
+                <div class="position-absolute w-100 min-height-300 top-0"
+                    style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
                     <span class="mask bg-primary opacity-6"></span>
                 </div>
             @endif
-            @include('layouts.navbars.auth.sidenav')
-                <main class="main-content border-radius-lg">
-                    @yield('content')
-                </main>
-            @include('components.fixed-plugin')
+            <main class="main-content border-radius-lg">
+                @yield('content')
+            </main>
         @endif
     @endauth
+        </div>
+    </div>
+   
 
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
@@ -64,6 +77,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="assets/js/argon-dashboard.js"></script>
+    <script src="assets/js/menu.js"></script>
     @stack('js');
 </body>
 

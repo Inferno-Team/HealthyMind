@@ -1,7 +1,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl
-        {{ str_contains(Request::url(), 'virtual-reality') == true ? ' mt-3 mx-3 bg-primary' : '' }}" id="navbarBlur"
-        data-scroll="false">
+        {{ str_contains(Request::url(), 'virtual-reality') == true ? ' mt-3 mx-3 bg-primary' : '' }}"
+    id="navbarBlur" data-scroll="false">
     <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
@@ -12,18 +12,13 @@
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                <div class="input-group">
-                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                    <input type="text" class="form-control" placeholder="Type here...">
-                </div>
+
             </div>
             <ul class="navbar-nav  justify-content-end">
                 <li class="nav-item d-flex align-items-center">
                     <form role="form" method="post" id="logout-form">
                         @csrf
-                        <a href="#"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                            class="nav-link text-white font-weight-bold px-0">
+                        <a href="{{ route('logout') }}" class="nav-link text-white font-weight-bold px-0">
                             <i class="fa fa-user me-sm-1"></i>
                             <span class="d-sm-inline d-none">Log out</span>
                         </a>
@@ -38,10 +33,25 @@
                         </div>
                     </a>
                 </li>
-                <li class="nav-item px-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-white p-0">
+                <li class="nav-item dropdown pe-2  px-3 d-flex align-items-center">
+                    <a href="javascript:;" class="nav-link text-white p-0" data-bs-toggle="dropdown"
+                        aria-expanded="false" id="dropdownMenuButton2">
                         <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
                     </a>
+                    <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
+                        aria-labelledby="dropdownMenuButton2">
+                        <li class="mb-2">
+                            <div class="dropdown-item border-radius-md" href="javascript:;">
+                                <div class=" d-flex">
+                                    <h6 class="mb-0 me-6">Light / Dark</h6>
+                                    <div class="form-check form-switch ps-0 ms-auto my-auto">
+                                        <input class="form-check-input mt-1 float-end me-auto" type="checkbox"
+                                            id="dark-version" onclick="darkMode(this)">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item dropdown pe-2 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton"
