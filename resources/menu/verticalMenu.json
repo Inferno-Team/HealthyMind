@@ -1,7 +1,7 @@
 {
     "menu": [
         {
-            "url": "/admin/",
+            "url": "/home/",
             "name": "Dashboard",
             "icon": "menu-icon tf-icons bx bx-home-circle",
             "slug": "dashboard-analytics"
@@ -10,94 +10,41 @@
             "menuHeader": "Pages"
         },
         {
-            "name": "Configuration",
-            "icon": "bx bxs-cog",
-            "url": "/admin/config/",
-            "slug": "participants-index"
-        },
-        {
-            "name": "Universities",
-            "icon": "menu-icon tf-icons bx bxs-buildings",
-            "slug": "universities",
+            "name": "Users",
+            "icon": "menu-icon tf-icons bx bxs-user",
+            "slug": "users",
             "submenu": [
                 {
-                    "url": "/admin/universities/",
-                    "name": "All universities",
-                    "slug": "universities-all"
+                    "url": "/users",
+                    "name": "All Users",
+                    "slug": "users.all.view"
                 },
                 {
-                    "url": "/admin/universities/create",
-                    "name": "Add University",
-                    "slug": "university-create"
-                }
-
-            ]
-        },
-        {
-            "name": "Departments",
-            "icon": "menu-icon tf-icons bx bxs-institution",
-            "slug": "departments",
-            "submenu": [
-                {
-                    "url": "/admin/departments/",
-                    "name": "All departments",
-                    "slug": "departments-all"
-                },
-                {
-                    "url": "/admin/departments/create",
-                    "name": "Add Department",
-                    "slug": "department-create"
+                    "url": "/users-create",
+                    "name": "Add User",
+                    "slug": "user.create.view"
                 }
             ]
         },
         {
-            "name": "Scales",
-            "icon": "menu-icon tf-icons bx bx-filter-alt",
-            "slug": "scales",
+            "name": "Requests",
+            "icon": "menu-icon tf-icons bx bx-notification",
+            "slug": "requests",
             "submenu": [
                 {
-                    "url": "/admin/scales/",
-                    "name": "All scale",
-                    "slug": "scales-all"
+                    "url": "/requests/new-coatch",
+                    "name": "New Coatch",
+                    "slug": "new-coatch"
                 },
                 {
-                    "url": "/admin/scales/create",
-                    "name": "Add scale",
-                    "slug": "scales-create"
-                }
-            ]
-        },
-        {
-            "name": "Answers",
-            "icon": "menu-icon tf-icons bx bx-notepad",
-            "slug": "answers",
-            "submenu": [
-                {
-                    "url": "/admin/answers/",
-                    "name": "All answers",
-                    "slug": "answers-all"
+                    "url": "/requests/new-meal",
+                    "name": "New Meal",
+                    "slug": "new-meal"
                 },
                 {
-                    "url": "/admin/answers/create",
-                    "name": "Add answer",
-                    "slug": "answers-create"
-                }
-            ]
-        },
-        {
-            "name": "Capabilities",
-            "icon": "bx bx-brain",
-            "slug": "capabilities-index",
-            "submenu": [
-                {
-                    "url": "/admin/capabilities/",
-                    "name": "All capabilities",
-                    "slug": "capabilities-all"
-                },
-                {
-                    "url": "/admin/capabilities/create",
-                    "name": "Add capabilities",
-                    "slug": "capabilities-create"
+                    "url": "/requests/new-exercise",
+                    "name": "New Exercise",
+                    "slug": "new-exercise"
                 }
             ]
         }

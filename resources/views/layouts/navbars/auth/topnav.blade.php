@@ -5,10 +5,9 @@
     <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a></li>
-                <li class="breadcrumb-item text-sm text-white active" aria-current="page">{{ $title }}</li>
+                <li class="breadcrumb-item text-sm text-white active" aria-current="page">{{ $title }} : Healthy
+                    Mind</li>
             </ol>
-            <h6 class="font-weight-bolder text-white mb-0">{{ $title }}</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -41,7 +40,19 @@
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                         aria-labelledby="dropdownMenuButton2">
                         <li class="mb-2">
-                            <div class="dropdown-item border-radius-md" href="javascript:;">
+                            <div class="dropdown-item border-radius-md" href="javascript:;" data-class="bg-dark">
+                                <div class=" d-flex">
+                                    <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 "
+                                        href="{{ auth()->user()->type == 'admin' ?  route('admin.profile') : '' }}">
+                                        <h6 class="mb-0 me-6">
+                                            My Profile
+                                        </h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="mb-2">
+                            <div class="dropdown-item border-radius-md" href="javascript:;" data-class="bg-dark">
                                 <div class=" d-flex">
                                     <h6 class="mb-0 me-6">Light / Dark</h6>
                                     <div class="form-check form-switch ps-0 ms-auto my-auto">
@@ -59,7 +70,7 @@
                         <i class="fa fa-bell cursor-pointer"></i>
                     </a>
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
-                        aria-labelledby="dropdownMenuButton">
+                        aria-labelledby="dropdownMenuButton" id='notifications'>
                         <li class="mb-2">
                             <a class="dropdown-item border-radius-md" href="javascript:;">
                                 <div class="d-flex py-1">
@@ -140,4 +151,59 @@
         </div>
     </div>
 </nav>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // get user notifications
+        let notes = `{!! auth()->user()->notifications()->pluck('data') !!}`
+        generate_notifications(JSON.parse(notes))
+        // check if is dark mode saved.
+        let themeMode = localStorage.getItem('theme-mode');
+        let item = document.getElementById('dark-version')
+        if (themeMode != undefined && themeMode != null) {
+            if (themeMode === 'dark') {
+                item.click();
+            }
+        }
+    })
+
+    function generate_notifications(notes) {
+        let html = ``;
+        notes.forEach(note => html += generate_notification(note));
+        //document.getElementById('notifications').innerHtml(html)
+        $('#notifications').html(html)
+    }
+
+    function generate_notification(note) {
+        let icon = get_icon_by_type(note.type);
+        return ` <li class="mb-2">
+                            <a class="dropdown-item border-radius-md" href="javascript:;">
+                                <div class="d-flex py-1">
+                                    <div class="my-auto">
+                                        ${icon}
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">
+                                            <span class="font-weight-bold">New message</span> from Laur
+                                        </h6>
+                                        <p class="text-xs text-secondary mb-0">
+                                            <i class="fa fa-clock me-1"></i>
+                                            13 minutes ago
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>`;
+    }
+
+    function get_icon_by_type(type) {
+        switch (type) {
+            case 'new-coatch':
+                return '<img src="./img/team-2.jpg" class="avatar avatar-sm  me-3 ">';
+            default:
+                return '';
+        }
+    }
+</script>
+
 <!-- End Navbar -->

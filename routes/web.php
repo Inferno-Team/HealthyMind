@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\HomeController;
 use App\Http\Controllers\user\AuthenticatedSessionController;
 use App\Http\Controllers\user\RegisteredUserController;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('menu:admin');
 Route::post('/login-store', [AuthenticatedSessionController::class, 'store'])->name('login.perform');
 
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout')->middleware('auth');
@@ -27,6 +28,12 @@ Route::post('/register-store', [RegisteredUserController::class, 'store'])->name
 Route::group(['middleware' => ['auth', 'menu:admin']], function () {
     Route::get('/', fn () => redirect('home'));
     Route::get('/home', [HomeController::class, 'home'])->name('home');
+    Route::get('/admin-profile', [AdminController::class, 'adminMyProfile'])->name('admin.profile');
+    Route::get('/users', [AdminController::class, 'allUsersView'])->name('users.all.view');
+    Route::get('/users-create', [AdminController::class, 'createUserView'])->name('user.create.view');
+    Route::post('/users-create', [AdminController::class, 'storeUser'])->name('new.user.store');
+    Route::post('/users/self/update', [AdminController::class, 'updateSelf'])->name('user.self.update');
+    Route::post('/users/self/update-avatar', [AdminController::class, 'updateSelfAvatar'])->name('user.self.update.avatar');
 });
 
 
@@ -45,11 +52,11 @@ Route::get('/profile', function () {
     return view('pages.profile');
 })->name('profile');
 Route::get('/page', function () {
-    return view('pages.page');
-})->name('page');
+    return view('pages.tables');
+})->name('page')->middleware('menu:admin');
 Route::get('/virtual-reality', function () {
     return view('pages.virtual-reality');
 })->name('virtual-reality');
 Route::get('/rtl', function () {
     return view('pages.rtl');
-})->name('rtl');
+})->name('rtl')->middleware('menu:admin');
