@@ -95,7 +95,7 @@
                         <h5 class="modal-title">Change Request Status</h5>
                     </div>
                     <div class="modal-body">
-                        <p>Do you want to accept this coatch join request ?</p>
+                        <p>Do you want to accept this coach join request ?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Accept</button>
@@ -132,7 +132,7 @@
         function sendChangeStatus(id, status) {
             axios({
                     method: 'POST',
-                    url: "{{ route('admin.coatch.request.change-status') }}",
+                    url: "{{ route('admin.coach.request.change-status') }}",
                     data: {
                         id: id,
                         status: status

@@ -2,7 +2,7 @@
 
 use App\Models\User;
 use App\Models\UserPremiumRequest;
-use App\Notifications\NewCoatchNotification;
+use App\Notifications\NewCoachNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,5 +28,5 @@ Route::get('/', function () {
     //     'user_id' => 4,
     //     'payment_process_code' => '800000005516202',
     // ]);
-    // $user->notify(new NewCoatchNotification('title', 'subtitle', 'new-meal'));
+    // $user->notify(new NewCoachNotification('title', 'subtitle', 'new-meal'));
 });

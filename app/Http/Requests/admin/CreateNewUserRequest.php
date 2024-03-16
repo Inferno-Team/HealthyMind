@@ -40,7 +40,7 @@ class CreateNewUserRequest extends FormRequest
             "last_name" => $this->input('last_name'),
             "phone" => $this->input('phone'),
             "password" => Hash::make('password'),
-            'type' => $this->has('coatch') && $this->input('coatch') == 'on' ? 'coatch' : 'normal',
+            'type' => $this->has('coach') && $this->input('coach') == 'on' ? 'coach' : 'normal',
             'status' => 'approved',
         ];
     }

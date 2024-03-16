@@ -38,9 +38,9 @@
             "slug": "requests",
             "submenu": [
                 {
-                    "url": "/requests/new-coatch",
-                    "name": "New Coatch",
-                    "slug": "requests.new.coatch"
+                    "url": "/requests/new-coach",
+                    "name": "New Coach",
+                    "slug": "requests.new.coach"
                 },
                 {
                     "url": "/requests/premium",

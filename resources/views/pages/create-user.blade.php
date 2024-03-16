@@ -50,9 +50,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group d-flex " style="margin-top:2rem">
-                                        <h6 class="mb-0 ">Coatch</h6>
+                                        <h6 class="mb-0 ">Coach</h6>
                                         <div class="form-check form-switch ps-0 ms-6 my-auto">
-                                            <input class="form-check-input mt-1 float-end me-auto" name="coatch"
+                                            <input class="form-check-input mt-1 float-end me-auto" name="coach"
                                                 type="checkbox">
                                         </div>
                                     </div>

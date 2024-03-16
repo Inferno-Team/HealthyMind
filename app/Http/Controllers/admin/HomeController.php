@@ -18,28 +18,28 @@ class HomeController extends Controller
     public function home(): View
     {
         $users = User::where('type', 'normal')->get();
-        $coatchs = User::where('type', 'coatch')->get();
+        $coachs = User::where('type', 'coach')->get();
         $meals = Meal::get();
         $exercises = Exercise::get();
 
         $users_count = $users->count();
-        $coatchs_count = $coatchs->count();
+        $coachs_count = $coachs->count();
         $meals_count = $meals->count();
         $exercises_count = $exercises->count();
 
         $new_users_count = $users->filter(fn ($item) => $item->created_at->isAfter(Carbon::now()->subWeek()))->count();
-        $new_coatchs_count = $coatchs->filter(fn ($item) => $item->created_at->isAfter(Carbon::yesterday()))->count();
+        $new_coachs_count = $coachs->filter(fn ($item) => $item->created_at->isAfter(Carbon::yesterday()))->count();
         $new_meals_count = $meals->filter(fn ($item) => $item->created_at->isAfter(Carbon::now()->subWeek()))->count();
         $new_exercises_count = $exercises->filter(fn ($item) => $item->created_at->isAfter(Carbon::yesterday()))->count();
         
         $users_percentage = round($new_users_count * 100 / $users_count);
-        $coatchs_percentage = round($new_coatchs_count * 100 / ($coatchs_count == 0 ? 1 : $coatchs_count));
+        $coachs_percentage = round($new_coachs_count * 100 / ($coachs_count == 0 ? 1 : $coachs_count));
 
 
         return view('pages.dashboard', compact(
             'users_count',
-            'coatchs_count',
-            'coatchs_percentage',
+            'coachs_count',
+            'coachs_percentage',
             'users_percentage',
             'meals_count',
             'exercises_count',

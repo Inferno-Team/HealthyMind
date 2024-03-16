@@ -10,13 +10,13 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Coatch Count</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Coach Count</p>
                                     <h5 class="font-weight-bolder">
-                                        {{ $coatchs_count }}
+                                        {{ $coachs_count }}
                                     </h5>
                                     <p class="mb-0">
                                         <span
-                                            class="text-success text-sm font-weight-bolder">+{{ $coatchs_percentage }}%</span>
+                                            class="text-success text-sm font-weight-bolder">+{{ $coachs_percentage }}%</span>
                                         since yesterday
                                     </p>
                                 </div>

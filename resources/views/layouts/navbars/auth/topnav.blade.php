@@ -198,7 +198,7 @@
 
     function get_icon_by_type(type) {
         switch (type) {
-            case 'new-coatch':
+            case 'new-coach':
                 return `<img src="{{ asset('/img/team-2.jpg') }}" class="avatar avatar-sm  me-3 ">`;
             default:
                 return '';

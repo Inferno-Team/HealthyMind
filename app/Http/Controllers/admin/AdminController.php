@@ -4,7 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\FileHelper;
-use App\Http\Requests\admin\ChangeCoatchRequest;
+use App\Http\Requests\admin\ChangeCoachRequest;
 use App\Http\Requests\admin\ChangePremiumRequest;
 use App\Http\Requests\admin\CreateNewUserRequest;
 use App\Models\User;
@@ -54,10 +54,10 @@ class AdminController extends Controller
         return $this->returnMessage('updated');
     }
 
-    public function newCoatchRequestsView(): View
+    public function newCoachRequestsView(): View
     {
-        $users = User::where('type', '=', 'coatch')->where('status', '=', 'waiting')->get();
-        return view('pages.new-coatch-requests', compact('users'));
+        $users = User::where('type', '=', 'coach')->where('status', '=', 'waiting')->get();
+        return view('pages.new-coach-requests', compact('users'));
     }
     public function permiumRequestsView(): View
     {
@@ -65,7 +65,7 @@ class AdminController extends Controller
         info($premiumRequests);
         return view('pages.premium-requests', compact('premiumRequests'));
     }
-    public function changeStatusCoatchRequest(ChangeCoatchRequest $request): JsonResponse
+    public function changeStatusCoachRequest(ChangeCoachRequest $request): JsonResponse
     {
         $user = User::where('id', $request->input('id'))->first();
         $user->status = $request->input('status');
