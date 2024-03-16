@@ -7,16 +7,16 @@ use Illuminate\Support\Facades\Storage;
 
 class FileHelper
 {
-    public static function uploadToDocs(UploadedFile $file, $filePath = '')
+    public static function uploadToDocs(UploadedFile $file, $filePath = '',$filename=null)
     {
         if (empty($file)) return "";
         if (!file_exists($filePath)) {
             // mkdir($filePath, 0777, true);
             Storage::makeDirectory($filePath);
         }
-        $filename = $file->getClientOriginalName();
         $fileExtension = $file->getClientOriginalExtension();
         $generated_name = time() . ".$fileExtension";
-        return $file->storeAs($filePath, $generated_name);
+        $filename = $filename ?? $generated_name;
+        return $file->storeAs($filePath, $filename);
     }
 }

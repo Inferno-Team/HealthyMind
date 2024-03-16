@@ -10,6 +10,12 @@
             "menuHeader": "Pages"
         },
         {
+            "name": "Payment QR",
+            "icon": "menu-icon bx bx-qr",
+            "dialog": true,
+            "dialogOpenerID":"payment-qr-opener"
+        },
+        {
             "name": "Users",
             "icon": "menu-icon tf-icons bx bxs-user",
             "slug": "users",

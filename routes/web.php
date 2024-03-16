@@ -37,7 +37,9 @@ Route::group(['middleware' => ['auth', 'menu:admin']], function () {
 
     Route::get('/requests/new-coatch', [AdminController::class, 'newCoatchRequestsView'])->name('requests.new.coatch');
 
-    Route::post('/requests/coatch/change-status',[AdminController::class, 'changeStatusCoatchRequest'])->name('admin.coatch.request.change-status');
+    Route::post('/requests/coatch/change-status', [AdminController::class, 'changeStatusCoatchRequest'])->name('admin.coatch.request.change-status');
+    
+    Route::post('/payment/qr/change', [AdminController::class, 'changeQR'])->name('admin.qr.update');
 });
 
 

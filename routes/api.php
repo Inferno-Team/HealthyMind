@@ -22,5 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/', function () {
     $user = User::find(1);
-    $user->notify(new NewCoatchNotification('title', 'subtitle', 'new-meal'));
+    dd($user->is_pro);
+    // $user->notify(new NewCoatchNotification('title', 'subtitle', 'new-meal'));
 });

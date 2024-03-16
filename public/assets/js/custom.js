@@ -400,7 +400,7 @@ function toggleSidenav() {
     body.classList.add(className);
     sidenav.classList.add('bg-white');
     sidenav.classList.remove('bg-transparent');
-    iconSidenav.classList.remove('d-none');
+    // iconSidenav.classList.remove('d-none');
   }
 }
 
@@ -857,4 +857,79 @@ function isInArray(arr, searchItem, item) {
   return arr.find((element) => {
     return element[searchItem] == item;
   });
+}
+
+$(document).ready(function () {
+  $(".payment-qr-opener").on('click', function () {
+    let qr_img = $(this).attr('qr-code-link');
+    let csrf_token = $(this).attr('csrf_token');
+    let dialogHtml = generate_payment_dialog(qr_img);
+    $('body').append(dialogHtml);
+    $("#payment-dialog").modal('show')
+    document.getElementById('qr-image-input').addEventListener('change', function () {
+      const file = this.files[0];
+      const formData = new FormData();
+      formData.append('new-qr-image', file);
+      let url = $(".payment-qr-opener").attr('upload-url')
+
+      fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRF-TOKEN': csrf_token, // If you're using CSRF protection
+        },
+      })
+        .then(async response => {
+          // Handle the response from the backend
+          if (response.ok) {
+            // If successful, update the image source to the newly uploaded image
+            document.getElementById('payment-dialog-img').src = URL.createObjectURL(file);
+            let body = await response.json();
+            let msg = body.msg;
+            $.toast({
+              text: msg,
+              loaderBg: '#fb6340',
+              bgColor: 'rgb(51 141 4)',
+              hideAfter: 2000,
+            })
+            $('#qr-image-input').files = null;
+            $('#qr-image-input').val(null)
+            $("#payment-dialog").modal('hide')
+          } else {
+            // Handle error
+            console.error('Error uploading avatar');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+
+    });
+  })
+})
+
+function generate_payment_dialog(qr_img) {
+  return `<div class="modal fade" tabindex="-1" role="dialog" id="payment-dialog">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <input type="file" id="qr-image-input" style="display: none;">
+          <div class="modal-header">
+              <h5 class="modal-title">Change Payment QR Image</h5>
+          </div>
+          <div class="modal-body payment-qr-body">
+              <p>Current QR Image</p>
+              <img id="payment-dialog-img" src="${qr_img}">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-primary" onclick="onQrChangeClicked()">Change</button>
+              <button type="button" class="btn btn-secondary"
+                  onclick="$('#payment-dialog').modal('hide')">Close</button>
+          </div>
+      </div>
+  </div>
+</div>`;
+}
+function onQrChangeClicked() {
+
+  document.getElementById('qr-image-input').click();
 }

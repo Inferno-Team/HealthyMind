@@ -62,6 +62,16 @@ class AdminController extends Controller
         $user = User::where('id', $request->input('id'))->first();
         $user->status = $request->input('status');
         $user->update();
-        return $this->returnData("newStatus", $user->status, 'User Status Updated, New Status : '. $user->status);
+        return $this->returnData("newStatus", $user->status, 'User Status Updated, New Status : ' . $user->status);
+    }
+    public function changeQR(Request $request)
+    {
+        if ($request->hasFile('new-qr-image')) {
+            $new_qr_image = $request->file('new-qr-image');
+            $url = FileHelper::uploadToDocs($new_qr_image, 'public/payment_qr', 'QR.jpg');
+            return $this->returnData('new-img', $url, 'QR Image has been changed.');
+        } else {
+            return $this->returnError('no image found.', 401);
+        }
     }
 }
