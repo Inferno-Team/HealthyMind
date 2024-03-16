@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\UserPremiumRequest;
 use App\Notifications\NewCoatchNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/', function () {
-    $user = User::find(1);
+    $user = User::find(4);
     dd($user->is_pro);
+    // UserPremiumRequest::create([
+    //     'user_id' => 4,
+    //     'payment_process_code' => '800000005516202',
+    // ]);
     // $user->notify(new NewCoatchNotification('title', 'subtitle', 'new-meal'));
 });

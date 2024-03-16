@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique()->nullable();
             $table->string('password');
-            $table->enum('type', ['normal', 'admin', 'coatch'])->default('normal');
+            $table->enum('type', ['normal', 'admin', 'coach'])->default('normal');
             $table->enum('status', ['waiting', 'approved', 'declined'])->default('waiting');
             $table->string('avatar')->nullable();
             $table->rememberToken();

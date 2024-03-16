@@ -5,8 +5,10 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\FileHelper;
 use App\Http\Requests\admin\ChangeCoatchRequest;
+use App\Http\Requests\admin\ChangePremiumRequest;
 use App\Http\Requests\admin\CreateNewUserRequest;
 use App\Models\User;
+use App\Models\UserPremiumRequest;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -57,6 +59,12 @@ class AdminController extends Controller
         $users = User::where('type', '=', 'coatch')->where('status', '=', 'waiting')->get();
         return view('pages.new-coatch-requests', compact('users'));
     }
+    public function permiumRequestsView(): View
+    {
+        $premiumRequests = UserPremiumRequest::where('status', '=', 'pending')->get();
+        info($premiumRequests);
+        return view('pages.premium-requests', compact('premiumRequests'));
+    }
     public function changeStatusCoatchRequest(ChangeCoatchRequest $request): JsonResponse
     {
         $user = User::where('id', $request->input('id'))->first();
@@ -64,6 +72,14 @@ class AdminController extends Controller
         $user->update();
         return $this->returnData("newStatus", $user->status, 'User Status Updated, New Status : ' . $user->status);
     }
+    public function changeStatusPremiumRequest(ChangePremiumRequest $request): JsonResponse
+    {
+        $premiumRequest = UserPremiumRequest::where('id', $request->input('id'))->first();
+        $premiumRequest->status = $request->input('status');
+        $premiumRequest->update();
+        return $this->returnData("newStatus", $premiumRequest->status, 'Request Status Updated, New Status : ' . $premiumRequest->status);
+    }
+    
     public function changeQR(Request $request)
     {
         if ($request->hasFile('new-qr-image')) {

@@ -36,8 +36,10 @@ Route::group(['middleware' => ['auth', 'menu:admin']], function () {
     Route::post('/users/self/update-avatar', [AdminController::class, 'updateSelfAvatar'])->name('user.self.update.avatar');
 
     Route::get('/requests/new-coatch', [AdminController::class, 'newCoatchRequestsView'])->name('requests.new.coatch');
+    Route::get('/requests/premium', [AdminController::class, 'permiumRequestsView'])->name('requests.premium');
 
     Route::post('/requests/coatch/change-status', [AdminController::class, 'changeStatusCoatchRequest'])->name('admin.coatch.request.change-status');
+    Route::post('/requests/premium/change-status', [AdminController::class, 'changeStatusPremiumRequest'])->name('admin.permium.request.change-status');
     
     Route::post('/payment/qr/change', [AdminController::class, 'changeQR'])->name('admin.qr.update');
 });

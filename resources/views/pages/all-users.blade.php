@@ -49,25 +49,33 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $user->type }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    {{ $user->isPro ? 'Premium' : $user->type }}</p>
                                             </td>
                                             <td class="align-middle text-center text-sm">
-                                                @switch($user->status)
-                                                    @case('waiting')
-                                                        <span class="badge badge-sm bg-gradient-secondary">
-                                                        @break
-
-                                                        @case('approved')
-                                                            <span class="badge badge-sm bg-gradient-success">
+                                                @if ($user->isPro)
+                                                    <span class="badge badge-sm user-pro-status ">
+                                                        <i class='bx bxs-crown'></i> Pro
+                                                    </span>
+                                                @else
+                                                    @switch($user->status)
+                                                        @case('waiting')
+                                                            <span class="badge badge-sm bg-gradient-secondary">
                                                             @break
 
-                                                            @case('declined')
-                                                                <span class="badge badge-sm bg-gradient-danger">
+                                                            @case('approved')
+                                                                <span class="badge badge-sm bg-gradient-success">
                                                                 @break
 
-                                                                @default
-                                                            @endswitch
-                                                            {{ $user->status }}</span>
+                                                                @case('declined')
+                                                                    <span class="badge badge-sm bg-gradient-danger">
+                                                                    @break
+
+                                                                    @default
+                                                                @endswitch
+                                                                {{ $user->status }}</span>
+                                                @endif
+
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span

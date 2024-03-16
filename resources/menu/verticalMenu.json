@@ -13,7 +13,7 @@
             "name": "Payment QR",
             "icon": "menu-icon bx bx-qr",
             "dialog": true,
-            "dialogOpenerID":"payment-qr-opener"
+            "dialogOpenerID": "payment-qr-opener"
         },
         {
             "name": "Users",
@@ -41,6 +41,11 @@
                     "url": "/requests/new-coatch",
                     "name": "New Coatch",
                     "slug": "requests.new.coatch"
+                },
+                {
+                    "url": "/requests/premium",
+                    "name": "Premium Request",
+                    "slug": "requests.premium"
                 },
                 {
                     "url": "/requests/new-meal",

@@ -1001,3 +1001,11 @@ html:not(.layout-menu-collapsed) .bg-menu-theme .menu-inner .menu-item .menu-lin
   width: 200px;
   margin: auto;
 }
+
+.user-pro-status {
+
+  width: 72px;
+  background: linear-gradient(131deg, #ffbf00 0%, #f56036 100%);
+  font-size: 12px;
+
+}
