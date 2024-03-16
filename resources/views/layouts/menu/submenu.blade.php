@@ -9,6 +9,7 @@
 
                 if ($currentRouteName === $submenu->slug) {
                     $activeClass = 'active';
+                    
                 } elseif (isset($submenu->submenu)) {
                     if (gettype($submenu->slug) === 'array') {
                         foreach ($submenu->slug as $slug) {
@@ -17,7 +18,11 @@
                             }
                         }
                     } else {
-                        if (str_contains($currentRouteName, $submenu->slug) and strpos($currentRouteName, $submenu->slug) === 0) {
+                        
+                        if (
+                            str_contains($currentRouteName, $submenu->slug) and
+                            strpos($currentRouteName, $submenu->slug) === 0
+                        ) {
                             $activeClass = $active;
                         }
                     }

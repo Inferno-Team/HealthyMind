@@ -22,7 +22,7 @@
                 {
                     "url": "/users-create",
                     "name": "Add User",
-                    "slug": "user.create.view"
+                    "slug": "users.create.view"
                 }
             ]
         },
@@ -34,7 +34,7 @@
                 {
                     "url": "/requests/new-coatch",
                     "name": "New Coatch",
-                    "slug": "new-coatch"
+                    "slug": "requests.new.coatch"
                 },
                 {
                     "url": "/requests/new-meal",

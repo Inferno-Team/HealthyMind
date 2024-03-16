@@ -23222,6 +23222,9 @@ p {
 .dark-version {
   background-color: #051139 !important;
 }
+li.menu-item[class*=active] >  a.menu-link.dark-version {
+  background-color: #fb6340 !important;
+}
 .dark-version > div[class*=bg-] {
   background-color: #051139 !important;
 }

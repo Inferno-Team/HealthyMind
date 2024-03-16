@@ -8,7 +8,7 @@
                 <div class="col-auto">
                     <div class="avatar avatar-xl position-relative">
                         <input type="file" id="avatarInput" style="display: none;">
-                        <img src="{{ auth()->user()->avatar ?? '/img/team-1.jpg' }}" alt="profile_image"
+                        <img src="{{ auth()->user()->avatar ?? asset('/img/team-1.jpg') }}" alt="profile_image"
                             class="w-100 border-radius-lg shadow-sm" id="avatarImage">
                     </div>
                 </div>

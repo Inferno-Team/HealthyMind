@@ -4,12 +4,13 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\FileHelper;
+use App\Http\Requests\admin\ChangeCoatchRequest;
 use App\Http\Requests\admin\CreateNewUserRequest;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
@@ -17,7 +18,7 @@ class AdminController extends Controller
     //
     public function allUsersView(): View
     {
-        $users = User::whereNot('type', 'admin')->latest()->get();
+        $users = User::whereNot('type', 'admin')->latest('updated_at')->latest('created_at')->get();
         return view('pages.all-users', compact('users'));
     }
     public function adminMyProfile(): View
@@ -49,5 +50,18 @@ class AdminController extends Controller
         $user->avatar = Str::replace('public', '', $name);
         $user->update();
         return $this->returnMessage('updated');
+    }
+
+    public function newCoatchRequestsView(): View
+    {
+        $users = User::where('type', '=', 'coatch')->where('status', '=', 'waiting')->get();
+        return view('pages.new-coatch-requests', compact('users'));
+    }
+    public function changeStatusCoatchRequest(ChangeCoatchRequest $request): JsonResponse
+    {
+        $user = User::where('id', $request->input('id'))->first();
+        $user->status = $request->input('status');
+        $user->update();
+        return $this->returnData("newStatus", $user->status, 'User Status Updated, New Status : '. $user->status);
     }
 }

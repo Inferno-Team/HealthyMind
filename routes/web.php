@@ -30,10 +30,14 @@ Route::group(['middleware' => ['auth', 'menu:admin']], function () {
     Route::get('/home', [HomeController::class, 'home'])->name('home');
     Route::get('/admin-profile', [AdminController::class, 'adminMyProfile'])->name('admin.profile');
     Route::get('/users', [AdminController::class, 'allUsersView'])->name('users.all.view');
-    Route::get('/users-create', [AdminController::class, 'createUserView'])->name('user.create.view');
+    Route::get('/users-create', [AdminController::class, 'createUserView'])->name('users.create.view');
     Route::post('/users-create', [AdminController::class, 'storeUser'])->name('new.user.store');
     Route::post('/users/self/update', [AdminController::class, 'updateSelf'])->name('user.self.update');
     Route::post('/users/self/update-avatar', [AdminController::class, 'updateSelfAvatar'])->name('user.self.update.avatar');
+
+    Route::get('/requests/new-coatch', [AdminController::class, 'newCoatchRequestsView'])->name('requests.new.coatch');
+
+    Route::post('/requests/coatch/change-status',[AdminController::class, 'changeStatusCoatchRequest'])->name('admin.coatch.request.change-status');
 });
 
 
