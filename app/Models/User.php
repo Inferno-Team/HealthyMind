@@ -56,6 +56,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserPremiumRequest::class, 'user_id');
     }
+    public function details(): HasOne
+    {
+        return $this->hasOne(UserDetail::class, 'user_id');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
