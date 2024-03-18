@@ -16,7 +16,7 @@
 
     if (document.getElementsByClassName('navbar-collapse')[0]) {
       var fixedplugin = document.querySelector('.navbar:not(.navbar-expand-lg) .navbar-collapse');
-      var ps2 = new PerfectScrollbar(fixedplugin);
+      // var ps2 = new PerfectScrollbar(fixedplugin);
     };
 
     if (document.getElementsByClassName('fixed-plugin')[0]) {
