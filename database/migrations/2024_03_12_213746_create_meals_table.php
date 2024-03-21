@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedBigInteger('qty');
             $table->foreignId('type_id')->references('id')->on('meal_types');
+            $table->enum('status', ['pending', 'approved', 'declined'])->default('pending');
             $table->timestamps();
         });
     }

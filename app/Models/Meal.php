@@ -12,7 +12,8 @@ class Meal extends Model
     protected $fillable = [
         "name",
         "qty",
-        "type_id"
+        "type_id",
+        'status',
     ];
 
     public function type(): BelongsTo

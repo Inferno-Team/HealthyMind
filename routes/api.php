@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Meal;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
 use App\Notifications\NewCoachNotification;
@@ -22,8 +23,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/', function () {
-    $user = User::find(4);
-    dd($user->is_pro);
+    // $user = User::find(4);
+    // dd($user->is_pro);
+    Meal::create([
+        ''
+    ]);
     // UserPremiumRequest::create([
     //     'user_id' => 4,
     //     'payment_process_code' => '800000005516202',

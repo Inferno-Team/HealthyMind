@@ -7,6 +7,7 @@ use App\Http\Helpers\FileHelper;
 use App\Http\Requests\admin\ChangeCoachRequest;
 use App\Http\Requests\admin\ChangePremiumRequest;
 use App\Http\Requests\admin\CreateNewUserRequest;
+use App\Models\Meal;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
 use Illuminate\Contracts\View\View;
@@ -62,8 +63,12 @@ class AdminController extends Controller
     public function permiumRequestsView(): View
     {
         $premiumRequests = UserPremiumRequest::where('status', '=', 'pending')->get();
-        info($premiumRequests);
         return view('pages.premium-requests', compact('premiumRequests'));
+    }
+    public function mealRequestsView(): View
+    {
+        $requests = Meal::where('status', '=', 'pending')->get();
+        return view('pages.meal-requests', compact($requests));
     }
     public function changeStatusCoachRequest(ChangeCoachRequest $request): JsonResponse
     {
@@ -79,7 +84,7 @@ class AdminController extends Controller
         $premiumRequest->update();
         return $this->returnData("newStatus", $premiumRequest->status, 'Request Status Updated, New Status : ' . $premiumRequest->status);
     }
-    
+
     public function changeQR(Request $request)
     {
         if ($request->hasFile('new-qr-image')) {

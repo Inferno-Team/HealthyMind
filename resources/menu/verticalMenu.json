@@ -48,9 +48,9 @@
                     "slug": "requests.premium"
                 },
                 {
-                    "url": "/requests/new-meal",
+                    "url": "/requests/meal",
                     "name": "New Meal",
-                    "slug": "new-meal"
+                    "slug": "requests.meal"
                 },
                 {
                     "url": "/requests/new-exercise",

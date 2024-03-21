@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth', 'menu:admin']], function () {
 
     Route::get('/requests/new-coach', [AdminController::class, 'newCoachRequestsView'])->name('requests.new.coach');
     Route::get('/requests/premium', [AdminController::class, 'permiumRequestsView'])->name('requests.premium');
+    Route::get('/requests/meal', [AdminController::class, 'permiumRequestsView'])->name('requests.meal');
 
     Route::post('/requests/coach/change-status', [AdminController::class, 'changeStatusCoachRequest'])->name('admin.coach.request.change-status');
     Route::post('/requests/premium/change-status', [AdminController::class, 'changeStatusPremiumRequest'])->name('admin.permium.request.change-status');
