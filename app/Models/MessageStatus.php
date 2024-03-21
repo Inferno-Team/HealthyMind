@@ -10,7 +10,7 @@ class MessageStatus extends Model
 {
     use HasFactory;
 
-    private $fillable = [
+    protected $fillable = [
         'message_id',
         'subscription_id',
         'status',

@@ -1,5 +1,7 @@
 <?php
 
+use App\Events\coach\NewChannelEvent;
+use App\Http\Controllers\ChatWebsocketController;
 use App\Models\Meal;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
@@ -21,16 +23,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
 Route::get('/', function () {
-    // $user = User::find(4);
-    // dd($user->is_pro);
-    Meal::create([
-        ''
-    ]);
-    // UserPremiumRequest::create([
-    //     'user_id' => 4,
-    //     'payment_process_code' => '800000005516202',
-    // ]);
-    // $user->notify(new NewCoachNotification('title', 'subtitle', 'new-meal'));
+    $user = User::find(15);
+    $channel = $user->privateChannel();
+    event(new NewChannelEvent('Trainee.17',$channel->name,$user->id));
 });

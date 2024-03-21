@@ -73,6 +73,11 @@ class User extends Authenticatable
             'channel_id'
         );
     }
+    public function privateChannel()
+    {
+        if ($this->channels->isEmpty()) return null; // this user is not coach
+        return $this->channels()->where('type','private')->first();
+    }
     public function subscriptions(): HasMany
     {
         return $this->hasMany(ChannelSubscription::class, 'user_id');
@@ -86,4 +91,22 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    public static function boot()
+    {
+        parent::boot();
+        static::created(function (User $user) {
+            // check if this user is coach create channel and create subscription for this user
+            // channel type is private [only the system and this user can subscribe to it.]
+            if ($user->type == 'coach') {
+                $channel = Channel::create([
+                    'name' => 'Coach.' . $user->id,
+                    'type' => 'private',
+                ]);
+                ChannelSubscription::create([
+                    'channel_id' => $channel->id,
+                    'user_id' => $user->id,
+                ]);
+            }
+        });
+    }
 }

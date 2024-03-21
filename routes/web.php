@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\HomeController;
+use App\Http\Controllers\ChatWebsocketController;
+use App\Http\Controllers\coach\CoachController;
 use App\Http\Controllers\user\AuthenticatedSessionController;
 use App\Http\Controllers\user\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::post('authenticate_websocket', [ChatWebsocketController::class, 'authenticateUser'])->middleware('auth');
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('menu:admin');
 Route::post('/login-store', [AuthenticatedSessionController::class, 'store'])->name('login.perform');
 
@@ -41,11 +43,13 @@ Route::group(['middleware' => ['auth', 'menu:admin']], function () {
 
     Route::post('/requests/coach/change-status', [AdminController::class, 'changeStatusCoachRequest'])->name('admin.coach.request.change-status');
     Route::post('/requests/premium/change-status', [AdminController::class, 'changeStatusPremiumRequest'])->name('admin.permium.request.change-status');
-    
+
     Route::post('/payment/qr/change', [AdminController::class, 'changeQR'])->name('admin.qr.update');
 });
 
-
+Route::group(['middleware' => ['auth', 'menu:coach'], 'prefix' => 'coach'], function () {
+    Route::get('home', [CoachController::class, 'home_view']);
+});
 
 Route::get('/sign-in-static', function () {
     return view('pages.sign-in-static');

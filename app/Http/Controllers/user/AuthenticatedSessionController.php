@@ -28,14 +28,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        
+
         $request->authenticate();
 
         $request->session()->regenerate();
-
+        if (Auth::user()->type == 'coach')
+            return redirect()->intended(RouteServiceProvider::COACH_HOME);
         return redirect()->intended(RouteServiceProvider::HOME);
     }
-   
+
 
     public function loginApi(LoginRequest $request)
     {
