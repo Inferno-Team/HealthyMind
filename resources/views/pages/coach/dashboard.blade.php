@@ -140,7 +140,7 @@
                             let privateChannel = window.Echo.private(name);
                             privateChannel.listen('.NewChat', (e) => {
                                 let newChannelName = e.newChannelName;
-                                setInterval(() => {
+                                setTimeout(() => {
                                     window.Echo.private(newChannelName)
                                         .listen('.NewMessage', newMessageListener());
                                 }, 1000);

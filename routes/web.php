@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/', [AuthenticatedSessionController::class, 'findNextRoute'])->middleware('auth');
 Route::post('authenticate_websocket', [ChatWebsocketController::class, 'authenticateUser'])->middleware('auth');
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('menu:admin');
 Route::post('/login-store', [AuthenticatedSessionController::class, 'store'])->name('login.perform');
@@ -27,7 +29,7 @@ Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name(
 Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('/register-store', [RegisteredUserController::class, 'store'])->name('register.perform');
 
-Route::group(['middleware' => ['auth', 'menu:admin']], function () {
+Route::group(['middleware' => ['auth', 'menu:admin', 'type:admin'], 'prefix' => 'admin'], function () {
     Route::get('/', fn () => redirect('home'));
     Route::get('/home', [HomeController::class, 'home'])->name('home');
     Route::get('/admin-profile', [AdminController::class, 'adminMyProfile'])->name('admin.profile');
@@ -47,7 +49,7 @@ Route::group(['middleware' => ['auth', 'menu:admin']], function () {
     Route::post('/payment/qr/change', [AdminController::class, 'changeQR'])->name('admin.qr.update');
 });
 
-Route::group(['middleware' => ['auth', 'menu:coach'], 'prefix' => 'coach'], function () {
+Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 'coach'], function () {
     Route::get('home', [CoachController::class, 'home_view']);
 });
 

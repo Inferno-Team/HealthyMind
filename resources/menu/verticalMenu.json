@@ -1,7 +1,7 @@
 {
     "menu": [
         {
-            "url": "/home/",
+            "url": "/admin/home/",
             "name": "Dashboard",
             "icon": "menu-icon tf-icons bx bx-home-circle",
             "slug": "dashboard-analytics"
@@ -21,12 +21,12 @@
             "slug": "users",
             "submenu": [
                 {
-                    "url": "/users",
+                    "url": "/admin/users",
                     "name": "All Users",
                     "slug": "users.all.view"
                 },
                 {
-                    "url": "/users-create",
+                    "url": "/admin/users-create",
                     "name": "Add User",
                     "slug": "users.create.view"
                 }
@@ -38,22 +38,22 @@
             "slug": "requests",
             "submenu": [
                 {
-                    "url": "/requests/new-coach",
+                    "url": "/admin/requests/new-coach",
                     "name": "New Coach",
                     "slug": "requests.new.coach"
                 },
                 {
-                    "url": "/requests/premium",
+                    "url": "/admin/requests/premium",
                     "name": "Premium Request",
                     "slug": "requests.premium"
                 },
                 {
-                    "url": "/requests/meal",
+                    "url": "/admin/requests/meal",
                     "name": "New Meal",
                     "slug": "requests.meal"
                 },
                 {
-                    "url": "/requests/new-exercise",
+                    "url": "/admin/requests/new-exercise",
                     "name": "New Exercise",
                     "slug": "new-exercise"
                 }

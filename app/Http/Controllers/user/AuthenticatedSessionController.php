@@ -32,8 +32,9 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        info(Auth::user()->type);
         if (Auth::user()->type == 'coach')
-            return redirect()->intended(RouteServiceProvider::COACH_HOME);
+            return redirect(RouteServiceProvider::COACH_HOME);
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
@@ -66,6 +67,19 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect('login');
+    }
+    public function findNextRoute(Request $request): RedirectResponse
+    {
+        if (Auth::check()) {
+            if (Auth::user()->type == 'coach')
+                return redirect(RouteServiceProvider::COACH_HOME);
+            else if (Auth::user()->type == 'admin')
+                return redirect(RouteServiceProvider::HOME);
+            else if (Auth::user()->type == 'normal')
+                return abort(403);
+            else return abort(404);
+        }
+        return redirect('login');
     }
 }
