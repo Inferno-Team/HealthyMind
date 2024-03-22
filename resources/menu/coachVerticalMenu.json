@@ -1,0 +1,42 @@
+{
+    "menu": [
+        {
+            "url": "/coach/home/",
+            "name": "Dashboard",
+            "icon": "menu-icon tf-icons bx bx-home-circle",
+            "slug": "dashboard-analytics"
+        },
+        {
+            "menuHeader": "Pages"
+        },
+        {
+            "name": "Chat",
+            "icon": "menu-icon bx bxs-message-square-dots",
+            "slug": "chat",
+            "url": "/coach/chats"
+        },
+        {
+            "name": "Trainee",
+            "icon": "menu-icon tf-icons bx bx-run",
+            "slug": "trainees",
+            "url": "/coach/trainees"
+        },
+        {
+            "name": "Timelines",
+            "icon": "menu-icon tf-icons bx bxs-timer",
+            "slug": "timelines",
+            "submenu": [
+                {
+                    "url": "/coach/timelines/",
+                    "name": "All Timelines",
+                    "slug": "all.timelines"
+                },
+                {
+                    "url": "/coach/timelines/new-timeline",
+                    "name": "New Timeline",
+                    "slug": "new.timeline"
+                }
+            ]
+        }
+    ]
+}

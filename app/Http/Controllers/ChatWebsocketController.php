@@ -14,7 +14,7 @@ class ChatWebsocketController extends Controller
     {
         $channelName = $request->input('channelName') ?? $request->input('channel_name');
         $channelName = str_replace('private-', '', $channelName);
-        info($channelName);
+        $channelName = str_replace('presence-', '', $channelName);
         // check channel if exists in database.
         $channel = Channel::where('name', $channelName)->get();
         if ($channel->isEmpty())

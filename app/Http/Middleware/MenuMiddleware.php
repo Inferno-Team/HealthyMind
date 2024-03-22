@@ -26,6 +26,11 @@ class MenuMiddleware
                     $verticalMenuJson = file_get_contents(base_path('resources/menu/verticalMenu.json'));
                     View::share('menuData', [json_decode($verticalMenuJson)]);
                     break;
+                case 'coach':
+                    $verticalMenuJson = file_get_contents(base_path('resources/menu/coachVerticalMenu.json'));
+                    View::share('menuData', [json_decode($verticalMenuJson)]);
+                    break;
+                
                 default:
                     $nonAdminVerticalMenu = file_get_contents(base_path('resources/menu/nonAdminVerticalMenu.json'));
                     View::share('menuData', [json_decode($nonAdminVerticalMenu)]);
