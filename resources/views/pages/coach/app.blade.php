@@ -61,7 +61,7 @@
                 @include('layouts.menu.verticalMenu')
                 <div class="min-height-300 bg-primary position-absolute w-100"></div>
 
-                <main class="main-content border-radius-lg">
+                <main class="main-content border-radius-lg w-100">
                     @yield('content')
                 </main>
             @endauth
@@ -84,7 +84,7 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
 
-    @stack('js');
+    @stack('js')
     @yield('js-script')
 </body>
 

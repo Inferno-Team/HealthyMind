@@ -43,7 +43,7 @@
                             <div class="dropdown-item border-radius-md" href="javascript:;" data-class="bg-dark">
                                 <div class=" d-flex">
                                     <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 "
-                                        href="{{ auth()->user()->type == 'admin' ?  route('admin.profile') : '' }}">
+                                        href="{{ auth()->user()->type == 'admin' ?  route('admin.profile') : route('coach.profile') }}">
                                         <h6 class="mb-0 me-6">
                                             My Profile
                                         </h6>

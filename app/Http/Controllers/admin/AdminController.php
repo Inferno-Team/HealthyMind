@@ -27,7 +27,7 @@ class AdminController extends Controller
     public function adminMyProfile(): View
     {
 
-        return view('pages.user-profile');
+        return view('pages.admin-profile');
     }
     public function createUserView(): View
     {

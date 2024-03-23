@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Events\coach;
+namespace App\Events\core;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -17,14 +18,22 @@ class NewMessageEvent implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(private string $channelName, public string $message, public int $sender)
-    {
+    public function __construct(
+        private string $channelName,
+        public string $message,
+        public int $message_id,
+        public int $channel_id,
+        public string $created_at,
+        public string $created_at_diff,
+        public User $sender
+    ) {
         //
     }
     public function broadcastAs()
     {
-        return 'NewMessage';
+        return "NewMessage";
     }
+
     /**
      * Get the channels the event should broadcast on.
      *

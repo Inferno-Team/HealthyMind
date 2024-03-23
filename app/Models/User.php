@@ -22,7 +22,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $appends = ['is_pro'];
+    protected $appends = ['is_pro', 'fullname'];
     protected $fillable = [
         'first_name',
         'last_name',
@@ -54,6 +54,12 @@ class User extends Authenticatable
 
         );
     }
+    public function fullname(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->first_name . ' ' . $this->last_name
+        );
+    }
     public function user_premium_request(): HasOne
     {
         return $this->hasOne(UserPremiumRequest::class, 'user_id');
@@ -76,11 +82,20 @@ class User extends Authenticatable
     public function privateChannel()
     {
         if ($this->channels->isEmpty()) return null; // this user is not coach
-        return $this->channels()->where('type','private')->first();
+        return $this->channels()->where('type', 'private')->first();
     }
     public function subscriptions(): HasMany
     {
         return $this->hasMany(ChannelSubscription::class, 'user_id');
+    }
+    public function messages(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            MessageStatus::class,
+            ChannelSubscription::class,
+            'user_id',
+            'subscription_id'
+        );
     }
     /**
      * The attributes that should be hidden for serialization.

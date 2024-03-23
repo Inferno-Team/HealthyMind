@@ -29,4 +29,15 @@ class Channel extends Model
             'user_id'
         );
     }
+    public function messages()
+    {
+        return $this->hasManyThrough(
+            SubscriptionMessage::class,
+            ChannelSubscription::class,
+            'channel_id', // Foreign key on the subscriptions table
+            'subscription_id', // Foreign key on the subscription_messages table
+            'id', // Local key on the channels table
+            'id' // Local key on the subscriptions table
+        );
+    }
 }

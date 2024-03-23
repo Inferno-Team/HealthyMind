@@ -566,6 +566,11 @@ function getEventTarget(e) {
 // Light Mode / Dark Mode
 window.darkMode = function (el) {
   const body = document.getElementsByTagName('body')[0];
+  const allChatTitle = document.getElementById("all-chat-title");
+  const chatRightTitle = document.getElementById("chat-right-title");
+  const chatMessageContainer = document.getElementById("chat-message-container");
+  const chatMessageToSend = document.getElementById("message-to-send");
+  const chatItems = document.querySelectorAll(".chat-container");
   const hr = document.querySelectorAll('div:not(.sidenav) > hr');
   const sidebar = document.querySelector('.sidenav');
   const sidebarMenuItems = document.querySelectorAll('.menu-link');
@@ -597,10 +602,22 @@ window.darkMode = function (el) {
     localStorage.setItem('theme-mode', 'dark');
     body.classList.add('dark-version');
     layoutMenu.classList.add('dark-version');
-    sidebarMenuItems.forEach(element => {
+    if (allChatTitle)
+      allChatTitle.classList.add('dark-version');
+    if (chatRightTitle)
+      chatRightTitle.classList.add('dark-version');
+    if (chatMessageContainer)
+      chatMessageContainer.classList.add('dark-version');
+    if (chatMessageToSend)
+      chatMessageToSend.classList.add('dark-version');
 
+    sidebarMenuItems.forEach(element => {
       element.classList.add('dark-version');
     });
+    chatItems.forEach(element => {
+      element.classList.add('dark-version');
+    });
+
     // if (navbarBrandImg.includes('logo-ct-dark.png')) {
     //   var navbarBrandImgNew = navbarBrandImg.replace("logo-ct-dark", "logo-ct");
     //   navbarBrand.src = navbarBrandImgNew;
@@ -685,10 +702,22 @@ window.darkMode = function (el) {
     localStorage.setItem('theme-mode', 'light');
     body.classList.remove('dark-version');
     layoutMenu.classList.remove('dark-version');
-    sidebarMenuItems.forEach(element => {
+    if (allChatTitle)
+      allChatTitle.classList.remove('dark-version');
+    if (chatRightTitle)
+      chatRightTitle.classList.remove('dark-version');
+    if (chatMessageContainer)
+      chatMessageContainer.classList.remove('dark-version');
+    if (chatMessageToSend)
+      chatMessageToSend.classList.remove('dark-version');
 
+    sidebarMenuItems.forEach(element => {
       element.classList.remove('dark-version');
     });
+    chatItems.forEach(element => {
+      element.classList.remove('dark-version');
+    });
+
     // sidebarMenuItems.classList.remove('dark-version');
     // sidebar.classList.add('bg-white');
     // if (navbarBrandImg.includes('logo-ct.png')) {
