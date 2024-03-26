@@ -27,6 +27,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/', function () {
-    $users = User::whereNot('type', 'admin')->latest('updated_at')->latest('created_at')->get();
-    dd($users);
+    $trainees = NormalUser::whereHas('goalPlanDisease.timelines',function($query){
+        $query->where('coach_id',2);
+    })->get();
+    dd($trainees);
 });

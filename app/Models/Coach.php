@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Coach extends User
 {
-
+    public function timelines(): HasMany
+    {
+        return $this->hasMany(CoachTimeline::class, 'coach_id');
+    }
     public static function boot()
     {
         parent::boot();

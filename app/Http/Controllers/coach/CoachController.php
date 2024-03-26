@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Channel;
 use App\Models\ChannelSubscription;
 use App\Models\MessageStatus;
+use App\Models\NormalUser;
 use App\Models\SubscriptionMessage;
 use App\Models\User;
 use Carbon\Carbon;
@@ -30,8 +31,10 @@ class CoachController extends Controller
     public function trainnes_view(): View
     {
         $coach = Auth::user();
-        $trainees = User::where('type','normal')->whereHas('subscriptions');
-        return view('pages.coach.trainees');
+        $trainees = NormalUser::whereHas('goalPlanDisease.timelines', function ($query) {
+            $query->where('coach_id', Auth::id());
+        })->get();
+        return view('pages.coach.trainees', compact('trainees'));
     }
     public function chat_view(): View
     {

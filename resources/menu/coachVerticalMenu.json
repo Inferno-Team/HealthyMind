@@ -18,7 +18,7 @@
         {
             "name": "Trainee",
             "icon": "menu-icon tf-icons bx bx-run",
-            "slug": "trainees",
+            "slug": "coach.trainees",
             "url": "/coach/trainees"
         },
         {

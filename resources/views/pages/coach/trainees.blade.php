@@ -1,20 +1,20 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Meal Requests'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Trainees'])
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12" style="z-index:1">
                 <div id="no-users-container"
-                    style="flex-direction:column;display:{{ count($requests) > 0 ? 'none' : 'flex' }}">
-                    <h6 style="text-align: center;font-size: 2rem;color:white">No Request Found</h6>
+                    style="flex-direction:column;display:{{ count($trainees) > 0 ? 'none' : 'flex' }}">
+                    <h6 style="text-align: center;font-size: 2rem;color:white">No Trainees Found</h6>
                     <img src="{{ asset('img/no-users-found.png') }}" style="margin:auto;width:500px">
 
                 </div>
                 <div class="card mb-4 h-75"
-                    style="overflow:auto;min-height:500px;display:{{ count($requests) == 0 ? 'none' : 'block' }}"
+                    style="overflow:auto;min-height:500px;display:{{ count($trainees) == 0 ? 'none' : 'block' }}"
                     id="table-container">
                     <div class="card-header pb-0">
-                        <h6>Meals Request Table</h6>
+                        <h6>Trainees Table</h6>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2 ">
                         <div class="table-responsive p-0">
@@ -40,25 +40,25 @@
                                     </tr>
                                 </thead>
                                 <tbody id="requests-table">
-                                    @foreach ($premiumRequests as $request)
-                                        <tr id="item-{{ $request->id }}">
+                                    @foreach ($trainees as $trainee)
+                                        <tr id="item-{{ $trainee->id }}">
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div>
-                                                        <img src="{{ $request->user->avatar ?? asset('/img/team-2.jpg') }}"
+                                                        <img src="{{ $trainee->avatar ?? asset('/img/team-2.jpg') }}"
                                                             class="avatar avatar-sm me-3" alt="user1">
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $request->user->first_name }}
-                                                            {{ $request->user->last_name }}</h6>
+                                                        <h6 class="mb-0 text-sm">{{ $trainee->first_name }}
+                                                            {{ $trainee->last_name }}</h6>
                                                         <p class="text-xs text-secondary mb-0">
-                                                            <b>@</b>{{ $request->user->username }}
+                                                            <b>@</b>{{ $trainee->username }}
                                                         </p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $request->user->email }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $trainee->email }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
@@ -66,11 +66,11 @@
                                             </td>
 
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $request->user->phone }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $trainee->phone }}</p>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $request->created_at->diffForHumans() }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ $trainee->created_at->diffForHumans() }}</span>
                                             </td>
 
                                             <td class="align-middle">
@@ -78,7 +78,7 @@
                                                 <a href="javascript:;"
                                                     class="text-secondary font-weight-bold text-xs change-request-status"
                                                     data-toggle="tooltip" data-original-title="change"
-                                                    data-id="{{ $request->id }}">
+                                                    data-id="{{ $trainee->id }}">
                                                     change
                                                 </a>
                                             </td>

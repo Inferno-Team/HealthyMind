@@ -31,11 +31,13 @@ class NormalUser extends User
         return $this->hasOneThrough(
             GoalPlanDisease::class,
             UserPlanGoalDisease::class,
-            'user_id',
-            'goal_plan_disease_id'
+            'user_id',      // Foreign key on the intermediate table (UserPlanGoalDisease)
+            'id',           // Foreign key on the final related table (GoalPlanDisease)
+            'id',           // Local key on the initial table (User)
+            'goal_plan_disease_id'  // Local key on the intermediate table (UserPlanGoalDisease)
         );
     }
-    
+
     public function user_premium_request(): HasOne
     {
         return $this->hasOne(UserPremiumRequest::class, 'user_id');
