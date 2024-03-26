@@ -2,7 +2,10 @@
 
 use App\Events\coach\NewChannelEvent;
 use App\Http\Controllers\ChatWebsocketController;
+use App\Models\Admin;
+use App\Models\Coach;
 use App\Models\Meal;
+use App\Models\NormalUser;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
 use App\Notifications\NewCoachNotification;
@@ -24,7 +27,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/', function () {
-    $user = User::find(15);
-    $channel = $user->privateChannel();
-    event(new NewChannelEvent('Trainee.17',$channel->name,$user->id));
 });

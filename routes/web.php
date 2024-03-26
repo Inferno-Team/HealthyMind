@@ -98,9 +98,9 @@ Route::group(['middleware' => ['auth', 'menu:admin', 'type:admin'], 'prefix' => 
 
 Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 'coach'], function () {
     Route::get('home', [CoachController::class, 'home_view']);
+    Route::get('/admin-profile', [CoachController::class, 'coach_profile'])->name('coach.profile');
     Route::get('chats', [CoachController::class, 'chat_view'])->name('chat');
     Route::post('chats/load', [CoachController::class, 'loadChat'])->name('chat.load');
-    Route::get('/admin-profile', [CoachController::class, 'coachMyProfile'])->name('coach.profile');
 
     Route::post('chats/message/read', [CoachController::class, 'readMessage'])->name('chat.message.read');
     Route::post('chats/message/new/read', [CoachController::class, 'readNewMessage'])->name('chat.message.new.read');

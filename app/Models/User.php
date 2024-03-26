@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,7 +23,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $appends = ['is_pro', 'fullname'];
+    protected $appends = ['fullname'];
+    protected $table = 'users';
     protected $fillable = [
         'first_name',
         'last_name',
@@ -30,7 +32,7 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
-        'type',
+        // 'type',
         'status',
         'avatar',
     ];
@@ -45,28 +47,11 @@ class User extends Authenticatable
             }
         );
     }
-    public function isPro(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value, $attr) =>
-            isset($this->user_premium_request)
-                && $this->user_premium_request->status == 'approved',
-
-        );
-    }
     public function fullname(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->first_name . ' ' . $this->last_name
         );
-    }
-    public function user_premium_request(): HasOne
-    {
-        return $this->hasOne(UserPremiumRequest::class, 'user_id');
-    }
-    public function details(): HasOne
-    {
-        return $this->hasOne(UserDetail::class, 'user_id');
     }
     public function channels(): HasManyThrough
     {
@@ -97,30 +82,19 @@ class User extends Authenticatable
             'subscription_id'
         );
     }
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
-    public static function boot()
+    protected static function booted()
     {
-        parent::boot();
-        static::created(function (User $user) {
-            // check if this user is coach create channel and create subscription for this user
-            // channel type is private [only the system and this user can subscribe to it.]
-            if ($user->type == 'coach') {
-                $channel = Channel::create([
-                    'name' => 'Coach.' . $user->id,
-                    'type' => 'private',
-                ]);
-                ChannelSubscription::create([
-                    'channel_id' => $channel->id,
-                    'user_id' => $user->id,
-                ]);
+        static::addGlobalScope('type', function ($builder) {
+            $allowedTypes = ['normal', 'coach', 'admin'];
+            $className = class_basename(static::class);
+            $type = strtolower(str_replace('User', '', $className));
+            info($type);
+            if (in_array($type, $allowedTypes)) {
+                $builder->where('type', $type);
             }
         });
     }

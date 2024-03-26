@@ -23,9 +23,15 @@ class CoachController extends Controller
         $channels = Auth::user()->channels->map(fn ($item) => (object)[$item->type => $item->name]);
         return view('pages.coach.dashboard', compact('channels'));
     }
-    public function coachMyProfile(): View
+    public function coach_profile(): View
     {
         return view('pages.coach.profile');
+    }
+    public function trainnes_view(): View
+    {
+        $coach = Auth::user();
+        $trainees = User::where('type','normal')->whereHas('subscriptions');
+        return view('pages.coach.trainees');
     }
     public function chat_view(): View
     {

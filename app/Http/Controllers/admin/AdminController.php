@@ -22,16 +22,16 @@ class AdminController extends Controller
     public function allUsersView(): View
     {
         $users = User::whereNot('type', 'admin')->latest('updated_at')->latest('created_at')->get();
-        return view('pages.all-users', compact('users'));
+        return view('pages.admin.all-users', compact('users'));
     }
     public function adminMyProfile(): View
     {
 
-        return view('pages.admin-profile');
+        return view('pages.admin.admin-profile');
     }
     public function createUserView(): View
     {
-        return view('pages.create-user');
+        return view('pages.admin.create-user');
     }
     public function storeUser(CreateNewUserRequest $request)
     {
@@ -58,17 +58,17 @@ class AdminController extends Controller
     public function newCoachRequestsView(): View
     {
         $users = User::where('type', '=', 'coach')->where('status', '=', 'waiting')->get();
-        return view('pages.new-coach-requests', compact('users'));
+        return view('pages.admin.new-coach-requests', compact('users'));
     }
     public function permiumRequestsView(): View
     {
         $premiumRequests = UserPremiumRequest::where('status', '=', 'pending')->get();
-        return view('pages.premium-requests', compact('premiumRequests'));
+        return view('pages.admin.premium-requests', compact('premiumRequests'));
     }
     public function mealRequestsView(): View
     {
         $requests = Meal::where('status', '=', 'pending')->get();
-        return view('pages.meal-requests', compact($requests));
+        return view('pages.admin.meal-requests', compact($requests));
     }
     public function changeStatusCoachRequest(ChangeCoachRequest $request): JsonResponse
     {
