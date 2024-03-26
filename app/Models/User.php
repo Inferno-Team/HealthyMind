@@ -32,7 +32,7 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
-        // 'type',
+        'type',
         'status',
         'avatar',
     ];
@@ -92,7 +92,6 @@ class User extends Authenticatable
             $allowedTypes = ['normal', 'coach', 'admin'];
             $className = class_basename(static::class);
             $type = strtolower(str_replace('User', '', $className));
-            info($type);
             if (in_array($type, $allowedTypes)) {
                 $builder->where('type', $type);
             }

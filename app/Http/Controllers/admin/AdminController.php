@@ -7,6 +7,8 @@ use App\Http\Helpers\FileHelper;
 use App\Http\Requests\admin\ChangeCoachRequest;
 use App\Http\Requests\admin\ChangePremiumRequest;
 use App\Http\Requests\admin\CreateNewUserRequest;
+use App\Models\Admin;
+use App\Models\Coach;
 use App\Models\Meal;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
@@ -41,7 +43,7 @@ class AdminController extends Controller
     }
     public function updateSelf(Request $request)
     {
-        $user = User::where('id', Auth::id())->first();
+        $user = Admin::where('id', Auth::id())->first();
         $user->update($request->all());
         return back();
     }
@@ -49,7 +51,7 @@ class AdminController extends Controller
     {
         $avatar = $request->file('avatar');
         $name = FileHelper::uploadToDocs($avatar, 'public/avatars');
-        $user = User::where('id', Auth::id())->first();
+        $user = Admin::where('id', Auth::id())->first();
         $user->avatar = Str::replace('public', '', $name);
         $user->update();
         return $this->returnMessage('updated');
@@ -57,7 +59,7 @@ class AdminController extends Controller
 
     public function newCoachRequestsView(): View
     {
-        $users = User::where('type', '=', 'coach')->where('status', '=', 'waiting')->get();
+        $users = Coach::where('status', '=', 'waiting')->get();
         return view('pages.admin.new-coach-requests', compact('users'));
     }
     public function permiumRequestsView(): View
@@ -72,10 +74,10 @@ class AdminController extends Controller
     }
     public function changeStatusCoachRequest(ChangeCoachRequest $request): JsonResponse
     {
-        $user = User::where('id', $request->input('id'))->first();
+        $user = Coach::where('id', $request->input('id'))->first();
         $user->status = $request->input('status');
         $user->update();
-        return $this->returnData("newStatus", $user->status, 'User Status Updated, New Status : ' . $user->status);
+        return $this->returnData("newStatus", $user->status, 'Coach Status Updated, New Status : ' . $user->status);
     }
     public function changeStatusPremiumRequest(ChangePremiumRequest $request): JsonResponse
     {

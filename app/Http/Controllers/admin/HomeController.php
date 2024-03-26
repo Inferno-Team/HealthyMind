@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Coach;
 use App\Models\Exercise;
 use App\Models\Meal;
+use App\Models\NormalUser;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,8 +19,8 @@ class HomeController extends Controller
 
     public function home(): View
     {
-        $users = User::where('type', 'normal')->get();
-        $coachs = User::where('type', 'coach')->get();
+        $users = NormalUser::get();
+        $coachs = Coach::get();
         $meals = Meal::get();
         $exercises = Exercise::get();
 
@@ -31,7 +33,7 @@ class HomeController extends Controller
         $new_coachs_count = $coachs->filter(fn ($item) => $item->created_at->isAfter(Carbon::yesterday()))->count();
         $new_meals_count = $meals->filter(fn ($item) => $item->created_at->isAfter(Carbon::now()->subWeek()))->count();
         $new_exercises_count = $exercises->filter(fn ($item) => $item->created_at->isAfter(Carbon::yesterday()))->count();
-        
+
         $users_percentage = round($new_users_count * 100 / $users_count);
         $coachs_percentage = round($new_coachs_count * 100 / ($coachs_count == 0 ? 1 : $coachs_count));
 
