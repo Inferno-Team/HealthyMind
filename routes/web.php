@@ -100,12 +100,21 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::get('home', [CoachController::class, 'home_view']);
     Route::get('/profile', [CoachController::class, 'coach_profile'])->name('coach.profile');
     Route::get('/trainees', [CoachController::class, 'trainnes_view'])->name('coach.trainees');
+    Route::get('/timelines', [CoachController::class, 'timelines_view'])->name('coach.timelines.all');
+    Route::get('/timelines/{id}', [CoachController::class, 'show_timeline_view'])->name('coach.timeline.show');
+    Route::get('/timelines.new', [CoachController::class, 'new_timeline_view'])->name('coach.timelines.new');
+    Route::get('/timelines.items/new/{id}', [CoachController::class, 'show_timeline_add_item_view'])->name('coach.timelines.items.new');
     Route::get('chats', [CoachController::class, 'chat_view'])->name('chat');
+    
     Route::post('chats/load', [CoachController::class, 'loadChat'])->name('chat.load');
-
+    Route::post('/timelines.new', [CoachController::class, 'new_timeline_store'])->name('coach.timelines.new.store');
+    Route::post('/timelines.items/new', [CoachController::class, 'timeline_item_store'])->name('coach.timelines.item.new.store');
+    Route::post('/type.items/new', [CoachController::class, 'new_type_item'])->name('coach.item.type.new.store');
     Route::post('chats/message/read', [CoachController::class, 'readMessage'])->name('chat.message.read');
     Route::post('chats/message/new/read', [CoachController::class, 'readNewMessage'])->name('chat.message.new.read');
     Route::post('chats/message/new', [CoachController::class, 'newMessage'])->name('chat.message.new');
+
+    Route::delete('/timelines', [CoachController::class, 'timeline_delete'])->name('coach.timelines.delete');
 });
 
 Route::get('/sign-in-static', function () {

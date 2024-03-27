@@ -4,11 +4,24 @@ namespace App\Http\Controllers\coach;
 
 use App\Events\core\NewMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\coach\CreateNewItemRequest;
+use App\Http\Requests\coach\CreateNewTimelineRequest;
 use App\Models\Channel;
 use App\Models\ChannelSubscription;
+use App\Models\CoachTimeline;
+use App\Models\Day;
+use App\Models\Disease;
+use App\Models\Exercise;
+use App\Models\ExerciseType;
+use App\Models\Goal;
+use App\Models\GoalPlanDisease;
+use App\Models\Meal;
+use App\Models\MealType;
 use App\Models\MessageStatus;
 use App\Models\NormalUser;
+use App\Models\Plan;
 use App\Models\SubscriptionMessage;
+use App\Models\TimelineItem;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -35,6 +48,95 @@ class CoachController extends Controller
             $query->where('coach_id', Auth::id());
         })->get();
         return view('pages.coach.trainees', compact('trainees'));
+    }
+    public function timelines_view(): View
+    {
+        $timelines = CoachTimeline::where('coach_id', Auth::id())->get();
+        return view('pages.coach.timelines', compact('timelines'));
+    }
+    public function new_timeline_view(): View
+    {
+        $goals = Goal::all();
+        $plans = Plan::all();
+        $diseases = Disease::all();
+        return view('pages.coach.create-timeline', compact('goals', 'plans', 'diseases'));
+    }
+    public function show_timeline_view(int $id): View
+    {
+        $timeline_id = $id;
+        $items = TimelineItem::where('timeline_id', $id)->with('item.type')->orderBy('day_id')->get();
+        return view('pages.coach.show-timeline', compact('items', 'timeline_id'));
+    }
+    public function show_timeline_add_item_view(int $timeline_id): View
+    {
+        $meals = Meal::all();
+        $meal_types = MealType::all();
+        $exercises = Exercise::all();
+        $exercise_types = ExerciseType::all();
+        $days = Day::all();
+
+        return view('pages.coach.add-timeline-item', compact('exercises', 'meals', 'days', 'timeline_id', 'meal_types', 'exercise_types'));
+    }
+    public function new_timeline_store(CreateNewTimelineRequest $request)
+    {
+        $gps = GoalPlanDisease::where('plan_id', $request->plan)
+            ->where('goal_id', $request->goal)
+            ->where('disease_id', $request->disease)->firstOrCreate()->id;
+        $timeline = CoachTimeline::create([
+            'name' => $request->name,
+            'goal_plan_disease_id' => $gps,
+            'coach_id' => Auth::id(),
+        ]);
+        return $this->returnData('timeline', $timeline, 'Timeline created successfully.');
+    }
+    public function timeline_item_store(Request $request)
+    {
+        $timelineItem = new TimelineItem;
+        if ($request->item_type == 'meal') {
+            $item = Meal::find($request->item_id);
+        } else if ($request->item_type == 'exercise') {
+            $item = Exercise::find($request->item_id);
+        }
+        $timelineItem->day_id = $request->day;
+        $timelineItem->timeline_id = $request->timeline_id;
+        $timelineItem->item()->associate($item);
+        $timelineItem->save();
+        return $this->returnMessage("Timeline Item Created.");
+    }
+    public function new_type_item(CreateNewItemRequest $request)
+    {
+        if ($request->type == 'meal') {
+            $meal = Meal::create([
+                "name" => $request->item_name,
+                "qty" => $request->qty,
+                "type_id" =>  $request->item_type,
+                'status',
+            ]);
+            return $this->returnMessage("Meal Added");
+        } else if ($request->type == 'exercise') {
+            $exercise = Exercise::create([
+                // "gif_url",
+                "name" => $request->item_name,
+                "qty" => $request->qty,
+                "type_id" =>  $request->item_type,
+            ]);
+            return $this->returnMessage("Exercise Added");
+        } {
+        }
+        return $this->returnMessage("no meal", 403);
+    }
+    public function timeline_delete(Request $request)
+    {
+        $timeline = CoachTimeline::where('id', $request->id)->get();
+        if ($timeline->isEmpty()) {
+            return $this->returnError("This timeline does not exists.", 404);
+        }
+        $timeline = $timeline->first();
+        if ($timeline->coach_id != Auth::id()) {
+            return $this->returnError("This timeline does't belongs to you.", 403);
+        }
+        CoachTimeline::where('id', $timeline->id)->delete();
+        return $this->returnMessage("This timeline deleted successfully.");
     }
     public function chat_view(): View
     {

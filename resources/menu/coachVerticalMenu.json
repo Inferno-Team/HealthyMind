@@ -24,17 +24,17 @@
         {
             "name": "Timelines",
             "icon": "menu-icon tf-icons bx bxs-timer",
-            "slug": "timelines",
+            "slug": "coach.timelines",
             "submenu": [
                 {
                     "url": "/coach/timelines/",
                     "name": "All Timelines",
-                    "slug": "all.timelines"
+                    "slug": "coach.timelines.all"
                 },
                 {
-                    "url": "/coach/timelines/new-timeline",
+                    "url": "/coach/timelines.new",
                     "name": "New Timeline",
-                    "slug": "new.timeline"
+                    "slug": "coach.timelines.new"
                 }
             ]
         }

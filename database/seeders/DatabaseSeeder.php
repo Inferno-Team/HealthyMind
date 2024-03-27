@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'admin@mind.com',
         // ]);
         // User::factory(10)->create();
-        $this->call([GoalPlanDiseaseSeeder::class]);
+        // $this->call([GoalPlanDiseaseSeeder::class]);
+        // $this->call([DaySeeder::class]);
+        // $this->call([MealTypeSeeder::class]);
+        // $this->call([ExerciseTypeSeeder::class]);
     }
 }
