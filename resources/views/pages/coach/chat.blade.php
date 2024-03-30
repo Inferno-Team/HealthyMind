@@ -4,7 +4,7 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Chats'])
     <div class="container-fluid py-0">
         <div class="row mt-0">
-            <div class="card col-lg-4 mb-lg-0 mb-4 h75"
+            <div id="all-chat-container-id" class="card col-lg-4 mb-lg-0 mb-4 h75"
                 style="background:#d3aaa1;z-index:100;border-radius:15px 0px 0 15px;padding:0px">
                 <div id="all-chat-title" class="card-header bg-white "
                     style="border-radius:15px 0px 0 15px;font-weight:bolder">
@@ -46,10 +46,14 @@
                     </div>
                 </div>
             </div>
-            <div class="card col-lg-8 mb-lg-0 mb-4 p-0 h75" style="background:#ffc1b3;border-radius:0px 15px 15px 0px">
+            <div id="chat-container-id" class="card col-lg-8 mb-lg-0 mb-4 p-0 h75"
+                style="background:#ffc1b3;border-radius:0px 15px 15px 0px;">
                 <div class="card-header bg-white " id="chat-right-title"
                     style="border-radius:0px 15px 15px 0px;font-weight:bolder;height:74px">
-                    <div id="selected-chat-toolbar"></div>
+                    <div style="display:flex;align-items:center">
+                        <i id="chat-back-arrow" class='bx bxs-chevron-left mr-3' style="font-size:32px"></i>
+                        <div id="selected-chat-toolbar"></div>
+                    </div>
 
                     <div id="user-typing-msg" style="color:#8c7bff;font-size:13px"></div>
                 </div>
@@ -64,7 +68,6 @@
 @endsection
 
 @push('js')
-    
     <script>
         // Flag to track typing status
         let isTyping = false;
@@ -105,6 +108,12 @@
         }
 
         $(document).ready(function() {
+            console.log(window.isMobile())
+            if (window.isMobile()) {
+                $("#chat-container-id").css('display', 'none');
+            } else {
+                $("#chat-back-arrow").css('display', 'none')
+            }
             let channels = {!! $channels !!}
             channels.forEach((item) => {
                 for (const channel in item) {
@@ -125,6 +134,10 @@
                     }
                 }
             })
+            $('#chat-back-arrow').on('click', function() {
+                $("#all-chat-container-id").css('display', 'block');
+                $("#chat-container-id").css('display', 'none');
+            })
             // Event listener for the input event using jQuery
             $('#message-to-send').on('input', function() {
                 if (!isTyping) {
@@ -139,6 +152,12 @@
                 let channelId = $(this).attr('data-id');
                 let channelName = $(this).attr('data-channel-name');
                 if (channelId == $("#opened-chat").val()) return;
+                if (window.isMobile()) {
+                    $("#chat-container-id").css('display', 'flex');
+                    $("#all-chat-container-id").css('display', 'none');
+
+                }
+                //$("#opened-chat").val(channelId);
                 $("#opened-chat").val(channelId);
                 $("#opened-chat-name").val(channelName);
                 $("#chat-message-container").css('display', 'flex')

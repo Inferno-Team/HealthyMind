@@ -57,14 +57,12 @@
     @endguest
     <div class="layout-wrapper layout-content-navbar ">
         <div class="layout-container">
-            @auth
-                @include('layouts.menu.verticalMenu')
-                <div class="min-height-300 bg-primary position-absolute w-100"></div>
+            @include('layouts.menu.verticalMenu')
+            <div class="min-height-300 bg-primary position-absolute w-100"></div>
 
-                <main class="main-content border-radius-lg w-100">
-                    @yield('content')
-                </main>
-            @endauth
+            <main class="main-content border-radius-lg w-100">
+                @yield('content')
+            </main>
         </div>
     </div>
     <div class="layout-overlay layout-menu-toggle"></div>

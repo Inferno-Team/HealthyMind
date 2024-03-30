@@ -389,6 +389,8 @@ if (iconSidenav) {
 }
 
 function toggleSidenav() {
+  window.Helpers.toggleCollapsed();
+  return;
   if (body.classList.contains(className)) {
     body.classList.remove(className);
     setTimeout(function () {
@@ -961,4 +963,8 @@ function generate_payment_dialog(qr_img) {
 function onQrChangeClicked() {
 
   document.getElementById('qr-image-input').click();
+}
+window.isMobile = function () {
+
+  return ((window.innerWidth <= 800));
 }

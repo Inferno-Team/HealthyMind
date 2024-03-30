@@ -65,7 +65,7 @@ class CoachController extends Controller
     {
         $timeline_id = $id;
         $items = TimelineItem::where('timeline_id', $id)->with('item.type')->orderBy('day_id')->get();
-        return view('pages.coach.show-timeline', compact('items', 'timeline_id'));
+        return view('pages.coach.show-cal-timeline', compact('items', 'timeline_id'));
     }
     public function show_timeline_add_item_view(int $timeline_id): View
     {
