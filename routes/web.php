@@ -109,6 +109,8 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::post('chats/load', [CoachController::class, 'loadChat'])->name('chat.load');
     Route::post('/timelines.new', [CoachController::class, 'new_timeline_store'])->name('coach.timelines.new.store');
     Route::post('/timelines.items/new', [CoachController::class, 'timeline_item_store'])->name('coach.timelines.item.new.store');
+    Route::post('/timelines.items/update', [CoachController::class, 'timeline_item_update'])->name('coach.timelines.item.update');
+    Route::post('/timelines.items/delete', [CoachController::class, 'timeline_item_delete'])->name('coach.timelines.item.delete');
     Route::post('/type.items/new', [CoachController::class, 'new_type_item'])->name('coach.item.type.new.store');
     Route::post('chats/message/read', [CoachController::class, 'readMessage'])->name('chat.message.read');
     Route::post('chats/message/new/read', [CoachController::class, 'readNewMessage'])->name('chat.message.new.read');

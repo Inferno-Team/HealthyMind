@@ -18333,7 +18333,6 @@ html:not(.layout-footer-fixed) .content-wrapper {
   padding: 2rem;
   font-family: "Poppins", sans-serif;
   color: var(--color);
-  background: var(--bgColor);
 }
 
 

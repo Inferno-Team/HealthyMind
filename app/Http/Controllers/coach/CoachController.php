@@ -64,7 +64,7 @@ class CoachController extends Controller
     public function show_timeline_view(int $id): View
     {
         $timeline_id = $id;
-        $items = TimelineItem::where('timeline_id', $id)->with('item.type')->orderBy('day_id')->get();
+        $items = TimelineItem::where('timeline_id', $id)->with('item.type')->orderBy('event_date_start')->get();
         return view('pages.coach.show-cal-timeline', compact('items', 'timeline_id'));
     }
     public function show_timeline_add_item_view(int $timeline_id): View
@@ -102,6 +102,35 @@ class CoachController extends Controller
         $timelineItem->item()->associate($item);
         $timelineItem->save();
         return $this->returnMessage("Timeline Item Created.");
+    }
+
+    public function timeline_item_update(Request $request)
+    {
+        $method = $request->input('method');
+        $timeline_item = TimelineItem::where('id', $request->id)->first();
+        if ($method === 'drop') {
+            [$event_date_start, $event_date_end] = $timeline_item->findDiff($request->delta);
+        } else if ($method === 'resize') {
+            info($request->input('event_date_start'));
+            info(Carbon::parse($request->input('event_date_start')));
+            info(Carbon::parse($request->input('event_date_end'), config('app.timezone')));
+            info(Carbon::parse($request->input('event_date_end'), config('app.timezone'))->format('Y-m-d H:i:s'));
+            [$event_date_start, $event_date_end]
+                = [
+                    Carbon::parse($request->input('event_date_start'), config('app.timezone'))->format('Y-m-d H:i:s'),
+                    Carbon::parse($request->input('event_date_end'), config('app.timezone'))->format('Y-m-d H:i:s')
+                ];
+        }
+
+        $timeline_item->event_date_start = $event_date_start;
+        $timeline_item->event_date_end = $event_date_end;
+        $timeline_item->update();
+        return $this->returnMessage('Done.');
+    }
+    public function timeline_item_delete(Request $request)
+    {
+        TimelineItem::find($request->input('id'))->delete();
+        return $this->returnMessage('Deleted.');
     }
     public function new_type_item(CreateNewItemRequest $request)
     {
