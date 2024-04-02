@@ -25,8 +25,5 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('timeline_items', function (Blueprint $table) {
-            $table->dropColumn('event_date');
-        });
     }
 };
