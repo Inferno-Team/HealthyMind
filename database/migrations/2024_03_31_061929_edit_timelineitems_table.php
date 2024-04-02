@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Day;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('timeline_items', function (Blueprint $table) {
-            $table->dropForeign('day_id');
+            $table->dropForeignIdFor(Day::class,'day_id');
             $table->dropColumn('day_id');
             $table->timestamp('event_date_start')->nullable()->after('item_id');
             $table->timestamp('event_date_end')->nullable()->after('event_date_start');
