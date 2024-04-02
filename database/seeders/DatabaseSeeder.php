@@ -16,18 +16,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(1)->create([
-        //     'first_name' => 'Healthy',
-        //     'last_name' => 'Mind',
-        //     'type' => 'admin',
-        //     'username' => 'admin',
-        //     'password' => Hash::make('admin-password'),
-        //     'email' => 'admin@mind.com',
-        // ]);
-        // User::factory(10)->create();
-        // $this->call([GoalPlanDiseaseSeeder::class]);
-        // $this->call([DaySeeder::class]);
-        // $this->call([MealTypeSeeder::class]);
-        // $this->call([ExerciseTypeSeeder::class]);
+         User::factory(1)->create([
+             'first_name' => 'Healthy',
+             'last_name' => 'Mind',
+             'type' => 'admin',
+             'username' => 'admin',
+             'password' => Hash::make('admin-password'),
+             'email' => 'admin@mind.com',
+         ]);
+         User::factory(10)->create();
+         $this->call([GoalPlanDiseaseSeeder::class]);
+         $this->call([DaySeeder::class]);
+         $this->call([MealTypeSeeder::class]);
+         $this->call([ExerciseTypeSeeder::class]);
     }
 }
