@@ -37,7 +37,8 @@
             key: "{{ env('PUSHER_APP_KEY') }}",
             wsHost: "{{ env('PUSHER_HOST') }}",
             wsPort: "{{ env('PUSHER_PORT') }}",
-            forceTLS: false,
+            wssPort: "{{ env('PUSHER_PORT') }}",
+            forceTLS: true,
             disableStats: true,
             authEndpoint: '/authenticate_websocket',
             auth: {
