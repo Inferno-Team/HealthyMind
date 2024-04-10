@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Channel;
+use App\Models\ChannelSubscription;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -32,7 +35,7 @@ class UserFactory extends Factory
             'phone' => fake()->unique()->phoneNumber(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'type' => static::$type ?? 'normal'
+            'type' => static::$type ?? $this->faker->randomElement(['normal', 'coach']),
         ];
     }
 
@@ -44,5 +47,20 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            if ($user->type == 'coach') {
+                $user->status = 'approved';
+                $user->update();
+                $channel = Channel::factory()->create(['name' => 'Coach.' . $user->id, 'type' => 'private']);
+                // Create a subscription for the user and channel
+                ChannelSubscription::factory()->create([
+                    'user_id' => $user->id,
+                    'channel_id' => $channel->id,
+                ]);
+            }
+        });
     }
 }
