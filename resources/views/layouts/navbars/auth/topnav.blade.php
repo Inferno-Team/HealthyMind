@@ -164,12 +164,12 @@
                 item.click();
             }
         }
-        $(".new_meal_noteification").on('click', function() {
+        $(".meal_status_change_notification").on('click', function() {
             let id = $(this).attr('data-id');
             axios.post("{{ route('notification.read') }}", {
                 id: id
             })
-            window.location.href = "{{ route('requests.meal') }}"
+            window.location.href = "{{ route('coach.meals.all') }}"
         });
     })
 
@@ -206,7 +206,7 @@
 
     function generate_meal_status_change_notification(note) {
         return ` <li class="mb-2">
-                            <a class="new_meal_noteification dropdown-item border-radius-md" data-id="${note.id}" href="javascript:;">
+                            <a class="meal_status_change_notification dropdown-item border-radius-md" data-id="${note.id}" href="javascript:;">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
                                         <i class="bx bxs-bowl-hot bx-sm" > </i>
