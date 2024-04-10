@@ -209,7 +209,7 @@
                             <a class="new_meal_noteification dropdown-item border-radius-md" data-id="${note.id}" href="javascript:;">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
-                                        <i class="bx bxs-bowl-hot bx-sm" />
+                                        <i class="bx bxs-bowl-hot bx-sm" > </i>
                                     </div>
                                     <div class="d-flex flex-column justify-content-center">
                                         <h6 class="text-sm font-weight-normal mb-1">
