@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\FileHelper;
 use App\Http\Requests\admin\ChangeCoachRequest;
+use App\Http\Requests\admin\ChangeMealRequest;
 use App\Http\Requests\admin\ChangePremiumRequest;
 use App\Http\Requests\admin\CreateNewUserRequest;
 use App\Models\Admin;
@@ -86,7 +87,7 @@ class AdminController extends Controller
         $premiumRequest->update();
         return $this->returnData("newStatus", $premiumRequest->status, 'Request Status Updated, New Status : ' . $premiumRequest->status);
     }
-    public function changeStatusMealRequest(ChangePremiumRequest $request): JsonResponse
+    public function changeStatusMealRequest(Request $request): JsonResponse
     {
         $meal = Meal::where('id', $request->input('id'))->first();
         if (empty($meal))
