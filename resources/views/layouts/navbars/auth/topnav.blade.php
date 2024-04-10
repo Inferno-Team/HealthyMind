@@ -1,6 +1,6 @@
 <!-- Navbar -->
-<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl"
-    id="navbarBlur" data-scroll="false">
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
+    data-scroll="false">
     <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
@@ -42,7 +42,7 @@
                             <div class="dropdown-item border-radius-md" href="javascript:;" data-class="bg-dark">
                                 <div class=" d-flex">
                                     <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 "
-                                        href="{{ auth()->user()->type == 'admin' ?  route('admin.profile') : route('coach.profile') }}">
+                                        href="{{ auth()->user()->type == 'admin' ? route('admin.profile') : route('coach.profile') }}">
                                         <h6 class="mb-0 me-6">
                                             My Profile
                                         </h6>
@@ -154,7 +154,7 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         // get user notifications
-        let notes = `{!! auth()->user()->notifications()->pluck('data') !!}`
+        let notes = `{!! json_encode($notifications, true) !!}`
         generate_notifications(JSON.parse(notes))
         // check if is dark mode saved.
         let themeMode = localStorage.getItem('theme-mode');
@@ -164,6 +164,13 @@
                 item.click();
             }
         }
+        $(".new_meal_noteification").on('click', function() {
+            let id = $(this).attr('data-id');
+            axios.post("{{ route('notification.read') }}", {
+                id: id
+            })
+            window.location.href = "{{ route('requests.meal') }}"
+        });
     })
 
     function generate_notifications(notes) {
@@ -174,6 +181,8 @@
     }
 
     function generate_notification(note) {
+        if (note.type == "MealStatusChangeNotification")
+            return generate_meal_status_change_notification(note)
         let icon = get_icon_by_type(note.type);
         return ` <li class="mb-2">
                             <a class="dropdown-item border-radius-md" href="javascript:;">
@@ -195,6 +204,28 @@
                         </li>`;
     }
 
+    function generate_meal_status_change_notification(note) {
+        return ` <li class="mb-2">
+                            <a class="new_meal_noteification dropdown-item border-radius-md" data-id="${note.id}" href="javascript:;">
+                                <div class="d-flex py-1">
+                                    <div class="my-auto">
+                                        <i class="bx bxs-bowl-hot bx-sm" />
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="text-sm font-weight-normal mb-1">
+                                            <span class="font-weight-bold">${note.data.name}</span> status changed to
+                                                ${note.data.status}
+                                        </h6>
+                                        <p class="text-xs text-secondary mb-0">
+                                            <i class="fa fa-clock me-1"></i>
+                                            ${note.created_at}
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>`;
+    }
+
     function get_icon_by_type(type) {
         switch (type) {
             case 'new-coach':
@@ -204,5 +235,6 @@
         }
     }
 </script>
+
 
 <!-- End Navbar -->

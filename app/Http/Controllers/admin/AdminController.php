@@ -13,6 +13,7 @@ use App\Models\Coach;
 use App\Models\Meal;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
+use App\Notifications\coach\MealStatusChangeNotification;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -94,6 +95,8 @@ class AdminController extends Controller
             return $this->returnError('Meal not found.', 404);
         $meal->status = $request->input('status');
         $meal->update();
+        $coach = Coach::find($meal->coach_id);
+        $coach->notify(new MealStatusChangeNotification($meal));
         return $this->returnData("newStatus", $meal->status, 'Request Status Updated, New Status : ' . $meal->status);
     }
     public function changeQR(Request $request)

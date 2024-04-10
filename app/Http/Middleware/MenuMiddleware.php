@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Admin;
+use App\Models\Coach;
 use Illuminate\Support\Facades\View;
 
 use Closure;
@@ -45,6 +46,21 @@ class MenuMiddleware
                 case 'coach':
                     $verticalMenuJson = file_get_contents(base_path('resources/menu/coachVerticalMenu.json'));
                     View::share('menuData', [json_decode($verticalMenuJson)]);
+                    $me = Coach::where('id', auth::id())->first();
+                    if (empty($me))
+                        $notifications = [];
+                    else
+                        $notifications = $me->unreadNotifications->map(function ($item) {
+                            $types = explode('\\', $item->type);
+                            return  [
+                                'id' => $item->id,
+                                'type' => end($types),
+                                'data' => $item->data,
+                                'is_read' => $item->read_at != null,
+                                'created_at' => $item->created_at->diffForHumans(),
+                            ];
+                        });
+                    View::share('notifications', $notifications);
                     break;
 
                 default:
