@@ -43,7 +43,7 @@ class AdminController extends Controller
     }
     public function updateSelf(Request $request)
     {
-        $user = Admin::where('id', Auth::id())->first();
+        $user = User::where('id', Auth::id())->first();
         $user->update($request->all());
         return back();
     }
@@ -51,7 +51,7 @@ class AdminController extends Controller
     {
         $avatar = $request->file('avatar');
         $name = FileHelper::uploadToDocs($avatar, 'public/avatars');
-        $user = Admin::where('id', Auth::id())->first();
+        $user = User::where('id', Auth::id())->first();
         $user->avatar = Str::replace('public', '', $name);
         $user->update();
         return $this->returnMessage('updated');
