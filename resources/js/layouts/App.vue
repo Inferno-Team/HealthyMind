@@ -20,6 +20,70 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" tabindex="-1" role="dialog" id="add-event-modal">
+            <div class="modal-dialog" role="document">
+                <input type="hidden" id="selectedItemId" />
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">From {{ formatDate(selectedEventDate.start) }} To {{
+            formatDate(selectedEventDate.end) }}</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="types" class="form-control-label ">Type</label>
+                                    <select class="form-control" v-model="selectedType"
+                                        @change="() => selectedItem = defaultSelectedItem">
+                                        <option>{{ defaultSelectedType }}</option>
+                                        <option v-bind:value="'meal'">Meal</option>
+                                        <option v-bind:value="'exercise'">Exercise</option>
+
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select an option.
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="selectedType == 'meal'" class="col-md-6" id="meal-container">
+                                <div class="form-group">
+                                    <label for="meals" class="form-control-label ">Meal</label>
+                                    <select class="form-control" v-model="selectedItem">
+                                        <option>{{ defaultSelectedItem }}</option>
+                                        <option v-for="(meal, index) in meals" :key="index" v-bind:value="meal.id">{{
+            meal.name }}</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select an option.
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="selectedType == 'exercise'" class="col-md-6" id="exercise-container">
+                                <div class="form-group">
+                                    <label for="exercises" class="form-control-label">Exercise</label>
+                                    <select class="form-control" v-model="selectedItem">
+                                        <option data-id="0">{{ defaultSelectedItem }}</option>
+                                        <option v-for="(exercise, index) in exercises" :key="index"
+                                            v-bind:value="exercise.id">{{ exercise.name }}
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select an option.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button :disabled="selectedType == defaultSelectedType || selectedItem == defaultSelectedItem"
+                            type="button" class="btn btn-primary" @click="addNewTimelineItem">Add</button>
+                        <button type="button" class="btn btn-secondary" @click="cancelAddModal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </template>
@@ -32,10 +96,10 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import 'tippy.js/animations/scale.css';
-
+import listPlugin from '@fullcalendar/list';
 export default {
-    props: ['items'],
-    mounted() {
+    props: ['items', 'meals', 'exercises', 'timeline_id'],
+    beforeMount() {
         this.items.forEach((item) => {
             let title = `${item.item.name}`;
             this.calendarOptions.events.push({
@@ -47,8 +111,7 @@ export default {
                 item_type: item.item.type.name,
                 type: item.item_type.split("\\").pop(),
             });
-        })
-
+        });
     },
     components: {
         FullCalendar // make the <FullCalendar> tag available
@@ -56,13 +119,25 @@ export default {
     data() {
         return {
             calendarOptions: {
-                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
+
+                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
                 initialView: 'timeGridWeek',
-                
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                views: {
+                    timeGridFourDay: {
+                        type: 'timeGrid',
+                        duration: { days: 4 },
+                        buttonText: '4 day'
+                    }
+                },
                 droppable: true,
                 editable: true,
                 selectable: true,
-                allDaySlot: false,
+                // allDaySlot: false,
                 slotEventOverlap: false,
                 eventStartEditable: true,
                 eventResizableFromStart: true,
@@ -80,7 +155,7 @@ export default {
                 },
                 eventDrop: this.handleEventDrop,
                 eventResize: this.handleEventResize,
-                // eventClick: this.handleEventClick,
+                eventClick: this.handleEventClick,
                 events: [],
                 select: this.hadleDateSelect,
                 eventClassNames: (arg) => [arg.event.extendedProps.status,
@@ -107,6 +182,7 @@ export default {
                     })
                 },
                 eventContent: function (info) {
+                    console.log(info);
                     // Customize the event HTML here
                     return {
                         html:
@@ -126,14 +202,27 @@ export default {
                             </div>`
                     };
                 },
-            }
+            },
+            selectedEventDate: {},
+            defaultSelectedType: "Please Select a Type",
+            defaultSelectedItem: "Please Select an Item",
+
+            selectedType: "Please Select a Type",
+            selectedItem: "Please Select an Item",
         }
     },
     methods: {
         // add new event
         hadleDateSelect: function (selectionInfo) {
-            console.log('date selected! ')
-            console.log(selectionInfo)
+            if (['timeGridWeek', 'timeGridDay'].includes(selectionInfo.view.type)) {
+                console.log('date selected! ')
+                console.log(selectionInfo)
+                this.selectedEventDate = selectionInfo;
+                $("#add-event-modal").modal('show')
+                $('.modal-backdrop').remove();
+            } else {
+                console.log(selectionInfo);
+            }
         },
         // update event
         handleEventDrop: function (eventDropInfo) {
@@ -172,6 +261,54 @@ export default {
                     }
                 })
             }
+        },
+        formatDate(date) {
+            if (date == null || date == undefined)
+                return '';
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // January is 0
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        },
+        addNewTimelineItem() {
+            axios.post('/coach/timelines.items/new', {
+                timeline_id: this.timeline_id,
+                item_id: this.selectedItem,
+                item_type: this.selectedType,
+                dates: {
+                    start: this.selectedEventDate.start.getTime(),
+                    end: this.selectedEventDate.end.getTime(),
+                },
+            },).then((response) => {
+                // Handle the success response
+                console.log('Form submitted successfully');
+                $('#add-event-modal').modal('hide');
+                console.log(response);
+                this.selectedItem = this.defaultSelectedItem;
+                this.selectedType = this.defaultSelectedType;
+                // $('#store-new-timeline-item-form').get(0).reset();
+                let data = response.data;
+                let code = data.code;
+                if (code == 200) {
+                    let item = data.item;
+                    this.calendarOptions.events.push({
+                        title: item.item.name,
+                        start: item.event_date_start,
+                        end: item.event_date_end,
+                        status: item.item.status,
+                        item_id: item.id,
+                        item_type: item.item.type.name,
+                        type: item.item_type.split("\\").pop(),
+                    });
+                }
+            }).catch(console.error);
+        },
+        cancelAddModal() {
+            $('#add-event-modal').modal('hide');
+            this.selectedItem = this.defaultSelectedItem;
+            this.selectedType = this.defaultSelectedType;
         }
     }
 }
@@ -180,6 +317,26 @@ export default {
 <style>
 .calendar {
     height: 460px;
+}
+
+.fc-event-time,
+.fc-event-title-container {
+    color: white !important;
+}
+
+.fc-event-time {
+    margin-bottom: 1px;
+    white-space: nowrap;
+}
+
+.fc-event-title-container {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0px;
+}
+
+.fc-event-main {
+    padding: 1px 1px 0px;
 }
 
 .pending {

@@ -37,6 +37,40 @@
                     "slug": "coach.timelines.new"
                 }
             ]
+        },
+        {
+            "name": "Meals",
+            "icon": "menu-icon tf-icons bx bxs-bowl-hot bx-sm",
+            "slug": "coach.meals",
+            "submenu": [
+                {
+                    "url": "/coach/meals/",
+                    "name": "All Meals",
+                    "slug": "coach.meals.all"
+                },
+                {
+                    "url": "/coach/meals.new",
+                    "name": "New Meal",
+                    "slug": "coach.meals.new"
+                }
+            ]
+        },
+        {
+            "name": "Exercises",
+            "icon": "menu-icon tf-icons bx bx-cycling bx-sm",
+            "slug": "coach.exercises",
+            "submenu": [
+                {
+                    "url": "/coach/exercises/",
+                    "name": "All Exercises",
+                    "slug": "coach.exercises.all"
+                },
+                {
+                    "url": "/coach/exercises.new",
+                    "name": "New Exercise",
+                    "slug": "coach.exercises.new"
+                }
+            ]
         }
     ]
 }

@@ -67,8 +67,10 @@ Route::get('/t', function () {
 })->middleware('auth');
 Route::get('/', [AuthenticatedSessionController::class, 'findNextRoute'])->middleware('auth');
 Route::post('authenticate_websocket', [ChatWebsocketController::class, 'authenticateUser'])->middleware('auth');
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('menu:admin');
-Route::post('/login-store', [AuthenticatedSessionController::class, 'store'])->name('login.perform');
+
+
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('guest:web', 'menu:admin');
+Route::post('/login-store', [AuthenticatedSessionController::class, 'store'])->name('login.perform')->middleware('guest:web');
 
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout')->middleware('auth');
 
@@ -105,7 +107,11 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::get('/timelines.new', [CoachController::class, 'new_timeline_view'])->name('coach.timelines.new');
     Route::get('/timelines.items/new/{id}', [CoachController::class, 'show_timeline_add_item_view'])->name('coach.timelines.items.new');
     Route::get('chats', [CoachController::class, 'chat_view'])->name('chat');
-    
+    Route::get('/meals', [CoachController::class, 'show_all_meals'])->name('coach.meals.all');
+    Route::get('/meals.new', [CoachController::class, 'add_new_meal'])->name('coach.meals.new');
+    Route::get('/exercises', [CoachController::class, 'show_all_exercises'])->name('coach.exercises.all');
+    Route::get('/exercises.new', [CoachController::class, 'show_all_exercises'])->name('coach.exercises.new');
+
     Route::post('chats/load', [CoachController::class, 'loadChat'])->name('chat.load');
     Route::post('/timelines.new', [CoachController::class, 'new_timeline_store'])->name('coach.timelines.new.store');
     Route::post('/timelines.items/new', [CoachController::class, 'timeline_item_store'])->name('coach.timelines.item.new.store');

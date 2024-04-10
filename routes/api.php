@@ -32,3 +32,4 @@ Route::get('/', function () {
     })->get();
     dd($trainees);
 });
+Route::post('authenticate_websocket_mobile', [ChatWebsocketController::class, 'authenticateUserMobile']);

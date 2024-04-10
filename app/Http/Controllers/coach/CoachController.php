@@ -65,7 +65,9 @@ class CoachController extends Controller
     {
         $timeline_id = $id;
         $items = TimelineItem::where('timeline_id', $id)->with('item.type')->orderBy('event_date_start')->get();
-        return view('pages.coach.show-cal-timeline', compact('items', 'timeline_id'));
+        $exercises = Exercise::with('type')->get();
+        $meals = Meal::with('type')->get();
+        return view('pages.coach.show-cal-timeline', compact('items', 'timeline_id', 'meals', 'exercises'));
     }
     public function show_timeline_add_item_view(int $timeline_id): View
     {
@@ -76,6 +78,22 @@ class CoachController extends Controller
         $days = Day::all();
 
         return view('pages.coach.add-timeline-item', compact('exercises', 'meals', 'days', 'timeline_id', 'meal_types', 'exercise_types'));
+    }
+
+    public function show_all_meals(): View
+    {
+        $meals = Meal::with('type')->get();
+        return view('pages.coach.all_meals', compact('meals'));
+    }
+    public function add_new_meal(): View
+    {
+        $meals = Meal::with('type')->get();
+        return view('pages.coach.all_meals', compact('meals'));
+    }
+    public function show_all_exercises(): View
+    {
+        $exercises = Exercise::with('type')->get();
+        return view('pages.coach.all_exercises', compact('exercises'));
     }
     public function new_timeline_store(CreateNewTimelineRequest $request)
     {
@@ -97,11 +115,13 @@ class CoachController extends Controller
         } else if ($request->item_type == 'exercise') {
             $item = Exercise::find($request->item_id);
         }
-        $timelineItem->day_id = $request->day;
         $timelineItem->timeline_id = $request->timeline_id;
+        $timelineItem->event_date_start = Carbon::createFromTimestamp($request->dates['start'] / 1000);
+        $timelineItem->event_date_end = Carbon::createFromTimestamp($request->dates['end'] / 1000);
         $timelineItem->item()->associate($item);
         $timelineItem->save();
-        return $this->returnMessage("Timeline Item Created.");
+        $timelineItem = TimelineItem::where('id', $timelineItem->id)->with('item.type')->first();
+        return $this->returnData("item", $timelineItem, "Timeline Item Created.");
     }
 
     public function timeline_item_update(Request $request)

@@ -31,14 +31,13 @@
         } from "{{ asset('assets/js/pusher.js') }}"
 
         window.Pusher = Pusher
-
         window.Echo = new Echo({
             broadcaster: 'pusher',
             key: "{{ env('PUSHER_APP_KEY') }}",
             wsHost: "{{ env('PUSHER_HOST') }}",
             wsPort: "{{ env('PUSHER_PORT') }}",
             wssPort: "{{ env('PUSHER_PORT') }}",
-            forceTLS: true,
+            forceTLS: {{ env('PUSHER_USE_TLS','false') ? 'true' : 'false'}},
             disableStats: true,
             authEndpoint: '/authenticate_websocket',
             auth: {

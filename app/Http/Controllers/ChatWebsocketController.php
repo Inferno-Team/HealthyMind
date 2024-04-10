@@ -43,4 +43,12 @@ class ChatWebsocketController extends Controller
 
         return response()->json(['error' => 'Authentication failed'], 401);
     }
+    public function authenticateUserMobile(Request $request){
+        info($request->all());
+        $socketId = $request->socket_id;
+        $channel_name = $request->channel_name;
+        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'));
+        $auth = $pusher->authorizeChannel($channel_name, $socketId);
+        return $auth;
+    }
 }

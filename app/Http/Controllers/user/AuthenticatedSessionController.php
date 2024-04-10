@@ -32,7 +32,6 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-        info(Auth::user()->type);
         if (Auth::user()->type == 'coach')
             return redirect(RouteServiceProvider::COACH_HOME);
         return redirect()->intended(RouteServiceProvider::HOME);
