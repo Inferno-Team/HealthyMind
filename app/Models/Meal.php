@@ -13,11 +13,21 @@ class Meal extends Model
         "name",
         "qty",
         "type_id",
+        "qty_type_id",
+        "coach_id",
         'status',
     ];
 
     public function type(): BelongsTo
     {
         return $this->belongsTo(MealType::class, "type_id");
+    }
+    public function qty_type(): BelongsTo
+    {
+        return $this->belongsTo(QuantityType::class, 'qty_type_id');
+    }
+    public function coach(): BelongsTo
+    {
+        return $this->belongsTo(Coach::class, 'coach_id');
     }
 }

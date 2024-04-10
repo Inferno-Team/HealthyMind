@@ -1,6 +1,6 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Premium Requests'])
+    @include('pages.admin.topnav', ['title' => 'Premium Requests'])
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12" style="z-index:1">

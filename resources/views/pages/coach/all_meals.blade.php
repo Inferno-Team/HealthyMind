@@ -1,6 +1,6 @@
 @extends('pages.coach.app', ['class' => 'g-sidenav-show bg-gray-100'])
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'All Meals'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'My Meals'])
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12" style="z-index:1">
@@ -28,6 +28,10 @@
                                             qty</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            qty type</th>
+
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Type</th>
 
                                         <th
@@ -36,6 +40,8 @@
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Created At</th>
+                                        <th class="text-secondary opacity-7"></th>
+
                                     </tr>
                                 </thead>
                                 <tbody id="meals-table">
@@ -47,6 +53,10 @@
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
                                                     {{ $meal->qty }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    {{ $meal->qty_type?->title }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
@@ -72,7 +82,15 @@
                                                 <span
                                                     class="text-secondary text-xs font-weight-bold">{{ $meal->created_at->diffForHumans() }}</span>
                                             </td>
-
+                                            <td>
+                                                <input type="hidden" id="selected-request">
+                                                <a href="javascript:;"
+                                                    class="text-secondary font-weight-bold text-xs delete-request-status"
+                                                    data-toggle="tooltip" data-original-title="delete"
+                                                    data-id="{{ $meal->id }}">
+                                                    delete
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -83,7 +101,81 @@
                 </div>
             </div>
         </div>
-
+        <div class="modal fade" tabindex="-1" role="dialog" id="request-changer-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Meal</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Do you want to remove this meal ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="onDeleteYesPressed()">Yes</button>
+                        <button type="button" class="btn btn-secondary"
+                            onclick="$('#request-changer-modal').modal('hide')">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $(".delete-request-status").on('click', function() {
+                let id = $(this).attr('data-id');
+                $("#selected-request").val(id);
+                $("#request-changer-modal").modal('show')
+            })
+        })
+
+        function onDeleteYesPressed() {
+            {
+                let id = $("#selected-request").val();
+                axios({
+                        method: 'DELETE',
+                        url: "{{ route('coach.meal.delete') }}",
+                        data: {
+                            id: id,
+                        }
+                    })
+                    .then((response) => {
+                        $("#selected-request").val("");
+                        let data = response.data;
+                        let msg = data.msg;
+                        let code = data.code;
+                        if (code == 404) {
+                            $.toast({
+                                text: msg,
+                                loaderBg: '#fb6340',
+                                bgColor: '#fb4040',
+                                hideAfter: 5000,
+                            })
+                            return;
+                        }
+                        let newStatus = data.newStatus;
+                        $.toast({
+                            text: msg,
+                            loaderBg: '#fb6340',
+                            bgColor: 'rgb(51 141 4)',
+                            hideAfter: 5000,
+                        })
+
+                        $("#item-" + id).remove();
+                        $("#request-changer-modal").modal('hide')
+                        var rowCount = $('#meals-table tr').length;
+                        if (rowCount == 0) {
+                            $("#no-users-container").css('display', 'flex');
+                            $("#table-container").css('display', 'none');
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            }
+        }
+    </script>
+@endpush

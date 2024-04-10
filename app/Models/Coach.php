@@ -10,6 +10,10 @@ class Coach extends User
     {
         return $this->hasMany(CoachTimeline::class, 'coach_id');
     }
+    public function meals(): HasMany
+    {
+        return $this->hasMany(Meal::class, 'coach_id');
+    }
     public static function boot()
     {
         parent::boot();

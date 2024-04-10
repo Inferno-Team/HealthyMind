@@ -1,6 +1,6 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Users Table'])
+    @include('pages.admin.topnav', ['title' => 'Users Table'])
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">

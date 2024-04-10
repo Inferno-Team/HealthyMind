@@ -4,6 +4,7 @@ namespace App\Http\Controllers\coach;
 
 use App\Events\core\NewMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\NotificationHelper;
 use App\Http\Requests\coach\CreateNewItemRequest;
 use App\Http\Requests\coach\CreateNewTimelineRequest;
 use App\Models\Channel;
@@ -20,9 +21,11 @@ use App\Models\MealType;
 use App\Models\MessageStatus;
 use App\Models\NormalUser;
 use App\Models\Plan;
+use App\Models\QuantityType;
 use App\Models\SubscriptionMessage;
 use App\Models\TimelineItem;
 use App\Models\User;
+use App\Notifications\admin\NewMealRequestNotification;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -66,7 +69,7 @@ class CoachController extends Controller
         $timeline_id = $id;
         $items = TimelineItem::where('timeline_id', $id)->with('item.type')->orderBy('event_date_start')->get();
         $exercises = Exercise::with('type')->get();
-        $meals = Meal::with('type')->get();
+        $meals = Meal::where('coach_id', auth::id())->where('status', '<>', 'declined')->with('type')->get();
         return view('pages.coach.show-cal-timeline', compact('items', 'timeline_id', 'meals', 'exercises'));
     }
     public function show_timeline_add_item_view(int $timeline_id): View
@@ -82,13 +85,27 @@ class CoachController extends Controller
 
     public function show_all_meals(): View
     {
-        $meals = Meal::with('type')->get();
+        $meals = Meal::where('coach_id', Auth::id())->with('type', 'qty_type')->get();
         return view('pages.coach.all_meals', compact('meals'));
     }
     public function add_new_meal(): View
     {
-        $meals = Meal::with('type')->get();
-        return view('pages.coach.all_meals', compact('meals'));
+        $types = MealType::all();
+        $qty_types = QuantityType::all();
+        return view('pages.coach.new_meal', compact('types', 'qty_types'));
+    }
+    public function store_new_meal(Request $request)
+    {
+        $meal = Meal::create([
+            "name" => $request->input('name'),
+            "qty" => $request->input('qty'),
+            "type_id" => $request->input('type'),
+            "qty_type_id" => $request->input('qty_type'),
+            "coach_id" => auth::id(),
+        ]);
+        // notify all admins.
+        NotificationHelper::notifyAdmins(new NewMealRequestNotification($meal));
+        return $this->returnMessage('Meal created successfully, waiting admin approval.');
     }
     public function show_all_exercises(): View
     {
@@ -186,6 +203,16 @@ class CoachController extends Controller
         }
         CoachTimeline::where('id', $timeline->id)->delete();
         return $this->returnMessage("This timeline deleted successfully.");
+    }
+    public function meal_delete(Request $request)
+    {
+        $meal = Meal::find($request->input('id'));
+        if (empty($meal)) {
+
+            return $this->returnError("Meal Not Found.", 404);
+        }
+        $meal->delete();
+        return $this->returnMessage("Meal deleted successfully.");
     }
     public function chat_view(): View
     {

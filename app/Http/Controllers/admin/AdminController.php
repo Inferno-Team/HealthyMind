@@ -69,8 +69,8 @@ class AdminController extends Controller
     }
     public function mealRequestsView(): View
     {
-        $requests = Meal::where('status', '=', 'pending')->get();
-        return view('pages.admin.meal-requests', compact($requests));
+        $requests = Meal::where('status', '=', 'pending')->with('coach', 'type')->get();
+        return view('pages.admin.meal-requests', compact('requests'));
     }
     public function changeStatusCoachRequest(ChangeCoachRequest $request): JsonResponse
     {
@@ -86,7 +86,15 @@ class AdminController extends Controller
         $premiumRequest->update();
         return $this->returnData("newStatus", $premiumRequest->status, 'Request Status Updated, New Status : ' . $premiumRequest->status);
     }
-
+    public function changeStatusMealRequest(ChangePremiumRequest $request): JsonResponse
+    {
+        $meal = Meal::where('id', $request->input('id'))->first();
+        if (empty($meal))
+            return $this->returnError('Meal not found.', 404);
+        $meal->status = $request->input('status');
+        $meal->update();
+        return $this->returnData("newStatus", $meal->status, 'Request Status Updated, New Status : ' . $meal->status);
+    }
     public function changeQR(Request $request)
     {
         if ($request->hasFile('new-qr-image')) {

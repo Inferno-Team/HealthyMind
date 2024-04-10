@@ -37,7 +37,7 @@
                 @include('layouts.menu.verticalMenu')
                 <div class="min-height-300 bg-primary position-absolute w-100"></div>
 
-                <main class="main-content border-radius-lg">
+                <main class="main-content border-radius-lg w-100">
                     @yield('content')
                 </main>
             @endauth

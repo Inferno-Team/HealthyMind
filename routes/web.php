@@ -79,6 +79,7 @@ Route::post('/register-store', [RegisteredUserController::class, 'store'])->name
 Route::group(['middleware' => ['auth']], function () {
     Route::post('/users/self/update', [AdminController::class, 'updateSelf'])->name('user.self.update');
     Route::post('/users/self/update-avatar', [AdminController::class, 'updateSelfAvatar'])->name('user.self.update.avatar');
+    Route::post('/notification.read', [HomeController::class, 'readNotification'])->name('notification.read');
 });
 Route::group(['middleware' => ['auth', 'menu:admin', 'type:admin'], 'prefix' => 'admin'], function () {
     Route::get('/', fn () => redirect('home'));
@@ -90,10 +91,11 @@ Route::group(['middleware' => ['auth', 'menu:admin', 'type:admin'], 'prefix' => 
 
     Route::get('/requests/new-coach', [AdminController::class, 'newCoachRequestsView'])->name('requests.new.coach');
     Route::get('/requests/premium', [AdminController::class, 'permiumRequestsView'])->name('requests.premium');
-    Route::get('/requests/meal', [AdminController::class, 'permiumRequestsView'])->name('requests.meal');
+    Route::get('/requests/meal', [AdminController::class, 'mealRequestsView'])->name('requests.meal');
 
     Route::post('/requests/coach/change-status', [AdminController::class, 'changeStatusCoachRequest'])->name('admin.coach.request.change-status');
     Route::post('/requests/premium/change-status', [AdminController::class, 'changeStatusPremiumRequest'])->name('admin.permium.request.change-status');
+    Route::post('/requests/meal/change-status', [AdminController::class, 'changeStatusMealRequest'])->name('admin.meal.request.change-status');
 
     Route::post('/payment/qr/change', [AdminController::class, 'changeQR'])->name('admin.qr.update');
 });
@@ -111,7 +113,7 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::get('/meals.new', [CoachController::class, 'add_new_meal'])->name('coach.meals.new');
     Route::get('/exercises', [CoachController::class, 'show_all_exercises'])->name('coach.exercises.all');
     Route::get('/exercises.new', [CoachController::class, 'show_all_exercises'])->name('coach.exercises.new');
-
+    
     Route::post('chats/load', [CoachController::class, 'loadChat'])->name('chat.load');
     Route::post('/timelines.new', [CoachController::class, 'new_timeline_store'])->name('coach.timelines.new.store');
     Route::post('/timelines.items/new', [CoachController::class, 'timeline_item_store'])->name('coach.timelines.item.new.store');
@@ -121,8 +123,10 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::post('chats/message/read', [CoachController::class, 'readMessage'])->name('chat.message.read');
     Route::post('chats/message/new/read', [CoachController::class, 'readNewMessage'])->name('chat.message.new.read');
     Route::post('chats/message/new', [CoachController::class, 'newMessage'])->name('chat.message.new');
-
+    Route::post('/meals.new', [CoachController::class, 'store_new_meal']);
+    
     Route::delete('/timelines', [CoachController::class, 'timeline_delete'])->name('coach.timelines.delete');
+    Route::delete('/meal.del', [CoachController::class, 'meal_delete'])->name('coach.meal.delete');
 });
 
 Route::get('/sign-in-static', function () {

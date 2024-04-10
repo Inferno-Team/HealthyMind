@@ -1,6 +1,6 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Meal Requests'])
+    @include('pages.admin.topnav', ['title' => 'Meal Requests'])
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12" style="z-index:1">
@@ -22,58 +22,54 @@
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Username</th>
+                                            Meal Name</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Email</th>
+                                            Meal Type</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Payment Code</th>
+                                            QTY</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            QTY Type</th>
 
                                         <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Phone</th>
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Coach Name</th>
                                         <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Request At</th>
                                         <th class="text-secondary opacity-7"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="requests-table">
-                                    @foreach ($premiumRequests as $request)
+                                    @foreach ($requests as $request)
                                         <tr id="item-{{ $request->id }}">
                                             <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="{{ $request->user->avatar ?? asset('/img/team-2.jpg') }}"
-                                                            class="avatar avatar-sm me-3" alt="user1">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $request->user->first_name }}
-                                                            {{ $request->user->last_name }}</h6>
-                                                        <p class="text-xs text-secondary mb-0">
-                                                            <b>@</b>{{ $request->user->username }}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                                <p class="text-xs font-weight-bold mb-0 ps-4">{{ $request->name }}</p>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $request->user->email }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $request->type->name }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $request->payment_process_code }}</p>
+                                                    {{ $request->qty }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    {{ $request->qty_type->title }}</p>
                                             </td>
 
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $request->user->phone }}</p>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $request->coach?->fullname }}
+                                                </p>
                                             </td>
-                                            <td class="align-middle text-center">
+                                            <td>
                                                 <span
                                                     class="text-secondary text-xs font-weight-bold">{{ $request->created_at->diffForHumans() }}</span>
                                             </td>
 
-                                            <td class="align-middle">
+                                            <td>
                                                 <input type="hidden" id="selected-request">
                                                 <a href="javascript:;"
                                                     class="text-secondary font-weight-bold text-xs change-request-status"
@@ -99,7 +95,7 @@
                         <h5 class="modal-title">Change Request Status</h5>
                     </div>
                     <div class="modal-body">
-                        <p>Do you want to accept this premium request ?</p>
+                        <p>Do you want to accept this meal request ?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Accept</button>
@@ -136,15 +132,26 @@
         function sendChangeStatus(id, status) {
             axios({
                     method: 'POST',
-                    url: "{{ route('admin.permium.request.change-status') }}",
+                    url: "{{ route('admin.meal.request.change-status') }}",
                     data: {
                         id: id,
                         status: status
                     }
                 })
                 .then((response) => {
+                    $("#selected-request").val("");
                     let data = response.data;
                     let msg = data.msg;
+                    let code = data.code;
+                    if (code == 404) {
+                        $.toast({
+                            text: msg,
+                            loaderBg: '#fb6340',
+                            bgColor: '#fb4040',
+                            hideAfter: 5000,
+                        })
+                        return;
+                    }
                     let newStatus = data.newStatus;
                     $.toast({
                         text: msg,
