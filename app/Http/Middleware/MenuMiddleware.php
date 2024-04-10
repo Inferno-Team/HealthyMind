@@ -27,17 +27,19 @@ class MenuMiddleware
                     $verticalMenuJson = file_get_contents(base_path('resources/menu/verticalMenu.json'));
                     View::share('menuData', [json_decode($verticalMenuJson)]);
                     $me = Admin::where('id', auth::id())->first();
-                    $notifications = $me->unreadNotifications->map(function ($item) {
-                        $types = explode('\\', $item->type);
-                        return  [
-                            'id' => $item->id,
-                            'type' => end($types),
-                            'data' => $item->data,
-                            'is_read' => $item->read_at != null,
-                            'created_at' => $item->created_at->diffForHumans(),
-                        ];
-                    });
-                    info($me->unreadNotifications->toArray());
+                    if (empty($me))
+                        $notifications = [];
+                    else
+                        $notifications = $me->unreadNotifications->map(function ($item) {
+                            $types = explode('\\', $item->type);
+                            return  [
+                                'id' => $item->id,
+                                'type' => end($types),
+                                'data' => $item->data,
+                                'is_read' => $item->read_at != null,
+                                'created_at' => $item->created_at->diffForHumans(),
+                            ];
+                        });
                     View::share('notifications', $notifications);
                     break;
                 case 'coach':
