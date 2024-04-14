@@ -9,6 +9,7 @@ use App\Http\Requests\coach\CreateNewItemRequest;
 use App\Http\Requests\coach\CreateNewTimelineRequest;
 use App\Models\Channel;
 use App\Models\ChannelSubscription;
+use App\Models\Coach;
 use App\Models\CoachTimeline;
 use App\Models\Day;
 use App\Models\Disease;
@@ -38,7 +39,94 @@ class CoachController extends Controller
     {
         // get all this user channels
         $channels = Auth::user()->channels->map(fn ($item) => (object)[$item->type => $item->name]);
-        return view('pages.coach.dashboard', compact('channels'));
+        $allCoachEvents = TimelineItem::whereHas('timeline', fn ($query) => $query->where('coach_id', Auth::id()))
+            ->get();
+        $coachEvents = $allCoachEvents->count();
+        $lastWeekEvents = $allCoachEvents->where('created_at', '>=', Carbon::now()->subWeek())->count();
+        $beforeLastWeekEvents = $allCoachEvents->where('created_at', '>=', Carbon::now()->subWeeks(2))
+            ->where('created_at', '<', Carbon::now()->subWeeks(1))
+            ->count();
+        if ($beforeLastWeekEvents > $lastWeekEvents) {
+            $diffBetweenWeeksEvents = $beforeLastWeekEvents - $lastWeekEvents;
+            $per = round(100 * $diffBetweenWeeksEvents / $beforeLastWeekEvents);
+            $differenceEventPercentage = -1 * $per;
+        } else {
+            $diffBetweenWeeksEvents =  $lastWeekEvents - $beforeLastWeekEvents;
+            $differenceEventPercentage = round(100 * $diffBetweenWeeksEvents / $lastWeekEvents);
+        }
+        $trainees = NormalUser::whereHas('timelines.timeline', fn ($query) => $query->where('coach_id', Auth::id()))->with('timelines.timeline')->get();
+        $lastWeekTrainees = $trainees->filter(fn ($item) => $item->timelines->where('created_at', '>=', Carbon::now()->subWeek())->count())->count();
+        $beforeWeekTrainees = $trainees->filter(fn ($item) =>
+        $item->timelines->where('created_at', '<', Carbon::now()->subWeek())
+            ->where('created_at', '>=', Carbon::now()->subWeeks(2))
+            ->count())->count();
+        if ($beforeWeekTrainees > $lastWeekTrainees) {
+            $diffBetweenWeeksTrainees = $beforeWeekTrainees - $lastWeekTrainees;
+            $per = round(100 * $diffBetweenWeeksTrainees / $beforeWeekTrainees);
+            $differenceTraineesPercentage = -1 * $per;
+        } else {
+            $diffBetweenWeeksTrainees =  $lastWeekTrainees - $beforeWeekTrainees;
+            $differenceTraineesPercentage = round(100 * $diffBetweenWeeksTrainees / $lastWeekTrainees);
+        }
+        $exercisesCount = Exercise::count();
+        $myMeals = Coach::where('id', Auth::id())->with('meals')->first()->meals;
+        $lastWeekMeals = $myMeals->where('created_at', '>=', Carbon::now()->subWeek())->count();
+
+        $beforeLastWeekMeals = $myMeals
+            ->where('created_at', '>=', Carbon::now()->subWeeks(2))
+            ->where('created_at', '<', Carbon::now()->subWeeks(1))
+            ->count();
+        if ($beforeLastWeekMeals > $lastWeekMeals) {
+            $diffBetweenWeeksMeals = $beforeLastWeekMeals - $lastWeekMeals;
+            $per = round(100 * $diffBetweenWeeksMeals / $beforeLastWeekMeals);
+            $differenceMealsPercentage = -1 * $per;
+        } else {
+            $diffBetweenWeeksMeals =  $lastWeekMeals - $beforeLastWeekMeals;
+            $differenceMealsPercentage = round(100 * $diffBetweenWeeksMeals / $lastWeekMeals);
+        }
+        $myMealThisYear = $myMeals->filter(function (Meal $meal) {
+            $nowYear = Carbon::now()->year;
+            $mealYear = Carbon::parse($meal->created_at)->year;
+            return $nowYear == $mealYear;
+        });
+        $mealsTimeline = $myMealThisYear->groupBy(fn ($item) => $item->created_at->format('M'));
+        $allCoachEventsTimeline = $allCoachEvents->groupBy(fn ($item) => $item->created_at->format('M'));
+        $traineesTimeline = $trainees->filter(
+            function ($item) {
+                return $item->timelines->contains(function ($timeline) {
+                    return $timeline->timeline->coach_id === Auth::id();
+                });
+            }
+        )->map(function ($trainee) {
+            return $trainee->timelines->where('timeline.coach_id', Auth::id())->first();
+        })->groupBy(fn ($item) => $item->created_at->format('M'));
+        $mealsTimelineValues = [
+            "Jan" => 0, "Feb" => 0, "Mar" => 0, "Apr" => 0,
+            "May" => 0, "Jun" => 0, "Jul" => 0, "Aug" => 0,
+            "Sep" => 0, "Oct" => 0, "Nov" => 0, "Dec" => 0
+        ];
+        $eventsTimelineValues = array_merge([], $mealsTimelineValues);
+        $traineesTimelineValues = array_merge([], $mealsTimelineValues);
+        foreach ($mealsTimeline as $month => $value) {
+            $mealsTimelineValues[$month] = $value->count();
+        }
+        foreach ($allCoachEventsTimeline as $month => $value) {
+            $eventsTimelineValues[$month] = $value->count();
+        }
+        foreach ($traineesTimeline as $month => $value) {
+            $traineesTimelineValues[$month] = $value->count();
+        }
+
+        return view('pages.coach.dashboard', compact(
+            'channels',
+            'differenceEventPercentage',
+            'differenceTraineesPercentage',
+            'differenceMealsPercentage',
+            'exercisesCount',
+            'mealsTimelineValues',
+            'eventsTimelineValues',
+            'traineesTimelineValues',
+        ));
     }
     public function coach_profile(): View
     {
@@ -67,7 +155,7 @@ class CoachController extends Controller
     public function show_timeline_view(int $id): View
     {
         $timeline_id = $id;
-        $items = TimelineItem::where('timeline_id', $id)->with('item.type')->orderBy('event_date_start')->get();
+        $items = TimelineItem::where('timeline_id', $id)->has('item')->with('item.type')->orderBy('event_date_start')->get();
         $exercises = Exercise::with('type')->get();
         $meals = Meal::where('coach_id', auth::id())->where('status', '<>', 'declined')->with('type')->get();
         return view('pages.coach.show-cal-timeline', compact('items', 'timeline_id', 'meals', 'exercises'));

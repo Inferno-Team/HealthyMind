@@ -19,6 +19,10 @@ class TimelineItem extends Model
         'event_date_start',
         'event_date_end',
     ];
+    public function timeline(): BelongsTo
+    {
+        return $this->belongsTo(CoachTimeline::class, 'timeline_id');
+    }
     public function item(): MorphTo
     {
         return $this->morphTo();

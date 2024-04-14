@@ -38,6 +38,11 @@ class NormalUser extends User
         );
     }
 
+    public function timelines(): HasMany
+    {
+        return $this->hasMany(TraineeTimeline::class, 'trainee_id');
+    }
+
     public function user_premium_request(): HasOne
     {
         return $this->hasOne(UserPremiumRequest::class, 'user_id');

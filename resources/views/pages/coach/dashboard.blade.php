@@ -10,18 +10,24 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Coach Count</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Event Counts</p>
                                     <h5 class="font-weight-bolder">
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+%</span>
-                                        since yesterday
+                                        @if ($differenceEventPercentage > 0)
+                                            <span
+                                                class="text-success text-sm font-weight-bolder">+{{ $differenceEventPercentage }}%</span>
+                                        @else
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ $differenceEventPercentage }}%</span>
+                                        @endif
+                                        since last week
                                     </p>
                                 </div>
                             </div>
                             <div class="col-4 text-end">
                                 <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                    <i class="ni ni-circle-08 text-lg opacity-10" aria-hidden="true"></i>
+                                    <i class="bx bx-calendar-event bx-sm opacity-10" aria-hidden="true"></i>
                                 </div>
                             </div>
                         </div>
@@ -34,12 +40,18 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">User Count</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Trainee Count</p>
                                     <h5 class="font-weight-bolder">
 
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">+%</span>
+                                        @if ($differenceTraineesPercentage > 0)
+                                            <span
+                                                class="text-success text-sm font-weight-bolder">+{{ $differenceTraineesPercentage }}%</span>
+                                        @else
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ $differenceTraineesPercentage }}%</span>
+                                        @endif
                                         since last week
                                     </p>
                                 </div>
@@ -55,7 +67,7 @@
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
+                <div class="card" style="height:113px">
                     <div class="card-body p-3">
                         <div class="row">
                             <div class="col-8">
@@ -65,7 +77,13 @@
 
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder"></span>
+                                        @if ($differenceMealsPercentage > 0)
+                                            <span
+                                                class="text-success text-sm font-weight-bolder">+{{ $differenceMealsPercentage }}%</span>
+                                        @else
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ $differenceMealsPercentage }}%</span>
+                                        @endif
                                         since last week
                                     </p>
                                 </div>
@@ -80,18 +98,18 @@
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6">
-                <div class="card">
+                <div class="card" style="height:113px">
                     <div class="card-body p-3">
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Exercises</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">All Exercises</p>
                                     <h5 class="font-weight-bolder">
 
                                     </h5>
                                     <p class="mb-0">
                                         <span class="text-success text-sm font-weight-bolder"></span>
-                                        than last month
+                                        {{ $exercisesCount }}
                                     </p>
                                 </div>
                             </div>
@@ -109,11 +127,7 @@
             <div class="col-lg-12 mb-lg-0 mb-4">
                 <div class="card  h-100">
                     <div class="card-header pb-0 pt-3 bg-transparent">
-                        <h6 class="text-capitalize">Sales overview</h6>
-                        <p class="text-sm mb-0">
-                            <i class="fa fa-arrow-up text-success"></i>
-                            <span class="font-weight-bold">4% more</span> in 2021
-                        </p>
+                        <h6 class="text-capitalize">Overview</h6>
                     </div>
                     <div class="card-body p-3">
                         <div class="chart">
@@ -158,28 +172,45 @@
     <script>
         var ctx1 = document.getElementById("chart-line").getContext("2d");
 
-        var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
-
-        gradientStroke1.addColorStop(1, 'rgba(251, 99, 64, 0.2)');
-        gradientStroke1.addColorStop(0.2, 'rgba(251, 99, 64, 0.0)');
-        gradientStroke1.addColorStop(0, 'rgba(251, 99, 64, 0)');
         new Chart(ctx1, {
             type: "line",
             data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 datasets: [{
-                    label: "Mobile apps",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    borderColor: "#fb6340",
-                    backgroundColor: gradientStroke1,
-                    borderWidth: 3,
-                    fill: true,
-                    data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                    maxBarThickness: 6
+                        label: "Meals",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#2dcecc",
+                        borderWidth: 3,
+                        fill: true,
+                        data: JSON.parse('{!! json_encode($mealsTimelineValues) !!}'),
+                        maxBarThickness: 6
+                    },
+                    {
+                        label: "Events",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#fb6340",
+                        borderWidth: 3,
+                        fill: true,
+                        data: JSON.parse('{!! json_encode($eventsTimelineValues) !!}'),
+                        maxBarThickness: 6
+                    },
+                    {
+                        label: "Trainees",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#f5365c",
+                        borderWidth: 3,
+                        fill: true,
+                        data: JSON.parse('{!! json_encode($traineesTimelineValues) !!}'),
+                        maxBarThickness: 6
+                    },
 
-                }],
+                ],
             },
             options: {
                 responsive: true,
