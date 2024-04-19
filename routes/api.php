@@ -4,6 +4,7 @@ use App\Events\coach\NewChannelEvent;
 use App\Http\Controllers\ChatWebsocketController;
 use App\Models\Admin;
 use App\Models\Coach;
+use App\Models\GoalPlanDisease;
 use App\Models\Meal;
 use App\Models\NormalUser;
 use App\Models\User;
@@ -27,9 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/', function () {
-    $trainees = NormalUser::whereHas('goalPlanDisease.timelines',function($query){
-        $query->where('coach_id',2);
-    })->get();
-    dd($trainees);
+    $trainees = GoalPlanDisease::first();
+    dd($trainees->goals());
 });
 Route::post('authenticate_websocket_mobile', [ChatWebsocketController::class, 'authenticateUserMobile']);

@@ -1,4 +1,9 @@
 @extends('pages.coach.app', ['class' => 'g-sidenav-show bg-gray-100'])
+@section('custom-style')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+@endsection
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Create Timeline'])
     <div class="container-fluid py-4">
@@ -10,7 +15,7 @@
                         @csrf
                         <div class="card-header pb-0">
                             <div class="d-flex align-items-center">
-                                <p class="mb-0">New Timeline</p>
+                                <p class="mb-0 ">New Timeline</p>
                                 <button type="submit" class="btn btn-primary btn-sm ms-auto">Save</button>
                             </div>
                         </div>
@@ -22,20 +27,22 @@
                                         <input class="form-control" type="text" name="timeline-name" id="timeline-name"
                                             placeholder="Timeline Name ..." autocomplete="off">
                                     </div>
+
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="goals" class="form-control-label ">Goal</label>
-                                        <select class="form-control" id="goals">
-                                            <option data-id="0">Please Select a Goal</option>
+                                        <label class="form-control-label">Goal</label>
+                                        <select class="form-select " id="goals" data-placeholder="Choose Goals"
+                                            multiple>
                                             @foreach ($goals as $goal)
                                                 <option data-id="{{ $goal->id }}">{{ $goal->name }}</option>
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback">
-                                            Please select an option.
+                                            Please select one option at least.
                                         </div>
                                     </div>
+
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -54,14 +61,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Disease</label>
-                                        <select class="form-control" id="diseases">
-                                            <option data-id="0">Please Select a Disease</option>
+                                        <select class="form-select" id="diseases" data-placeholder="Choose Diseases"
+                                            multiple>
                                             @foreach ($diseases as $disease)
                                                 <option data-id="{{ $disease->id }}">{{ $disease->name }}</option>
                                             @endforeach
                                         </select>
                                         <div class="invalid-feedback">
-                                            Please select an option.
+                                            Please select one option at least.
                                         </div>
                                     </div>
                                 </div>
@@ -76,15 +83,54 @@
     </div>
 @endsection
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+
+
     <script>
+        $('#goals').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            closeOnSelect: false,
+            allowClear: true,
+        });
+        $('#diseases').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            closeOnSelect: false,
+            allowClear: true,
+        });
         $(document).ready(function() {
             $('#store-new-timeline-form').submit(function(event) {
                 event.preventDefault();
-                let selectedGoal = $('#goals option:selected').attr('data-id');
                 let selectedPlan = $('#plans option:selected').attr('data-id');
-                let selectedDisease = $('#diseases option:selected').attr('data-id');
+                let selectedGoalsItem = $('#goals option:selected');
+                let selectedDiseasesItem = $('#diseases option:selected');
+                let selectedGoals = '';
+                let selectedDiseases = '';
+                let lastGoalItemId = selectedGoalsItem.last().attr('data-id');
+                let lastDiseaseItemId = selectedDiseasesItem.last().attr('data-id');
+                if (selectedGoalsItem.length > 0) {
+                    selectedGoalsItem.each(function() {
+                        let id = $(this).attr('data-id');
+                        selectedGoals += `${id}`;
+                        if (id != lastGoalItemId)
+                            selectedGoals += `,`;
+                    })
+                }
+                if (selectedDiseasesItem.length > 0) {
+                    selectedDiseasesItem.each(function() {
+                        let id = $(this).attr('data-id');
+                        selectedDiseases += `${id}`;
+                        if (id != lastDiseaseItemId)
+                            selectedDiseases += `,`;
+                    })
+                }
+
                 let isSelectedTrue = true;
-                if (selectedGoal == 0 || selectedGoal == '0') {
+
+                if (selectedGoalsItem.length == 0) {
                     $('#goals').addClass('is-invalid');
                     isSelectedTrue = false;
                 }
@@ -92,10 +138,11 @@
                     $('#plans').addClass('is-invalid');
                     isSelectedTrue = false;
                 }
-                if (selectedDisease == 0 || selectedDisease == '0') {
+                if (selectedDiseasesItem.length == 0) {
                     $('#diseases').addClass('is-invalid');
                     isSelectedTrue = false;
                 }
+
                 if (!isSelectedTrue) {
 
                     return false;
@@ -106,9 +153,9 @@
                     type: $(this).attr('method'), // HTTP method (POST, GET, PUT, DELETE, etc.)
                     data: {
                         name: $('#timeline-name').val(),
-                        goal: selectedGoal,
+                        goals: selectedGoals,
                         plan: selectedPlan,
-                        disease: selectedDisease,
+                        diseases: selectedDiseases,
 
                     },
                     headers: {

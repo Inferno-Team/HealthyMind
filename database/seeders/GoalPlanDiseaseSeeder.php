@@ -21,28 +21,32 @@ class GoalPlanDiseaseSeeder extends Seeder
     public function run(): void
     {
         DB::beginTransaction();
-        Goal::create(["name" => 'goal 1']);
-        Goal::create(["name" => 'goal 2']);
-        Goal::create(["name" => 'goal 3']);
-        Goal::create(["name" => 'goal 4']);
-        Plan::create(["name" => "Plan 1"]);
-        Plan::create(["name" => "Plan 2"]);
-        Plan::create(["name" => "Plan 3"]);
-        Plan::create(["name" => "Plan 4"]);
-        Disease::create(["name" => "Disease 1"]);
-        Disease::create(["name" => "Disease 2"]);
-        Disease::create(["name" => "Disease 3"]);
-        Disease::create(["name" => "Disease 4"]);
+        // Goal::create(["name" => 'goal 1']);
+        // Goal::create(["name" => 'goal 2']);
+        // Goal::create(["name" => 'goal 3']);
+        // Goal::create(["name" => 'goal 4']);
+        // Plan::create(["name" => "Plan 1"]);
+        // Plan::create(["name" => "Plan 2"]);
+        // Plan::create(["name" => "Plan 3"]);
+        // Plan::create(["name" => "Plan 4"]);
+        // Disease::create(["name" => "Disease 1"]);
+        // Disease::create(["name" => "Disease 2"]);
+        // Disease::create(["name" => "Disease 3"]);
+        // Disease::create(["name" => "Disease 4"]);
         for ($i = 1; $i <= 4; $i++) {
+            $goalPlanDisease = new GoalPlanDisease;
+            $goalPlanDisease->plan_id = $i;
+            $goalPlanDisease->goal_ids = '';
+            $goalPlanDisease->disease_ids = '';
             for ($j = 1; $j <= 4; $j++) {
-                for ($k = 1; $k <= 4; $k++) {
-                    GoalPlanDisease::create([
-                        "plan_id" => $i,
-                        "goal_id" => $j,
-                        "disease_id" => $k
-                    ]);
+                $goalPlanDisease->goal_ids .= "$j";
+                $goalPlanDisease->disease_ids .= "$j";
+                if ($j != 4) {
+                    $goalPlanDisease->goal_ids .= ",";
+                    $goalPlanDisease->disease_ids .= ",";
                 }
             }
+            $goalPlanDisease->save();
         }
         DB::commit();
     }

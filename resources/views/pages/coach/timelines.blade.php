@@ -1,4 +1,14 @@
 @extends('pages.coach.app', ['class' => 'g-sidenav-show bg-gray-100'])
+@section('custom-style')
+    <style>
+        .tw-65 {
+            text-wrap: wrap;
+            width: 65%;
+            word-break: break-word;
+
+        }
+    </style>
+@endsection
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Timelines'])
     <div class="container-fluid py-4">
@@ -43,24 +53,24 @@
                                 <tbody id="timelines-table">
                                     @foreach ($timelines as $timeline)
                                         <tr id="item-{{ $timeline->id }}">
-                                            <td>
-                                                <a href="{{ route('coach.timeline.show',['id'=>$timeline->id]) }}">
+                                            <td class="ps-4">
+                                                <a href="{{ route('coach.timeline.show', ['id' => $timeline->id]) }}">
                                                     <p class="text-xs font-weight-bold mb-0">{{ $timeline->name }}</p>
                                                 </a>
 
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $timeline->goal_plan_disease->goal->name }}</p>
+                                                <p class="text-xs font-weight-bold mb-0 tw-65">
+                                                    {{ $timeline->goal_plan_disease?->goals_name() }}</p>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $timeline->goal_plan_disease->plan->name }}</p>
+                                                    {{ $timeline->goal_plan_disease?->plan->name }}</p>
                                             </td>
 
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $timeline->goal_plan_disease->disease->name }}</p>
+                                                <p class="text-xs font-weight-bold mb-0 tw-65">
+                                                    {{ $timeline->goal_plan_disease?->disease_name() }}</p>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span

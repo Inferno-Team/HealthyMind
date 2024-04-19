@@ -18,3 +18,4 @@ yarn-error.log
 /.idea
 /.vscode
 /ssl
+app/Rules/LoginPassword.php

@@ -24,9 +24,6 @@ class CreateNewTimelineRequest extends FormRequest
     {
         return [
             "name" => 'required|string',
-            'goal' => 'required|exists:goals,id',
-            'plan' => 'required|exists:plans,id',
-            'disease' => 'required|exists:diseases,id',
         ];
     }
 }

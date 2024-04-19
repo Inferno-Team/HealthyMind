@@ -24,6 +24,7 @@
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
+    @yield('custom-style')
     <script type="module">
         import Echo from "{{ asset('assets/js/echo.js') }}"
         import {
@@ -37,7 +38,7 @@
             wsHost: "{{ env('PUSHER_HOST') }}",
             wsPort: "{{ env('PUSHER_PORT') }}",
             wssPort: "{{ env('PUSHER_PORT') }}",
-            forceTLS: {{ env('PUSHER_USE_TLS','false') ? 'true' : 'false'}},
+            forceTLS: {{ env('PUSHER_USE_TLS', 'false') ? 'true' : 'false' }},
             disableStats: true,
             authEndpoint: '/authenticate_websocket',
             auth: {

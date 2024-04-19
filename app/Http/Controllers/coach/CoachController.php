@@ -32,6 +32,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CoachController extends Controller
 {
@@ -202,9 +203,17 @@ class CoachController extends Controller
     }
     public function new_timeline_store(CreateNewTimelineRequest $request)
     {
+        DB::enableQueryLog();
         $gps = GoalPlanDisease::where('plan_id', $request->plan)
-            ->where('goal_id', $request->goal)
-            ->where('disease_id', $request->disease)->firstOrCreate()->id;
+            ->where('goal_ids', $request->goals)
+            ->where('disease_ids', $request->diseases)
+            ->firstOr(function () use ($request) {
+                return GoalPlanDisease::create([
+                    "plan_id" => $request->plan,
+                    "goal_ids" => $request->goals,
+                    "disease_ids" => $request->diseases,
+                ]);
+            })->id;
         $timeline = CoachTimeline::create([
             'name' => $request->name,
             'goal_plan_disease_id' => $gps,
