@@ -51,10 +51,10 @@ class CoachController extends Controller
             $diffBetweenWeeksEvents = $beforeLastWeekEvents - $lastWeekEvents;
             $per = round(100 * $diffBetweenWeeksEvents / $beforeLastWeekEvents);
             $differenceEventPercentage = -1 * $per;
-        } else {
+        } else if ($lastWeekEvents > 0) {
             $diffBetweenWeeksEvents =  $lastWeekEvents - $beforeLastWeekEvents;
             $differenceEventPercentage = round(100 * $diffBetweenWeeksEvents / $lastWeekEvents);
-        }
+        } else $differenceEventPercentage = 0;
         $trainees = NormalUser::whereHas('timelines.timeline', fn ($query) => $query->where('coach_id', Auth::id()))->with('timelines.timeline')->get();
         $lastWeekTrainees = $trainees->filter(fn ($item) => $item->timelines->where('created_at', '>=', Carbon::now()->subWeek())->count())->count();
         $beforeWeekTrainees = $trainees->filter(fn ($item) =>
@@ -65,10 +65,10 @@ class CoachController extends Controller
             $diffBetweenWeeksTrainees = $beforeWeekTrainees - $lastWeekTrainees;
             $per = round(100 * $diffBetweenWeeksTrainees / $beforeWeekTrainees);
             $differenceTraineesPercentage = -1 * $per;
-        } else {
+        } else if ($lastWeekTrainees > 0) {
             $diffBetweenWeeksTrainees =  $lastWeekTrainees - $beforeWeekTrainees;
             $differenceTraineesPercentage = round(100 * $diffBetweenWeeksTrainees / $lastWeekTrainees);
-        }
+        } else $differenceTraineesPercentage = 0;
         $exercisesCount = Exercise::count();
         $myMeals = Coach::where('id', Auth::id())->with('meals')->first()->meals;
         $lastWeekMeals = $myMeals->where('created_at', '>=', Carbon::now()->subWeek())->count();
@@ -81,10 +81,10 @@ class CoachController extends Controller
             $diffBetweenWeeksMeals = $beforeLastWeekMeals - $lastWeekMeals;
             $per = round(100 * $diffBetweenWeeksMeals / $beforeLastWeekMeals);
             $differenceMealsPercentage = -1 * $per;
-        } else {
+        } else if ($lastWeekMeals > 0) {
             $diffBetweenWeeksMeals =  $lastWeekMeals - $beforeLastWeekMeals;
             $differenceMealsPercentage = round(100 * $diffBetweenWeeksMeals / $lastWeekMeals);
-        }
+        } else $differenceMealsPercentage = 0;
         $myMealThisYear = $myMeals->filter(function (Meal $meal) {
             $nowYear = Carbon::now()->year;
             $mealYear = Carbon::parse($meal->created_at)->year;
