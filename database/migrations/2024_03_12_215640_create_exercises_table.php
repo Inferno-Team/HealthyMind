@@ -14,8 +14,32 @@ return new class extends Migration
         Schema::create('exercises', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('gif_url')->nullable();
-            $table->foreignId('type_id')->references('id')->on('exercise_types');
+            $table->string('media')->nullable();
+            $table->foreignId('coach_id')
+                ->nullable()
+                ->references('id')
+                ->on('users')
+                ->nullOnDelete();
+
+            $table->foreignId('type_id')
+                ->nullable()
+                ->references('id')
+                ->on('exercise_types')
+                ->nullOnDelete();
+            $table->enum('muscle', [
+                'abs',
+                'quads',
+                'glutes',
+                'triceps',
+                'biceps',
+                'back',
+                'chest',
+            ]);
+            $table->foreignId('equipment_id')->nullable()->references('id')
+                ->on('exercise_equipment')->nullOnDelete();
+            $table->string('duration')->nullable();
+            $table->longText('description')->nullable();
+
             $table->enum('status', ['pending', 'approved', 'declined'])->default('pending');
             $table->timestamps();
         });

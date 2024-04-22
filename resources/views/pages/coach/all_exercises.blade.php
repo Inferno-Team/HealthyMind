@@ -26,10 +26,16 @@
                                             Name</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            GIF</th>
+                                            Media</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Type</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Muscle</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Equipment</th>
 
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -46,18 +52,27 @@
                                                 <p class="text-xs font-weight-bold mb-0">{{ $exercise->name }}</p>
                                             </td>
                                             <td>
-                                                @if (!empty($exercise->gif_url))
-                                                    <a url="{{ $exercise->gif_url }}">
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            SHOW GIF</p>
+                                                @if (!empty($exercise->media))
+                                                    <a class="media-exercise" data-url="{{ $exercise->media }}"
+                                                        style="cursor:pointer">
+                                                        <p class="text-xs font-weight-bolder mb-0">
+                                                            Show</p>
                                                     </a>
                                                 @else
-                                                    <p class="text-xs font-weight-bold mb-0"> NO GIF</p>
+                                                    <p class="text-xs font-weight-bold mb-0"> NO Media</p>
                                                 @endif
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
                                                     {{ $exercise->type->name }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    {{ $exercise->muscle }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    {{ $exercise->equipment->name }}</p>
                                             </td>
 
                                             <td class="text-xs font-weight-bold mb-0">
@@ -93,7 +108,31 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" tabindex="-1" role="dialog" id="show-media-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-body" id="show-media-modal-body" style="display:inherit;"></div>
+                </div>
+            </div>
+        </div>
 
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $(".media-exercise").on('click', function() {
+                let url = $(this).attr('data-url');
+                $("#show-media-modal-body").empty();
+                let img = $(`<img >`)
+                img.attr('src', url);
+                img.attr('style', "border-radius:16px;width:80%;margin:auto");
+                img.appendTo("#show-media-modal-body");
+                $("#show-media-modal").modal('show')
+            });
+        });
+    </script>
+@endpush

@@ -14,19 +14,21 @@ class ExerciseTypeSeeder extends Seeder
     public function run(): void
     {
         $types = [
-            "Aerobic",
-            "Strength Training",
-            "Flexibility",
-            "Balance and Stability",
-            "High-Intensity Interval",
-            "Cross-Training",
-            "Endurance Training",
-            "Functional Training",
-            "Rehabilitation Exercises",
-            "Mind-Body Exercises",
+            "Cardio",
+            "Squat",
+            "Aerobics",
+            "Yoga",
+            "Pilates",
+            "Calisthenics",
+            "Cable crossover",
+            "Bent-over row",
+            "Crunch",
+            "Deadlift",
+            "Leg",
+            "Pull-up",
         ];
-        foreach($types as $type){
-            ExerciseType::create(['name' =>$type]);
+        foreach ($types as $type) {
+            ExerciseType::create(['name' => $type]);
         }
     }
 }

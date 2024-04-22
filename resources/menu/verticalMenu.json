@@ -53,7 +53,7 @@
                     "slug": "requests.meal"
                 },
                 {
-                    "url": "/admin/requests/new-exercise",
+                    "url": "/admin/requests/exercise",
                     "name": "New Exercise",
                     "slug": "new-exercise"
                 }

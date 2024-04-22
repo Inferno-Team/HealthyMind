@@ -69,7 +69,7 @@
                                     </h5>
                                     <p class="mb-0">
                                         <span class="text-success text-sm font-weight-bolder">{{ $new_meals_count }}</span>
-                                        since last week
+                                        since last month
                                     </p>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
                                     <p class="mb-0">
                                         <span
                                             class="text-success text-sm font-weight-bolder">{{ $new_exercises_count }}</span>
-                                        than last month
+                                        since last month
                                     </p>
                                 </div>
                             </div>

@@ -15,10 +15,12 @@ Route::group(['middleware' => ['auth', 'menu:admin', 'type:admin'], 'prefix' => 
     Route::get('/requests/new-coach', [AdminController::class, 'newCoachRequestsView'])->name('requests.new.coach');
     Route::get('/requests/premium', [AdminController::class, 'permiumRequestsView'])->name('requests.premium');
     Route::get('/requests/meal', [AdminController::class, 'mealRequestsView'])->name('requests.meal');
+    Route::get('/requests/exercise', [AdminController::class, 'exerciseRequestsView'])->name('requests.exercise');
 
     Route::post('/requests/coach/change-status', [AdminController::class, 'changeStatusCoachRequest'])->name('admin.coach.request.change-status');
     Route::post('/requests/premium/change-status', [AdminController::class, 'changeStatusPremiumRequest'])->name('admin.permium.request.change-status');
     Route::post('/requests/meal/change-status', [AdminController::class, 'changeStatusMealRequest'])->name('admin.meal.request.change-status');
+    Route::post('/requests/exercise/change-status', [AdminController::class, 'changeStatusExerciseRequest'])->name('admin.exercise.request.change-status');
 
     Route::post('/payment/qr/change', [AdminController::class, 'changeQR'])->name('admin.qr.update');
 });

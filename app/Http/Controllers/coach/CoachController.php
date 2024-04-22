@@ -4,6 +4,7 @@ namespace App\Http\Controllers\coach;
 
 use App\Events\core\NewMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\FileHelper;
 use App\Http\Helpers\NotificationHelper;
 use App\Http\Requests\coach\CreateNewItemRequest;
 use App\Http\Requests\coach\CreateNewTimelineRequest;
@@ -14,6 +15,7 @@ use App\Models\CoachTimeline;
 use App\Models\Day;
 use App\Models\Disease;
 use App\Models\Exercise;
+use App\Models\ExerciseEquipment;
 use App\Models\ExerciseType;
 use App\Models\Goal;
 use App\Models\GoalPlanDisease;
@@ -26,6 +28,7 @@ use App\Models\QuantityType;
 use App\Models\SubscriptionMessage;
 use App\Models\TimelineItem;
 use App\Models\User;
+use App\Notifications\admin\NewExerciseRequestNotification;
 use App\Notifications\admin\NewMealRequestNotification;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -196,10 +199,39 @@ class CoachController extends Controller
         NotificationHelper::notifyAdmins(new NewMealRequestNotification($meal));
         return $this->returnMessage('Meal created successfully, waiting admin approval.');
     }
+    public function store_new_exercise(Request $request)
+    {
+        $media_path = '';
+        if ($request->hasFile('media')) {
+            $media = $request->file('media');
+            $media_path = FileHelper::uploadToDocs($media, 'public/media');
+        }
+        $exercise = Exercise::create([
+            "name" => $request->input('exerciseName'),
+            "media" => $media_path,
+            "coach_id" => Auth::id(),
+            "type_id" => $request->input('exerciseType'),
+            "muscle" => $request->input('targetedMuscle'),
+            "equipment_id" => $request->input('equipment'),
+            "description" => $request->input('exerciseDescription'),
+            "duration" => $request->input('exerciseDuration'),
+        ]);
+        // notify all admins.
+        NotificationHelper::notifyAdmins(new NewExerciseRequestNotification($exercise));
+        return $this->returnMessage('Exercise created successfully, waiting admin approval.');
+    }
+
     public function show_all_exercises(): View
     {
         $exercises = Exercise::with('type')->get();
         return view('pages.coach.all_exercises', compact('exercises'));
+    }
+    public function new_exerciese_view(): View
+    {
+        $equipments = ExerciseEquipment::all();
+        $types = ExerciseType::all();
+        $muscles = Exercise::muscles;
+        return view('pages.coach.new_exercise', compact('equipments', 'types', 'muscles'));
     }
     public function new_timeline_store(CreateNewTimelineRequest $request)
     {

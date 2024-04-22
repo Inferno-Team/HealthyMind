@@ -10,6 +10,7 @@ use App\Http\Requests\admin\ChangePremiumRequest;
 use App\Http\Requests\admin\CreateNewUserRequest;
 use App\Models\Admin;
 use App\Models\Coach;
+use App\Models\Exercise;
 use App\Models\Meal;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
@@ -74,6 +75,12 @@ class AdminController extends Controller
         $requests = Meal::where('status', '=', 'pending')->with('coach', 'type')->get();
         return view('pages.admin.meal-requests', compact('requests'));
     }
+
+    public function exerciseRequestsView(): View
+    {
+        $requests = Exercise::where('status', '=', 'pending')->with('coach', 'type', 'equipment')->get();
+        return view('pages.admin.exercise-requests', compact('requests'));
+    }
     public function changeStatusCoachRequest(ChangeCoachRequest $request): JsonResponse
     {
         $user = Coach::where('id', $request->input('id'))->first();
@@ -99,6 +106,20 @@ class AdminController extends Controller
         $coach->notify(new MealStatusChangeNotification($meal));
         return $this->returnData("newStatus", $meal->status, 'Request Status Updated, New Status : ' . $meal->status);
     }
+
+    public function changeStatusExerciseRequest(Request $request): JsonResponse
+    {
+        $exercise = Exercise::where('id', $request->input('id'))->first();
+        if (empty($exercise))
+            return $this->returnError('Meal not found.', 404);
+        $exercise->status = $request->input('status');
+        $exercise->update();
+        $coach = Coach::find($exercise->coach_id);
+        // $coach->notify(new MealStatusChangeNotification($exercise));
+        return $this->returnData("newStatus", $exercise->status, 'Request Status Updated, New Status : ' . $exercise->status);
+    }
+
+
     public function changeQR(Request $request)
     {
         if ($request->hasFile('new-qr-image')) {

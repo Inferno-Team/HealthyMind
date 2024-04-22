@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::get('/meals', [CoachController::class, 'show_all_meals'])->name('coach.meals.all');
     Route::get('/meals.new', [CoachController::class, 'add_new_meal'])->name('coach.meals.new');
     Route::get('/exercises', [CoachController::class, 'show_all_exercises'])->name('coach.exercises.all');
-    Route::get('/exercises.new', [CoachController::class, 'show_all_exercises'])->name('coach.exercises.new');
+    Route::get('/exercises.new', [CoachController::class, 'new_exerciese_view'])->name('coach.exercises.new');
     
     Route::post('chats/load', [CoachController::class, 'loadChat'])->name('chat.load');
     Route::post('/timelines.new', [CoachController::class, 'new_timeline_store'])->name('coach.timelines.new.store');
@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::post('chats/message/new/read', [CoachController::class, 'readNewMessage'])->name('chat.message.new.read');
     Route::post('chats/message/new', [CoachController::class, 'newMessage'])->name('chat.message.new');
     Route::post('/meals.new', [CoachController::class, 'store_new_meal']);
+    Route::post('/exercises.new', [CoachController::class, 'store_new_exercise']);
     
     Route::delete('/timelines', [CoachController::class, 'timeline_delete'])->name('coach.timelines.delete');
     Route::delete('/meal.del', [CoachController::class, 'meal_delete'])->name('coach.meal.delete');
