@@ -193,6 +193,8 @@ class CoachController extends Controller
             "qty" => $request->input('qty'),
             "type_id" => $request->input('type'),
             "qty_type_id" => $request->input('qty_type'),
+            "ingredients" => $request->input('ingredients'),
+            "description" => $request->input('description'),
             "coach_id" => auth::id(),
         ]);
         // notify all admins.

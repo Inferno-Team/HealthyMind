@@ -15,6 +15,8 @@ class Meal extends Model
         "type_id",
         "qty_type_id",
         "coach_id",
+        "ingredients",
+        "description",
         'status',
     ];
 

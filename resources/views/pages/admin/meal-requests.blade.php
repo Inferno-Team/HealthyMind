@@ -28,10 +28,16 @@
                                             Meal Type</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            QTY</th>
+                                            quantity</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            QTY Type</th>
+                                            quantity Type</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            ingredients</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            description</th>
 
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -39,7 +45,7 @@
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Request At</th>
-                                        <th class="text-secondary opacity-7"></th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="requests-table">
@@ -59,6 +65,39 @@
                                                 <p class="text-xs font-weight-bold mb-0">
                                                     {{ $request->qty_type->title }}</p>
                                             </td>
+                                            <td>
+                                                @if (str_word_count($request->ingredients) > 5)
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ implode(' ', array_slice(explode(' ', $request->ingredients), 0, 5)) }}
+                                                        <br><b style="cursor:pointer"
+                                                            data-text="{{ $request->ingredients }}"
+                                                            class="show-more-ingredients"
+                                                            data-title="{{ $request->name }}"> Show More</b>
+                                                    </p>
+                                                @else
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ $request->ingredients }}
+                                                    </p>
+                                                @endif
+
+                                            </td>
+                                            <td>
+                                                @if (str_word_count($request->description) > 5)
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ implode(' ', array_slice(explode(' ', $request->description), 0, 5)) }}
+                                                        <br><b style="cursor:pointer"
+                                                            data-text="{{ $request->description }}"
+                                                            class="show-more-description"
+                                                            data-title="{{ $request->name }}"> Show More</b>
+                                                    </p>
+                                                @else
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ $request->description }}
+                                                    </p>
+                                                @endif
+
+                                            </td>
+
 
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">{{ $request->coach?->fullname }}
@@ -106,6 +145,19 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" tabindex="-1" role="dialog" id="show-text-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="show-text-modal-title"></h5>
+                    </div>
+                    <div class="modal-body">
+                        <p id="show-text-modal-body"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         @include('layouts.footers.auth.footer')
     </div>
@@ -113,6 +165,27 @@
 
 @section('js-script')
     <script>
+        $(".show-more-ingredients").on('click', function() {
+            let ingredients = $(this).attr('data-text');
+            let title = $(this).attr('data-title');
+
+            $('#show-text-modal-title').text(`${title} ingredients`)
+            $('#show-text-modal-body').text(ingredients)
+            $("#show-text-modal").modal("show")
+
+        });
+
+        $(".show-more-description").on('click', function() {
+            let description = $(this).attr('data-text');
+            let title = $(this).attr('data-title');
+
+            $('#show-text-modal-title').text(`${title} description`)
+            $('#show-text-modal-body').text(description)
+            $("#show-text-modal").modal("show")
+
+        });
+
+
         $(".change-request-status").on('click', function() {
             let id = $(this).attr('data-id');
             $("#selected-request").val(id);

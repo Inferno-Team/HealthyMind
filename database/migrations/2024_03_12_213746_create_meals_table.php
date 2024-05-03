@@ -14,8 +14,21 @@ return new class extends Migration
         Schema::create('meals', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('qty');
             $table->foreignId('type_id')->references('id')->on('meal_types');
+            $table->unsignedBigInteger('qty');
+            $table->foreignId('qty_type_id')
+                ->nullable()
+                ->default(null)
+                ->references('id')
+                ->on('quantity_types')
+                ->nullOnDelete();
+            $table->foreignId('coach_id')
+                ->nullable()
+                ->references('id')
+                ->on('users')
+                ->nullOnDelete();
+            $table->longText("ingredients")->nullable();
+            $table->longText("description")->nullable();
             $table->enum('status', ['pending', 'approved', 'declined'])->default('pending');
             $table->timestamps();
         });

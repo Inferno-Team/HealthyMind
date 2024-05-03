@@ -20,7 +20,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="meal-qty" class="form-control-label">meal qty</label>
+                                    <label for="meal-qty" class="form-control-label">meal quantity</label>
                                     <input class="form-control" type="number" min="0" name="meal-qty" id="meal-qty"
                                         placeholder="meal qty" autocomplete="off"
                                         oninput="this.value = this.value.replace(/[^\d]/, ''); if(parseInt(this.value) < 0) this.value = '0';">
@@ -48,11 +48,27 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="equipment-select" class="form-control-label">Ingredients</label>
+                                    <textarea class="form-control" id="ingredients" rows="5"></textarea>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="equipment-select" class="form-control-label">Description</label>
+                                    <textarea class="form-control" id="description" rows="5"></textarea>
+                                </div>
+
+                            </div>
+
                             <div class="col-md-10"></div>
                             <div class="col-md-2">
                                 <button type="button" class="btn btn-primary" style="width:100%"
                                     onclick="onCreateClicked()">Create</button>
                             </div>
+                            
                         </div>
                     </div>
 
@@ -70,11 +86,16 @@
             let mealType = $("#meal-type-select option:selected").attr('id');
             let mealQtyType = $("#meal-qty_type-select option:selected").attr('id');
             let mealQTY = $("#meal-qty").val();
+            let ingredients = $("#ingredients").val();
+            let description = $("#description").val();
+            //TODO validation fields.
             axios.post("{{ route('coach.meals.new') }}", {
                     name: mealName,
                     type: mealType,
                     qty: mealQTY,
-                    qty_type: mealQtyType
+                    qty_type: mealQtyType,
+                    description: description,
+                    ingredients: ingredients,
                 })
                 .then((response) => {
                     console.log(response.data)
