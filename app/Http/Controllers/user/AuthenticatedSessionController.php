@@ -42,18 +42,22 @@ class AuthenticatedSessionController extends Controller
     {
         $user = User::where('email', "like", $request->email)->first();
         if (empty($user))
-            return $this->returnError("user not found.", 203);
+            return $this->returnError("user not found.", 404);
 
         if (!Hash::check($request->password, $user->password))
-            return $this->returnError("password not matching", 203);
+            return $this->returnError("password not matching", 401);
 
-        $token = $user->createToken('authToken')->plainTextToken;
+        $token = $user->createToken('login-via-api')->plainTextToken;
 
-        $request->session()->regenerate();
         return $this->returnData('data', [
             "token" => $token,
             "user" => $user
         ]);
+    }
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return $this->returnMessage("Logged out successfully.");
     }
     /**
      * Destroy an authenticated session.

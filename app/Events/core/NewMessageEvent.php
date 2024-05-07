@@ -20,6 +20,7 @@ class NewMessageEvent implements ShouldBroadcast
      */
     public function __construct(
         private string $channelName,
+        private string $channelType,
         public string $message,
         public int $message_id,
         public int $channel_id,
@@ -41,8 +42,15 @@ class NewMessageEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
+        $channel = null;
+        if ($this->channelType == 'private')
+            $channel = new PrivateChannel($this->channelName);
+        if ($this->channelType == 'presence')
+            $channel = new PresenceChannel($this->channelName);
+        else
+            $channel = new Channel($this->channelName);
         return [
-            new PrivateChannel($this->channelName),
+            $channel,
         ];
     }
 }

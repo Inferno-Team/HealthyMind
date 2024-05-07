@@ -445,6 +445,7 @@ class CoachController extends Controller
         // 1. send it as event to all subscribers
         event(new NewMessageEvent(
             $subscription->channel->name,
+            $subscription->channel->type,
             $request->input('message'),
             $message->id,
             $request->input('channel_id'),

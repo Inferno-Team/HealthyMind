@@ -2,6 +2,8 @@
 
 use App\Events\coach\NewChannelEvent;
 use App\Http\Controllers\ChatWebsocketController;
+use App\Http\Controllers\user\AuthenticatedSessionController;
+use App\Http\Controllers\user\UserController;
 use App\Models\Admin;
 use App\Models\Coach;
 use App\Models\GoalPlanDisease;
@@ -31,4 +33,13 @@ Route::get('/', function () {
     $trainees = GoalPlanDisease::first();
     dd($trainees->goals());
 });
-Route::post('authenticate_websocket_mobile', [ChatWebsocketController::class, 'authenticateUserMobile']);
+
+
+Route::post('/login', [AuthenticatedSessionController::class, 'loginApi']);
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('authenticate_websocket_mobile', [ChatWebsocketController::class, 'authenticateUser']);
+    Route::get('/my-channels',[UserController::class,'myChannels']);
+    Route::get('/is-premium',[UserController::class,'isPremium']);
+    Route::post('/send-new-message',[UserController::class,'sendNewMessage']);
+});

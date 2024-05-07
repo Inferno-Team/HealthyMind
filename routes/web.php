@@ -46,6 +46,7 @@ Route::get('/t', function () {
     // 1. send it as event to all subscribers
     event(new NewMessageEvent(
         $subscription->channel->name,
+        $subscription->channel->type,
         $messageText,
         $message->id,
         $channel_id,
