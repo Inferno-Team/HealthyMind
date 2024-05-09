@@ -64,30 +64,50 @@ class User extends Authenticatable
             'channel_id'
         );
     }
-    public function privateChannel()
+
+    public function conversationMembership(): HasMany
     {
-        if ($this->channels->isEmpty()) return null; // this user is not coach
-        return $this->channels()->where('type', 'private')->first();
+        return $this->hasMany(ConversationMember::class, "user_id");
     }
     public function subscriptions(): HasMany
     {
         return $this->hasMany(ChannelSubscription::class, 'user_id');
     }
-    public function messages(): HasManyThrough
+    // public function messages(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(
+    //         MessageStatus::class,
+    //         ChannelSubscription::class,
+    //         'user_id',
+    //         'subscription_id'
+    //     );
+    // }
+    public function message(): HasManyThrough
     {
         return $this->hasManyThrough(
-            MessageStatus::class,
-            ChannelSubscription::class,
-            'user_id',
-            'subscription_id'
+            SubscriptionMessage::class,
+            ConversationMember::class,
+            null,
+            "member_id",
         );
     }
     protected $hidden = [
         'password',
         'remember_token',
     ];
+    public static function boot()
+    {
+        parent::boot();
+        static::created(function (self $item) {
+            ChannelSubscription::create([
+                'channel_id' => 1, // this is the id of all-chat channel
+                'user_id' => $item->id,
+            ]);
+        });
+    }
     protected static function booted()
     {
+        parent::booted();
         static::addGlobalScope('type', function ($builder) {
             $allowedTypes = ['normal', 'coach', 'admin'];
             $className = class_basename(static::class);

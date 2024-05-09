@@ -29,6 +29,10 @@ class Channel extends Model
             'user_id'
         );
     }
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'channel_id');
+    }
     public function messages()
     {
         return $this->hasManyThrough(

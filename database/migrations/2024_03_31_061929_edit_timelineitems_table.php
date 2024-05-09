@@ -13,8 +13,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('timeline_items', function (Blueprint $table) {
-            $table->dropForeignIdFor(Day::class,'day_id');
-            $table->dropColumn('day_id');
             $table->timestamp('event_date_start')->nullable()->after('item_id');
             $table->timestamp('event_date_end')->nullable()->after('event_date_start');
         });

@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('timeline_items', function (Blueprint $table) {
+        Schema::create('conversation_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('timeline_id')->references('id')->on('coach_timelines')->cascadeOnDelete();
-            $table->morphs('item');
+            $table->foreignId("conversation_id")->references("id")->on("conversations")->cascadeOnDelete();
+            $table->foreignId("user_id")->references("id")->on("users")->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('timeline_items');
+        Schema::dropIfExists('conversation_members');
     }
 };

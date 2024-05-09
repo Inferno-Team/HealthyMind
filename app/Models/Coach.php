@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Coach extends User
@@ -13,6 +14,17 @@ class Coach extends User
     public function meals(): HasMany
     {
         return $this->hasMany(Meal::class, 'coach_id');
+    }
+    public function privateChannel()
+    {
+        if ($this->channels->isEmpty()) return null; // this user is not coach
+        return $this->channels()->where('type', 'private')->first();
+    }
+    public function conversations(): Collection
+    {
+        // get all conversation based on my private channel.
+        $privateChannel = $this->privateChannel();
+        return Conversation::where('channel_id', $privateChannel->id)->get();
     }
     public static function boot()
     {

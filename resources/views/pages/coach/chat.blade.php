@@ -13,12 +13,13 @@
                 <div class="scrollable-container">
                     <input type="hidden" id="opened-chat">
                     <input type="hidden" id="opened-chat-name">
+                    <input type="hidden" id="opened-chat-type">
                     <div class="scrollable-content">
 
                         @foreach ($chats as $chat)
                             <div class="container my-1 p-2 chat" style="font-size:13px;cursor:pointer;position:relative"
                                 data-id="{{ $chat->id }}" data-fullname="{{ $chat->full_name }}"
-                                data-channel-name="{{ $chat->channel_name }}">
+                                data-channel-name="{{ $chat->channel_name }}" data-channel-type="{{ $chat->channel_type }}">
                                 <div class="new-message-alert" id="ma-{{ $chat->id }}">
 
                                 </div>
@@ -83,8 +84,14 @@
             console.log('User started typing...');
             // Add your logic here
             let channelName = $("#opened-chat-name").val();
-            const privateChannel = Echo.private(channelName);
-            privateChannel.whisper('user-typing-status', {
+            let channelType = $("#opened-chat-type").val();
+            let channel = undefined;
+            if (channelType == 'presence') {
+                channel = Echo.join(channelName);
+            } else {
+                channel = Echo.private(channelName);
+            }
+            channel.whisper('user-typing-status', {
                 user_id: "{{ Auth::id() }}",
                 chat: $("#opened-chat").val(),
                 fullname: "{{ Auth::user()->fullname }}",
@@ -98,8 +105,14 @@
             console.log('User stopped typing...');
             // Add your logic here
             let channelName = $("#opened-chat-name").val();
-            const privateChannel = Echo.private(channelName);
-            privateChannel.whisper('user-typing-status', {
+            let channelType = $("#opened-chat-type").val();
+            let channel = undefined;
+            if (channelType == 'presence') {
+                channel = Echo.join(channelName);
+            } else {
+                channel = Echo.private(channelName);
+            }
+            channel.whisper('user-typing-status', {
                 user_id: "{{ Auth::id() }}",
                 fullname: "{{ Auth::user()->fullname }}",
                 chat: $("#opened-chat").val(),
@@ -131,6 +144,11 @@
                             privateChannel.listen('.NewMessage', newMessageListener);
                             privateChannel.listenForWhisper('user-typing-status', userTypingListener);
                             break;
+                        case 'presence':
+                            let presenceChannel = window.Echo.join(name);
+                            presenceChannel.listen('.NewMessage', newMessageListener);
+                            presenceChannel.listenForWhisper('user-typing-status', userTypingListener);
+                            break;
                     }
                 }
             })
@@ -149,17 +167,20 @@
                 typingTimer = setTimeout(stopTyping, typingInterval);
             });
             $(".chat").on('click', function() {
-                let channelId = $(this).attr('data-id');
+                let conversationId = $(this).attr('data-id');
                 let channelName = $(this).attr('data-channel-name');
-                if (channelId == $("#opened-chat").val()) return;
+                let channelType = $(this).attr('data-channel-type');
+                if (conversationId == $("#opened-chat").val()) return;
                 if (window.isMobile()) {
                     $("#chat-container-id").css('display', 'flex');
                     $("#all-chat-container-id").css('display', 'none');
 
                 }
-                //$("#opened-chat").val(channelId);
-                $("#opened-chat").val(channelId);
+                //$("#opened-chat").val(conversationId);
+                $("#opened-chat").val(conversationId);
+                console.log(conversationId)
                 $("#opened-chat-name").val(channelName);
+                $("#opened-chat-type").val(channelType);
                 $("#chat-message-container").css('display', 'flex')
                 // load all message from this channel.
                 $("#selected-chat-toolbar").text($(this).attr('data-fullname'))
@@ -183,7 +204,7 @@
             let chat = $("#opened-chat").val();
             //let channelName = $("#opened-chat-name").val();
             axios.post("{{ route('chat.message.new') }}", {
-                channel_id: chat,
+                conversation: chat,
                 message: msg
             })
 
@@ -256,17 +277,17 @@
         }
 
         function loadChat() {
-            let channelId = $("#opened-chat").val();
+            let conversationId = $("#opened-chat").val();
 
             $('#chat-dialog').animate({
                 scrollTop: 0
             }, 'fast');
-            $(`#ma-${channelId}`).css('display', 'none');
+            $(`#ma-${conversationId}`).css('display', 'none');
             axios({
                 method: "POST",
                 url: "{{ route('chat.load') }}",
                 data: {
-                    channel: channelId,
+                    conversation: conversationId,
                 }
             }).then((response) => {
                 if (response.data.code == 200) {
