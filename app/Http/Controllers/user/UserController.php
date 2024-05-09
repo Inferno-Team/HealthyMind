@@ -4,6 +4,7 @@ namespace App\Http\Controllers\user;
 
 use App\Events\core\NewMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Channel;
 use App\Models\ChannelSubscription;
 use App\Models\MessageStatus;
 use App\Models\NormalUser;
@@ -69,5 +70,38 @@ class UserController extends Controller
             ]);
         }
         return $this->returnMessage("message sent.");
+    }
+
+    public function loadChannelOldMessage($channelId)
+    {
+
+        if (!Channel::where('id', $channelId)->exists()) {
+            return $this->returnError("this chat are not avalible.", 404);
+        }
+        $user = Auth::user();
+        if ($user->subscriptions()->where('channel_id', $channelId)->get()->isEmpty()) {
+            return $this->returnError("you are not subscribed to this chat.", 403);
+        }
+
+        // load messages from this channel.
+        $items = SubscriptionMessage::whereHas('subscription', fn ($query) => $query->where('channel_id', $channelId))
+            ->with('statuses', 'subscription.user')->get()->sortBy('created_at')->map(function (SubscriptionMessage $item) {
+                // info($item);
+                $statuses = $item->statuses()->whereHas('subscription', fn ($query) => $query->where('user_id', Auth::id()))
+                    ->get();
+                return (object)[
+                    "message" => $item->message,
+                    "message_id" => $item->id,
+                    "created_at" => Carbon::parse($item->created_at)->isToday() ?
+                        Carbon::parse($item->created_at)->format('h:i A')
+                        : Carbon::parse($item->created_at)->format('Y/m/d h:i A'),
+                    "status" => $statuses->isNotEmpty() ? $statuses->first()->status : null,
+                    "full_name" => $item->subscription->user->fullname,
+                    "avatar" => $item->subscription->user->avatar,
+                    "is_me" => $item->subscription()->where('user_id', Auth::id())->get()->isNotEmpty(),
+                    "status_id" =>  $statuses->isNotEmpty() ? $statuses->first()->id : null,
+                ];
+            })->values();
+        return $this->returnData("messages", $items);
     }
 }

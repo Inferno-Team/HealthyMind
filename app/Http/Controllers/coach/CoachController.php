@@ -350,6 +350,7 @@ class CoachController extends Controller
         $channels = Auth::user()->channels->map(fn ($item) => (object)[$item->type => $item->name]);
         $mySubscriptions = Auth::user()->subscriptions->pluck('id')->toArray();
         // chat has 4 things [sender avatar,sender full name, last message , last message timestamps,status]
+        info( Auth::user());
         $chats = Auth::user()->messages()->with('message.subscription.user')->get()->sortByDesc('message.created_at')->groupBy('message.subscription.channel_id')
             ->map(function (Collection $message) use ($mySubscriptions) {
 

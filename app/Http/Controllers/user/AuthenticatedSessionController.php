@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\user;
+use Illuminate\Validation\Rules;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ResponseHelper;
@@ -52,6 +53,14 @@ class AuthenticatedSessionController extends Controller
         return $this->returnData('data', [
             "token" => $token,
             "user" => $user
+        ]);
+    }
+    public function register(Request $request){
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', Rules\Password::defaults()],
+            'capability' => ['required', 'exists:capability_types,id']
         ]);
     }
     public function logout(Request $request)

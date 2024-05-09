@@ -83,7 +83,7 @@
             console.log('User started typing...');
             // Add your logic here
             let channelName = $("#opened-chat-name").val();
-            const privateChannel = Echo.private(channelName);
+            const privateChannel = Echo.join(channelName);
             privateChannel.whisper('user-typing-status', {
                 user_id: "{{ Auth::id() }}",
                 chat: $("#opened-chat").val(),
@@ -98,12 +98,12 @@
             console.log('User stopped typing...');
             // Add your logic here
             let channelName = $("#opened-chat-name").val();
-            const privateChannel = Echo.private(channelName);
+            const privateChannel = Echo.join(channelName);
             privateChannel.whisper('user-typing-status', {
                 user_id: "{{ Auth::id() }}",
                 fullname: "{{ Auth::user()->fullname }}",
                 chat: $("#opened-chat").val(),
-                status: "stoped"
+                status: "stopped"
             });
         }
 
@@ -131,6 +131,10 @@
                             privateChannel.listen('.NewMessage', newMessageListener);
                             privateChannel.listenForWhisper('user-typing-status', userTypingListener);
                             break;
+                        case 'presence':
+                            let presenceChannel = window.Echo.join(name);
+                            presenceChannel.listen('.NewMessage', newMessageListener);
+                            presenceChannel.listenForWhisper('user-typing-status', userTypingListener);
                     }
                 }
             })
@@ -192,11 +196,12 @@
         function newChatListener(e) {}
 
         function userTypingListener(e) {
+            console.log(e.status);
             if (e.chat == $("#opened-chat").val()) {
                 if (e.status == 'typing')
                     $("#user-typing-msg").text(`${e.fullname    } is typing`)
-                else if (e.status == 'stoped') {
-                    console.log('stoped');
+                else if (e.status == 'stopped') {
+                    console.log('stopped');
                     $("#user-typing-msg").text(``)
                 }
             }

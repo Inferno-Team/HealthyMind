@@ -12,7 +12,6 @@ class ChatWebsocketController extends Controller
 {
     public function authenticateUser(Request $request)
     {
-        info("line15");
         $channelName = $request->input('channelName') ?? $request->input('channel_name');
         $channelName = str_replace('private-', '', $channelName);
         $channelName = str_replace('presence-', '', $channelName);
@@ -27,13 +26,11 @@ class ChatWebsocketController extends Controller
         $user = Auth::user();
         $channelSubsctiption = ChannelSubscription::where('channel_id', $channel->id)
             ->where('user_id', $user->id)->get();
-        info($channelSubsctiption);
         if ($channelSubsctiption->isNotEmpty()) {
             $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'));
             // check channel type [private,presence].
             if ($channel->type == 'presence') {
                 $auth = $pusher->authorizePresenceChannel($channel->type . '-' . $channelName, $socketId, $user->id);
-                info($auth);
                 return $auth;
             } else {
                 if ($channel->type == 'private') {
