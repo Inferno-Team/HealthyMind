@@ -103,7 +103,24 @@ class User extends Authenticatable
                 'channel_id' => 1, // this is the id of all-chat channel
                 'user_id' => $item->id,
             ]);
+            ConversationMember::create([
+                "conversation_id" => 1,
+                "user_id" => $item->id,
+            ]);
         });
+        
+    }
+
+    public function format()
+    {
+        return (object)[
+            "id" => $this->id,
+            "username" => $this->username,
+            "avatar" => $this->avatar,
+            "email" => $this->email,
+            "channels" => $this->channels->map->formatForUser($this->id),
+            "password" => $this->password,
+        ];
     }
     protected static function booted()
     {

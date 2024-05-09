@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\core\NewMessageEvent;
+use App\Events\TestEvent;
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\HomeController;
 use App\Http\Controllers\ChatWebsocketController;

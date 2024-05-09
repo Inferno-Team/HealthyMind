@@ -128,6 +128,7 @@
                 $("#chat-back-arrow").css('display', 'none')
             }
             let channels = {!! $channels !!}
+            
             channels.forEach((item) => {
                 for (const channel in item) {
                     const name = item[channel];
@@ -273,7 +274,8 @@
                 $('#chat-dialog').animate({
                     scrollTop: $('#chat-dialog')[0].scrollHeight
                 }, 'slow');
-                $("#message-to-send").val("");
+                if (message.is_me)
+                    $("#message-to-send").val("");
             }
         }
 

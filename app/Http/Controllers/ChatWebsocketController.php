@@ -12,7 +12,7 @@ class ChatWebsocketController extends Controller
 {
     public function authenticateUser(Request $request)
     {
-        $channelName = $request->input('channelName') ?? $request->input('channel_name');
+        $channelName = $request->input('channelName') ?? $request->input('channel_name'); // private-Coach.3
         $channelName = str_replace('private-', '', $channelName);
         $channelName = str_replace('presence-', '', $channelName);
         // check channel if exists in database.

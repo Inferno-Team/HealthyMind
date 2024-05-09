@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\user;
+
 use Illuminate\Validation\Rules;
 
 use App\Http\Controllers\Controller;
@@ -44,18 +45,19 @@ class AuthenticatedSessionController extends Controller
         $user = User::where('email', "like", $request->email)->with('channels')->first();
         if (empty($user))
             return $this->returnError("user not found.", 404);
-
         if (!Hash::check($request->password, $user->password))
             return $this->returnError("password not matching", 401);
 
         $token = $user->createToken('login-via-api')->plainTextToken;
-
+        $user = $user->format();
+        unset($user->password);
         return $this->returnData('data', [
             "token" => $token,
             "user" => $user,
         ]);
     }
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],

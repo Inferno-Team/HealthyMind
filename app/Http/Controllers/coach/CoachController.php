@@ -349,7 +349,7 @@ class CoachController extends Controller
     }
     public function chat_view(): View
     {
-        $channels = Auth::user()->channels->map(fn ($item) => (object)[$item->type => $item->name]);
+        $channels = Auth::user()->channels->map(fn ($item) => (object)[$item->type => $item->name]); // private => Coach.3
         $user = Auth::user();
         $coach = Coach::where('id', $user->id)->first();
         $allConversations = collect([]);
@@ -384,26 +384,6 @@ class CoachController extends Controller
                 "my_message" => in_array($message?->member->user_id, [Auth::id()]),
             ];
         });
-        // ->groupBy('message.subscription.channel_id')
-        //     ->map(function (Collection $message) use ($mySubscriptions) {
-
-        //         $last_message = $message->last();
-        //         // get last message sent via this channel
-        //         $channel = Channel::where('id', $last_message->subscription->channel_id)->first();
-        //         $last_message_on_channel = $channel->messages()->latest()->first();
-        //         $first_channel_message = $channel->messages()->orderBy('created_at')->first();
-        //         return (object)[
-        //             "avatar" => $first_channel_message->subscription->user->avatar,
-        //             "full_name" => $first_channel_message->subscription->user->fullname,
-        //             "last_msg" => $last_message_on_channel->message,
-        //             "status" => $last_message->status,
-        //             "timestamp" => $last_message_on_channel->created_at->diffForHumans(),
-        //             "timestamp_int" => Carbon::parse($last_message_on_channel->created_at)->unix(),
-        //             "id" => $last_message->subscription->channel_id,
-        //             "channel_name" => $last_message->subscription->channel->name,
-        //             "my_message" => in_array($last_message_on_channel->subscription_id, $mySubscriptions),
-        //         ];
-        //     });
         return view('pages.coach.chat', compact('channels', 'chats'));
     }
     public function loadChat(Request $request)

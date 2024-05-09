@@ -49,7 +49,6 @@ class NewMessageEvent implements ShouldBroadcast
             $channel = new PresenceChannel($this->channelName);
         else
             $channel = new Channel($this->channelName);
-        info($channel);
         return [
             $channel,
         ];

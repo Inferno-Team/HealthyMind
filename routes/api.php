@@ -42,6 +42,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('authenticate_websocket_mobile', [ChatWebsocketController::class, 'authenticateUser']);
     Route::get('/my-channels',[UserController::class,'myChannels']);
     Route::get('/is-premium',[UserController::class,'isPremium']);
-    Route::get('/load-channel-old-message/{channelId}',[UserController::class,'loadChannelOldMessage']);
+    Route::get('/load-conversation-old-message/{conversation}',[UserController::class,'loadConversationOldMessage']);
     Route::post('/send-new-message',[UserController::class,'sendNewMessage']);
 });

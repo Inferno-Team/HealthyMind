@@ -44,4 +44,15 @@ class Channel extends Model
             'id' // Local key on the subscriptions table
         );
     }
+    public function formatForUser(int $user_id)
+    {
+        // load all the conversation that has this user (user_id) as member of it.
+        $conversations = $this->conversations()->whereHas('members', fn ($query) => $query->where('user_id', $user_id))->get();
+        return (object)[
+            "id" => $this->id,
+            "name" => $this->name,
+            "type" => $this->type,
+            "conversations" => $conversations,
+        ];
+    }
 }

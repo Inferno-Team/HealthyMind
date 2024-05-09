@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Channel;
 use App\Models\ChannelSubscription;
+use App\Models\Conversation;
 use App\Models\GoalPlanDisease;
 use App\Models\QuantityType;
 use App\Models\User;
@@ -31,9 +32,15 @@ class DatabaseSeeder extends Seeder
             ];
         }
         QuantityType::insert($titles);
-        Channel::create([
+        // create all-chat channel
+        $channel = Channel::create([
             'name' => 'all-chat',
             'type' => 'presence',
+        ]);
+        // create conversation for this channel.
+        Conversation::create([
+            "name" => "Public Conversation",
+            "channel_id" => $channel->id,
         ]);
         User::factory(1)->create([
             'first_name' => 'Healthy',
