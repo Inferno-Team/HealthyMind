@@ -45,10 +45,11 @@ class NewMessageEvent implements ShouldBroadcast
         $channel = null;
         if ($this->channelType == 'private')
             $channel = new PrivateChannel($this->channelName);
-        if ($this->channelType == 'presence')
+        else if ($this->channelType == 'presence')
             $channel = new PresenceChannel($this->channelName);
         else
             $channel = new Channel($this->channelName);
+        info($channel);
         return [
             $channel,
         ];

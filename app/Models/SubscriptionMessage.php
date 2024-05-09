@@ -11,12 +11,12 @@ class SubscriptionMessage extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'subscription_id',
+        'member_id',
         'message'
     ];
-    public function subscription(): BelongsTo
+    public function member(): BelongsTo
     {
-        return $this->belongsTo(ChannelSubscription::class, 'subscription_id');
+        return $this->belongsTo(ConversationMember::class, 'member_id');
     }
     public function statuses(): HasMany
     {

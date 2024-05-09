@@ -31,6 +31,10 @@ class DatabaseSeeder extends Seeder
             ];
         }
         QuantityType::insert($titles);
+        Channel::create([
+            'name' => 'all-chat',
+            'type' => 'presence',
+        ]);
         User::factory(1)->create([
             'first_name' => 'Healthy',
             'last_name' => 'Mind',
@@ -38,10 +42,11 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'password' => Hash::make('admin-password'),
             'email' => 'admin@mind.com',
+            "status" => 'approved',
         ]);
+
         User::factory(10)->create();
         $this->call(GoalPlanDiseaseSeeder::class);
-        $this->call([DaySeeder::class]);
         $this->call([MealTypeSeeder::class]);
         $this->call([ExerciseTypeSeeder::class]);
         $this->call([ExerciseEquipmentSeeder::class]);

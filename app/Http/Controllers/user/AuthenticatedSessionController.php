@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
 
     public function loginApi(LoginRequest $request)
     {
-        $user = User::where('email', "like", $request->email)->first();
+        $user = User::where('email', "like", $request->email)->with('channels')->first();
         if (empty($user))
             return $this->returnError("user not found.", 404);
 
@@ -52,7 +52,7 @@ class AuthenticatedSessionController extends Controller
 
         return $this->returnData('data', [
             "token" => $token,
-            "user" => $user
+            "user" => $user,
         ]);
     }
     public function register(Request $request){

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('subscription_messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subscription_id')->references('id')->on('channel_subscriptions')->cascadeOnDelete();
+            $table->foreignId('member_id')->references('id')->on('conversation_members')->cascadeOnDelete();
             $table->longText('message');
             $table->timestamps();
         });
