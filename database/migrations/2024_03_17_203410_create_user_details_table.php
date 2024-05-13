@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users');
             $table->unsignedDouble('weight')->nullable();
             $table->unsignedDouble('height')->nullable();
+            $table->unsignedBigInteger('dob')->nullable();
+            $table->enum('gender', ['male', 'female'])->nullable();
             $table->timestamps();
         });
     }

@@ -20,7 +20,7 @@ class NewMessageEvent implements ShouldBroadcast
      */
     public function __construct(
         private string $channelName,
-        private string $channelType,
+        public string $channelType,
         public string $message,
         public int $message_id,
         public int $channel_id,

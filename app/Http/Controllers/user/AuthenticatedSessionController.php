@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\user;
 
-use Illuminate\Validation\Rules;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ResponseHelper;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\auth\RegisterRequest;
+use App\Models\NormalUser;
 use App\Models\User;
+use App\Models\UserDetail;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
@@ -56,13 +59,18 @@ class AuthenticatedSessionController extends Controller
             "user" => $user,
         ]);
     }
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', Rules\Password::defaults()],
-            'capability' => ['required', 'exists:capability_types,id']
+        DB::beginTransaction();
+        $user = NormalUser::create($request->userData());
+        $userDetail = UserDetail::create($request->userDetails($user->id));
+        $token = $user->createToken('register-via-api')->plainTextToken;
+        DB::commit();
+        $user = $user->format();
+        unset($user->password);
+        return $this->returnData('data', [
+            "token" => $token,
+            "user" => $user,
         ]);
     }
     public function logout(Request $request)

@@ -12,15 +12,15 @@ class MessageStatus extends Model
 
     protected $fillable = [
         'message_id',
-        'subscription_id',
+        'member_id',
         'status',
     ];
     public function message(): BelongsTo
     {
         return $this->belongsTo(SubscriptionMessage::class, 'message_id');
     }
-    public function subscription(): BelongsTo
+    public function member(): BelongsTo
     {
-        return $this->belongsTo(ChannelSubscription::class);
+        return $this->belongsTo(ConversationMember::class, 'member_id');
     }
 }

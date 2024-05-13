@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CoachTimeline extends Model
 {
@@ -22,5 +23,9 @@ class CoachTimeline extends Model
     public function goal_plan_disease(): BelongsTo
     {
         return $this->belongsTo(GoalPlanDisease::class, 'goal_plan_disease_id');
+    }
+    public function timeline_trainees(): HasMany
+    {
+        return $this->hasMany(TraineeTimeline::class, 'timeline_id');
     }
 }

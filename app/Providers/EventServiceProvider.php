@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\coach\NewChannelEvent;
+use App\Events\core\NewMessageEvent;
 use App\Listeners\NewChatEventListener;
+use App\Listeners\NewMessageListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewChannelEvent::class => [
             NewChatEventListener::class,
+        ],
+        NewMessageEvent::class => [
+            NewMessageListener::class
         ]
     ];
 

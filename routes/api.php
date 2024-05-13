@@ -33,7 +33,7 @@ Route::get('/', function () {
     $trainees = GoalPlanDisease::first();
     dd($trainees->goals());
 });
-
+Route::get('/goals-diseases',[UserController::class,'getGoalsDiseases']);
 
 Route::post('/login', [AuthenticatedSessionController::class, 'loginApi']);
 Route::post('/register', [AuthenticatedSessionController::class, 'register']);
@@ -41,7 +41,11 @@ Route::post('/register', [AuthenticatedSessionController::class, 'register']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('authenticate_websocket_mobile', [ChatWebsocketController::class, 'authenticateUser']);
     Route::get('/my-channels',[UserController::class,'myChannels']);
+    Route::get('/get-plan-of-goals-diseases',[UserController::class,'getGoalsDiseasesPlans']);
+    Route::post('/select-plan-timeline',[UserController::class,'selectPlanTimelne']);
     Route::get('/is-premium',[UserController::class,'isPremium']);
     Route::get('/load-conversation-old-message/{conversation}',[UserController::class,'loadConversationOldMessage']);
     Route::post('/send-new-message',[UserController::class,'sendNewMessage']);
+    Route::get('/all-notifications',[UserController::class,'allNotifications']);
+    Route::get('/unread-notifications',[UserController::class,'unreadNotifications']);
 });

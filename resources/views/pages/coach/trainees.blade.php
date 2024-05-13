@@ -28,13 +28,13 @@
                                             Email</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Payment Code</th>
+                                            Premium</th>
 
                                         <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Phone</th>
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Timeline</th>
                                         <th
-                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Request At</th>
                                         <th class="text-secondary opacity-7"></th>
                                     </tr>
@@ -62,26 +62,28 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $request->payment_process_code }}</p>
+                                                    {{ $trainee->isPro ? 'Yes' : 'No' }}</p>
                                             </td>
 
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">{{ $trainee->phone }}</p>
+                                                <p class="text-xs font-weight-bold mb-0 timeline clickable" data-id="{{ $trainee->timeline->id }}">{{ $trainee->timeline->name }}</p>
                                             </td>
-                                            <td class="align-middle text-center">
+                                            <td>
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $trainee->created_at->diffForHumans() }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ $trainee->created_at }}</span>
                                             </td>
+                                            @if ($trainee->isPro)
+                                                <td class="align-middle">
+                                                    <input type="hidden" id="selected-request">
+                                                    <a href="javascript:;"
+                                                        class="text-secondary font-weight-bold text-xs chat"
+                                                        data-toggle="tooltip" data-original-title="change"
+                                                        data-id="{{ $trainee->id }}">
+                                                        chat
+                                                    </a>
+                                                </td>
+                                            @endif
 
-                                            <td class="align-middle">
-                                                <input type="hidden" id="selected-request">
-                                                <a href="javascript:;"
-                                                    class="text-secondary font-weight-bold text-xs change-request-status"
-                                                    data-toggle="tooltip" data-original-title="change"
-                                                    data-id="{{ $trainee->id }}">
-                                                    change
-                                                </a>
-                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -92,79 +94,20 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" tabindex="-1" role="dialog" id="request-changer-modal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Change Request Status</h5>
-                    </div>
-                    <div class="modal-body">
-                        <p>Do you want to accept this premium request ?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Accept</button>
-                        <button type="button" class="btn btn-danger" onclick="onDeclinedClicked()">Decline</button>
-                        <button type="button" class="btn btn-secondary"
-                            onclick="$('#request-changer-modal').modal('hide')">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
 
 @section('js-script')
     <script>
-        $(".change-request-status").on('click', function() {
+        $(".chat").on('click', function() {
             let id = $(this).attr('data-id');
-            $("#selected-request").val(id);
-            $("#request-changer-modal").modal('show')
+            window.location.href = `/coach/chat/${id}`;
         })
-
-        function onAcceptClicked() {
-            let id = $("#selected-request").val();
-            sendChangeStatus(id, 'approved')
-        }
-
-        function onDeclinedClicked() {
-            let id = $("#selected-request").val();
-            sendChangeStatus(id, 'declined')
-        }
-
-        function sendChangeStatus(id, status) {
-            axios({
-                    method: 'POST',
-                    url: "{{ route('admin.permium.request.change-status') }}",
-                    data: {
-                        id: id,
-                        status: status
-                    }
-                })
-                .then((response) => {
-                    let data = response.data;
-                    let msg = data.msg;
-                    let newStatus = data.newStatus;
-                    $.toast({
-                        text: msg,
-                        loaderBg: '#fb6340',
-                        bgColor: status == 'approved' ? 'rgb(51 141 4)' : '#fb4040',
-                        hideAfter: 5000,
-                    })
-
-                    $("#item-" + id).remove();
-                    $("#request-changer-modal").modal('hide')
-                    var rowCount = $('#requests-table tr').length;
-                    if (rowCount == 0) {
-                        $("#no-users-container").css('display', 'flex');
-                        $("#table-container").css('display', 'none');
-                    }
-
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-        }
+        $(".timeline").on('click', function() {
+            let id = $(this).attr('data-id');
+            window.location.href = `/coach/timelines/${id}`;
+        })
+        
     </script>
 @endsection

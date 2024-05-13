@@ -13,6 +13,8 @@ class UserDetail extends Model
         'user_id',
         'weight',
         'height',
+        'gender',
+        'dob',
     ];
     public function user(): BelongsTo
     {

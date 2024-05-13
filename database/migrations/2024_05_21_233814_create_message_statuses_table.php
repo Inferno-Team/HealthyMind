@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('message_statuses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('message_id')->references('id')->on('subscription_messages')->cascadeOnDelete();
-            $table->foreignId('subscription_id')->references('id')->on('channel_subscriptions')->cascadeOnDelete();
+            $table->foreignId('member_id')->references('id')->on('conversation_members')->cascadeOnDelete();
             $table->enum('status', ['received', 'read'])->default('received');
             $table->timestamps();
         });

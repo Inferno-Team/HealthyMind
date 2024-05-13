@@ -141,9 +141,26 @@ class CoachController extends Controller
     public function trainnes_view(): View
     {
         $coach = Auth::user();
-        $trainees = NormalUser::whereHas('goalPlanDisease.timelines', function ($query) {
+        $trainees = NormalUser::whereHas('timelines.timeline', function ($query) {
             $query->where('coach_id', Auth::id());
-        })->get();
+        })->with('timelines.timeline')->get()->map(function ($trainee) {
+            $timeline = $trainee->timelines->filter(fn ($item) =>
+            $item->where('timeline', Auth::id()))
+                ->values()->first()->timeline;
+            return (object)[
+                "id" => $trainee->id,
+                "avatar" => $trainee->avatar,
+                "first_name" => $trainee->first_name,
+                "last_name" => $trainee->last_name,
+                "username" => $trainee->username,
+                "email" => $trainee->email,
+                "isPro" => $trainee->isPro,
+                "timeline" => $timeline,
+                "created_at" => $trainee->created_at->diffForHumans(),
+
+            ];
+            // return $trainee;
+        });
         return view('pages.coach.trainees', compact('trainees'));
     }
     public function timelines_view(): View
@@ -347,6 +364,54 @@ class CoachController extends Controller
         $meal->delete();
         return $this->returnMessage("Meal deleted successfully.");
     }
+    public function trainee_chat($trainee_id)
+    {
+        $trainee = NormalUser::where('id', $trainee_id)->first();
+        $coach = Coach::where('id', auth::id())->with('timelines.timeline_trainees')->first();
+        $private_channel = $coach->privateChannel();
+        // first find the conversation for this user and this trainee
+        // on this coach channel
+        // if did not exists create one and make this coach & trainee a member of it.
+        $conversations = Conversation::where("channel_id", $private_channel->id)
+            ->whereHas('members', fn ($q) => $q->where('user_id', $trainee_id))->get();
+        //check if there any conversation.
+        if ($conversations->isEmpty()) {
+            // there are no conversations between this coach & this trainee.
+            //make one
+            $timeline = $coach->timelines->filter(fn ($item) => $item->where('trainee_id', $trainee_id))->values()->first();
+            $conversation = Conversation::create([
+                "name" => "$timeline->name-$trainee->fullname",
+                "channel_id" => $private_channel->id,
+                "avatar" => $trainee->avatar,
+            ]);
+            ConversationMember::create([
+                "conversation_id" => $conversation->id,
+                "user_id" => $trainee_id,
+            ]);
+            ConversationMember::create([
+                "conversation_id" => $conversation->id,
+                "user_id" => $coach->id,
+            ]);
+        } else {
+            $conversation = $conversations->first();
+        }
+        $message = $conversation->messages()->latest()->first();
+
+        $chat = (object)[
+            "avatar" => $conversation->avatar,
+            "full_name" => $conversation->name,
+            "last_msg" => $message?->message,
+            "status" => $message?->status,
+            "timestamp" => $message?->created_at->diffForHumans(),
+            "timestamp_int" => Carbon::parse($message?->created_at)->unix(),
+            "id" => $conversation->id,
+            "channel_name" => $conversation->channel->name,
+            "channel_type" => $conversation->channel->type,
+            "my_message" => in_array($message?->member->user_id, [Auth::id()]),
+        ];
+        $channels = collect([$private_channel])->map(fn ($item) => (object)[$item->type => $item->name]); // private => Coach.3
+        return view('pages.coach.one_trainee_chat', compact('channels', 'chat'));
+    }
     public function chat_view(): View
     {
         $channels = Auth::user()->channels->map(fn ($item) => (object)[$item->type => $item->name]); // private => Coach.3
@@ -403,7 +468,7 @@ class CoachController extends Controller
         $items = SubscriptionMessage::whereHas('member', fn ($query) => $query->where('conversation_id', $conversation->id))
             ->with('statuses', 'member.user')->get()->sortBy('created_at')->map(function (SubscriptionMessage $item) {
                 // info($item);
-                $statuses = $item->statuses()->whereHas('subscription', fn ($query) => $query->where('user_id', Auth::id()))
+                $statuses = $item->statuses()->whereHas('member', fn ($query) => $query->where('user_id', Auth::id()))
                     ->get();
                 $myMessages = Auth::user()->message->pluck('id')->toArray();
 
@@ -426,12 +491,12 @@ class CoachController extends Controller
     public function readMessage(Request $request)
     {
         $message_status_id = $request->input('message_status_id');
-        $ms = MessageStatus::where('id', $message_status_id)->with('subscription')->get();
+        $ms = MessageStatus::where('id', $message_status_id)->with('member')->get();
         if ($ms->isEmpty()) {
             return $this->returnError("Message Status Not Found.", 404);
         }
         $ms = $ms->first();
-        if ($ms->subscription->user_id != Auth::id()) {
+        if ($ms->member->user_id != Auth::id()) {
             return $this->returnError('This MS is not yours.', 403);
         }
         $ms->update(['status' => 'read']);
@@ -440,7 +505,7 @@ class CoachController extends Controller
     public function readNewMessage(Request $request)
     {
         $status = MessageStatus::where('message_id', $request->input('message_id'))
-            ->whereHas('subscription', fn ($query) => $query->where('user_id', Auth::id()))
+            ->whereHas('member', fn ($query) => $query->where('user_id', Auth::id()))
             ->first();
         $status->update(['status' => 'read']);
         return $this->returnMessage("MS Updated.");
@@ -476,13 +541,14 @@ class CoachController extends Controller
         ));
         // 2. save the status as received.
         // get all this channel subscription
-        $subscriptions_id = ChannelSubscription::where('channel_id', $request->input('channel_id'))
+        $subscriptions_id = ConversationMember::where('conversation_id', $request->input('conversation'))
             ->where('user_id', '!=', $currentUser->id)->get()->pluck('id');
+        info($subscriptions_id);
         // create status for all channel-subscription and this message as status default value is received.
         foreach ($subscriptions_id as $id) {
             MessageStatus::create([
                 'message_id' => $message->id,
-                'subscription_id' => $id,
+                'member_id' => $id,
             ]);
         }
     }

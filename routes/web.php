@@ -92,6 +92,7 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::get('/timelines/{id}', [CoachController::class, 'show_timeline_view'])->name('coach.timeline.show');
     Route::get('/timelines.new', [CoachController::class, 'new_timeline_view'])->name('coach.timelines.new');
     Route::get('/timelines.items/new/{id}', [CoachController::class, 'show_timeline_add_item_view'])->name('coach.timelines.items.new');
+    Route::get('/chat/{trainee_id}', [CoachController::class, 'trainee_chat']);
     Route::get('chats', [CoachController::class, 'chat_view'])->name('chat');
     Route::get('/meals', [CoachController::class, 'show_all_meals'])->name('coach.meals.all');
     Route::get('/meals.new', [CoachController::class, 'add_new_meal'])->name('coach.meals.new');

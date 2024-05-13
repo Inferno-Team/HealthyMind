@@ -5,17 +5,15 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class NormalUser extends User
 {
+    use HasSlug;
     protected $appends = ['is_pro', 'fullname'];
     public function isPro(): Attribute
     {
@@ -58,5 +56,14 @@ class NormalUser extends User
         static::creating(function (User $user) {
             $user->forceFill(['type' => 'normal']);
         });
+    }
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(["first_name", "last_name"])
+            ->saveSlugsTo('username')
+            ->slugsShouldBeNoLongerThan(25)
+            ->usingSeparator('_')
+            ->preventOverwrite();
     }
 }

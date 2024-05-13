@@ -6,17 +6,77 @@ use App\Events\core\NewMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Channel;
 use App\Models\ChannelSubscription;
+use App\Models\Coach;
+use App\Models\CoachTimeline;
 use App\Models\Conversation;
+use App\Models\Disease;
+use App\Models\Goal;
+use App\Models\GoalPlanDisease;
 use App\Models\MessageStatus;
 use App\Models\NormalUser;
+use App\Models\Plan;
 use App\Models\SubscriptionMessage;
+use App\Models\TraineeTimeline;
 use App\Models\User;
+use App\Notifications\coach\NewTraineeNotification;
+use App\Notifications\NewMessage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function getGoalsDiseases()
+    {
+        $goals = Goal::all();
+        $diseases = Disease::all();
+        return $this->returnData("gd", [
+            "goals" => $goals,
+            "diseases" => $diseases,
+        ]);
+    }
+    public function getGoalsDiseasesPlans(Request $request)
+    {
+        $goals = json_decode($request->goals);
+        $diseases = json_decode($request->diseases);
+        $goals_string = implode(",", $goals);
+        $diseases_string = implode(",", $diseases);
+        $goal_plan_diseases = GoalPlanDisease::where("goal_ids", $goals_string)
+            ->where("disease_ids", $diseases_string)
+            ->with('plan', 'timelines.coach')->get()->map(function (GoalPlanDisease $item) {
+                $plan = $item->plan;
+                $timelines = $item->timelines->map(function (CoachTimeline $timeline) {
+                    return (object)[
+                        "id" => $timeline->id,
+                        "name" => $timeline->name,
+                        "coach_name" => $timeline->coach->fullname,
+                    ];
+                });
+                return [
+                    "plan_name" => $plan->name,
+                    "plan_id" => $plan->id,
+                    "timelines" => $timelines,
+                ];
+            });
+        return $this->returnData("plans", $goal_plan_diseases);
+    }
+
+    public function selectPlanTimelne(Request $request)
+    {
+        $coach_timeline = CoachTimeline::where('id', $request->input('id'))->get();
+        if ($coach_timeline->isEmpty())
+            return $this->returnMessage("timeline not found.");
+        $coach_timeline = $coach_timeline->first();
+        $user = NormalUser::where('id', Auth::id())->first();
+        TraineeTimeline::create([
+            'trainee_id' => $user->id,
+            'timeline_id' => $coach_timeline->id,
+        ]);
+        $coach = Coach::where('id', $coach_timeline->coach_id)->first();
+
+        $coach->notify(new NewTraineeNotification($user, $coach_timeline));
+        return $this->returnMessage("plan saved.");
+    }
     function myChannels(Request $request)
     {
         $channels = Auth::user()->channels->map(fn ($item) => (object)[
@@ -81,7 +141,7 @@ class UserController extends Controller
         if (!Conversation::where('id', $conversation_id)->exists()) {
             return $this->returnError("this chat are not avalible.", 404);
         }
-        $user = Auth::user();
+        $user = User::where('id', auth::id())->first();
         $conversation = Conversation::where('id', $conversation_id)->first();
         if (!in_array($user->id, $conversation->members->pluck('user_id')->toArray())) {
             return $this->returnError("you are not subscribed to this chat.", 403);
@@ -89,11 +149,11 @@ class UserController extends Controller
 
         // load messages from this channel.
         $items = SubscriptionMessage::whereHas('member', fn ($query) => $query->where('conversation_id', $conversation->id))
-            ->with('statuses', 'member.user')->get()->sortBy('created_at')->map(function (SubscriptionMessage $item) {
+            ->with('statuses', 'member.user')->get()->sortBy('created_at')->map(function (SubscriptionMessage $item) use ($user) {
                 // info($item);
-                $statuses = $item->statuses()->whereHas('subscription', fn ($query) => $query->where('user_id', Auth::id()))
+                $statuses = $item->statuses()->whereHas('member', fn ($query) => $query->where('user_id', Auth::id()))
                     ->get();
-                $myMessages = Auth::user()->message->pluck('id')->toArray();
+                $myMessages = $user->message->pluck('id')->toArray();
 
                 return (object)[
                     "message" => $item->message,
@@ -109,5 +169,39 @@ class UserController extends Controller
                 ];
             })->values();
         return $this->returnData("messages", $items);
+    }
+    public function allNotifications(Request $request)
+    {
+        $user = User::where('id', auth::id())->first();
+        $notifications = $user->notifications->map(function ($notification) {
+            if ($notification->type == NewMessage::class) {
+                $data = $notification->data;
+                return (object)[
+                    "id" => $notification->id,
+                    "title" => $data['conversation']['name'],
+                    "body" => $data['sender']['fullname'] . " : " . $data['message']['message'],
+                    "timestamp" => Carbon::parse($data['message']['created_at'])->unix(),
+                ];
+            }
+            return $notification;
+        });
+        return $this->returnData("notifications", $notifications);
+    }
+    public function unreadNotifications(Request $request)
+    {
+        $user = User::where('id', auth::id())->first();
+        $notifications = $user->unreadNotifications->map(function ($notification) {
+            if ($notification->type == NewMessage::class) {
+                $data = $notification->data;
+                return (object)[
+                    "id" => $notification->id,
+                    "title" => $data['conversation']['name'],
+                    "body" => $data['sender']['fullname'] . " : " . $data['message']['message'],
+                    "timestamp" => Carbon::parse($data['message']['created_at'])->unix(),
+                ];
+            }
+            return $notification;
+        });
+        return $this->returnData("notifications", $notifications);
     }
 }
