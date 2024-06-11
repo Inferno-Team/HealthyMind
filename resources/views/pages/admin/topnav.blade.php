@@ -166,7 +166,9 @@
         }
         $(".new_meal_noteification").on('click', function() {
             let id = $(this).attr('data-id');
-            axios.post("{{ route('notification.read') }}",{id:id})
+            axios.post("{{ route('notification.read') }}", {
+                id: id
+            })
             window.location.href = "{{ route('requests.meal') }}"
         });
     })
@@ -232,5 +234,31 @@
         }
     }
 </script>
+<script type="module">
+    import Echo from "{{ asset('assets/js/echo.js') }}"
+    import {
+        Pusher
+    } from "{{ asset('assets/js/pusher.js') }}"
 
+    window.Pusher = Pusher
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: "{{ env('PUSHER_APP_KEY') }}",
+        wsHost: "{{ env('PUSHER_HOST') }}",
+        wsPort: "{{ env('PUSHER_PORT') }}",
+        wssPort: "{{ env('PUSHER_PORT') }}",
+        forceTLS: {{ env('PUSHER_USE_TLS', 'false') ? 'true' : 'false' }},
+        disableStats: true,
+        authEndpoint: '/authenticate_websocket',
+        auth: {
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        }
+    });
+    let privateChannel = window.Echo.private("admin-channel");
+    privateChannel.listen("NewCoach", function(e) {
+        console.log(e);
+    })
+</script>
 <!-- End Navbar -->

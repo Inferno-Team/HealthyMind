@@ -183,16 +183,16 @@ class CoachController extends Controller
         $meals = Meal::where('coach_id', auth::id())->where('status', '<>', 'declined')->with('type')->get();
         return view('pages.coach.show-cal-timeline', compact('items', 'timeline_id', 'meals', 'exercises'));
     }
-    public function show_timeline_add_item_view(int $timeline_id): View
-    {
-        $meals = Meal::all();
-        $meal_types = MealType::all();
-        $exercises = Exercise::all();
-        $exercise_types = ExerciseType::all();
-        $days = Day::all();
+    // public function show_timeline_add_item_view(int $timeline_id): View
+    // {
+    //     $meals = Meal::all();
+    //     $meal_types = MealType::all();
+    //     $exercises = Exercise::all();
+    //     $exercise_types = ExerciseType::all();
+    //     $days = Day::all();
 
-        return view('pages.coach.add-timeline-item', compact('exercises', 'meals', 'days', 'timeline_id', 'meal_types', 'exercise_types'));
-    }
+    //     return view('pages.coach.add-timeline-item', compact('exercises', 'meals', 'days', 'timeline_id', 'meal_types', 'exercise_types'));
+    // }
 
     public function show_all_meals(): View
     {

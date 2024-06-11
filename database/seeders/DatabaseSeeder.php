@@ -57,5 +57,6 @@ class DatabaseSeeder extends Seeder
         $this->call([MealTypeSeeder::class]);
         $this->call([ExerciseTypeSeeder::class]);
         $this->call([ExerciseEquipmentSeeder::class]);
+        $this->call([ChannelSeeder::class]);
     }
 }
