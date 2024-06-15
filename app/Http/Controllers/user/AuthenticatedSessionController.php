@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
 
     public function loginApi(LoginRequest $request)
     {
-        $user = User::where('email', "like", $request->email)->with('channels')->first();
+        $user = NormalUser::where('email', "like", $request->email)->with('channels')->first();
         if (empty($user))
             return $this->returnError("user not found.", 404);
         if (!Hash::check($request->password, $user->password))

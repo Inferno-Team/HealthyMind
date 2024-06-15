@@ -5,13 +5,18 @@ namespace App\Http\Helpers;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
+
 class FileHelper
 {
     public static function uploadToDocs(UploadedFile $file, $filePath = '', $filename = null)
     {
         if (empty($file)) return "";
-        if (!file_exists($filePath)) {
+
+        if (!Storage::directoryExists($filePath)) {
             // mkdir($filePath, 0777, true);
+            Storage::makeDirectory($filePath);
+        } else {
+            Storage::deleteDirectory($filePath);
             Storage::makeDirectory($filePath);
         }
         $fileExtension = $file->getClientOriginalExtension();

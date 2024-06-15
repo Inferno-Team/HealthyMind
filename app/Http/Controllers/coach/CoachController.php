@@ -382,7 +382,7 @@ class CoachController extends Controller
             $conversation = Conversation::create([
                 "name" => "$timeline->name-$trainee->fullname",
                 "channel_id" => $private_channel->id,
-                "avatar" => $trainee->avatar,
+                "avatar" => $trainee->getOriginal('avatar'),
             ]);
             ConversationMember::create([
                 "conversation_id" => $conversation->id,
@@ -507,7 +507,7 @@ class CoachController extends Controller
         $status = MessageStatus::where('message_id', $request->input('message_id'))
             ->whereHas('member', fn ($query) => $query->where('user_id', Auth::id()))
             ->first();
-        $status->update(['status' => 'read']);
+        $status?->update(['status' => 'read']);
         return $this->returnMessage("MS Updated.");
     }
     public function newMessage(Request $request)
@@ -543,7 +543,7 @@ class CoachController extends Controller
         // get all this channel subscription
         $subscriptions_id = ConversationMember::where('conversation_id', $request->input('conversation'))
             ->where('user_id', '!=', $currentUser->id)->get()->pluck('id');
-        info($subscriptions_id);
+        // $users = User::whereIn('id',)
         // create status for all channel-subscription and this message as status default value is received.
         foreach ($subscriptions_id as $id) {
             MessageStatus::create([

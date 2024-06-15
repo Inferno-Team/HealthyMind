@@ -41,7 +41,8 @@ class User extends Authenticatable
             get: function ($value, $attr) {
                 if (empty($value) || empty($attr))
                     return null;
-                return "/storage/$value";
+                $prefix = request()->getSchemeAndHttpHost();
+                return "$prefix/storage/$value";
             }
         );
     }

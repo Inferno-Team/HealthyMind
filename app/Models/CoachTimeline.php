@@ -18,7 +18,7 @@ class CoachTimeline extends Model
 
     public function coach(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'coach_id');
+        return $this->belongsTo(Coach::class, 'coach_id');
     }
     public function goal_plan_disease(): BelongsTo
     {
@@ -27,5 +27,9 @@ class CoachTimeline extends Model
     public function timeline_trainees(): HasMany
     {
         return $this->hasMany(TraineeTimeline::class, 'timeline_id');
+    }
+    public function items(): HasMany
+    {
+        return $this->hasMany(TimelineItem::class, 'timeline_id');
     }
 }

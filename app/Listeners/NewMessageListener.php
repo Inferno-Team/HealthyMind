@@ -52,11 +52,14 @@ class NewMessageListener
         }
         $members_ids = $conversation->members->pluck('user_id');
         $users = User::whereIn('id', $members_ids)->get();
-        info($users);
-        Notification::send($users, new NewMessage(
-            $message,
-            $conversation,
-            $event->sender,
-        ));
+        foreach ($users as $user) {
+            if ($event->sender->id != $user->id) // don't send notification for sender.
+                $user->notify(new NewMessage(
+                    $message,
+                    $conversation,
+                    $event->sender,
+                    $user,
+                ));
+        }
     }
 }

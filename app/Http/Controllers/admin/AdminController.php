@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Events\user\PremiumRequestStatusChangeEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\FileHelper;
 use App\Http\Requests\admin\ChangeCoachRequest;
@@ -12,6 +13,7 @@ use App\Models\Admin;
 use App\Models\Coach;
 use App\Models\Exercise;
 use App\Models\Meal;
+use App\Models\NormalUser;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
 use App\Notifications\coach\MealStatusChangeNotification;
@@ -93,6 +95,8 @@ class AdminController extends Controller
         $premiumRequest = UserPremiumRequest::where('id', $request->input('id'))->first();
         $premiumRequest->status = $request->input('status');
         $premiumRequest->update();
+        $user = NormalUser::where('id', $premiumRequest->user_id)->first();
+        event(new PremiumRequestStatusChangeEvent($user?->username, $premiumRequest->status));
         return $this->returnData("newStatus", $premiumRequest->status, 'Request Status Updated, New Status : ' . $premiumRequest->status);
     }
     public function changeStatusMealRequest(Request $request): JsonResponse

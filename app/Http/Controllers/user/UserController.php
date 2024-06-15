@@ -4,11 +4,13 @@ namespace App\Http\Controllers\user;
 
 use App\Events\core\NewMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\FileHelper;
 use App\Models\Channel;
 use App\Models\ChannelSubscription;
 use App\Models\Coach;
 use App\Models\CoachTimeline;
 use App\Models\Conversation;
+use App\Models\ConversationMember;
 use App\Models\Disease;
 use App\Models\Goal;
 use App\Models\GoalPlanDisease;
@@ -18,11 +20,13 @@ use App\Models\Plan;
 use App\Models\SubscriptionMessage;
 use App\Models\TraineeTimeline;
 use App\Models\User;
+use App\Models\UserPremiumRequest;
 use App\Notifications\coach\NewTraineeNotification;
 use App\Notifications\NewMessage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -89,8 +93,15 @@ class UserController extends Controller
     {
         $user = NormalUser::where('id', Auth::id())->with('user_premium_request')->first();
         $user_premium_request = $user->user_premium_request;
-        $status = $user_premium_request?->status ?? "pending";
+        $status = $user_premium_request?->status ?? "";
         return $this->returnData("status", $status);
+    }
+    function me()
+    {
+        $user = NormalUser::find(Auth::id());
+        $user = $user->format();
+        unset($user->password);
+        return $this->returnData("user", $user);
     }
     public function sendNewMessage(Request $request)
     {
@@ -143,6 +154,7 @@ class UserController extends Controller
         }
         $user = User::where('id', auth::id())->first();
         $conversation = Conversation::where('id', $conversation_id)->first();
+        info($conversation->members);
         if (!in_array($user->id, $conversation->members->pluck('user_id')->toArray())) {
             return $this->returnError("you are not subscribed to this chat.", 403);
         }
@@ -173,19 +185,28 @@ class UserController extends Controller
     public function allNotifications(Request $request)
     {
         $user = User::where('id', auth::id())->first();
-        $notifications = $user->notifications->map(function ($notification) {
+        $notifications = $user->unreadNotifications->map(function ($notification) {
             if ($notification->type == NewMessage::class) {
                 $data = $notification->data;
                 return (object)[
                     "id" => $notification->id,
                     "title" => $data['conversation']['name'],
                     "body" => $data['sender']['fullname'] . " : " . $data['message']['message'],
-                    "timestamp" => Carbon::parse($data['message']['created_at'])->unix(),
+                    "timestamp" => Carbon::parse($data['message']['created_at'])->getTimestampMs(),
+                    "avatar" => Conversation::where('id', $data['conversation']['id'])->first()->avatar,
                 ];
             }
             return $notification;
         });
         return $this->returnData("notifications", $notifications);
+    }
+    public function sendNotificationSeen(Request $request)
+    {
+        $user = User::find(Auth::id());
+        $notification = $user->unreadNotifications()->where('id', $request->id)
+            ->first();
+        $notification?->markAsRead();
+        return $this->returnMessage("read successfully.");
     }
     public function unreadNotifications(Request $request)
     {
@@ -203,5 +224,107 @@ class UserController extends Controller
             return $notification;
         });
         return $this->returnData("notifications", $notifications);
+    }
+
+    public function getProfile(Request $request)
+    {
+        $user = NormalUser::find(Auth::id());
+        return $this->returnData("profile", (object)[
+            'fullname' => $user->fullname,
+            'email' => $user->email,
+            'weight' => $user->details->weight . "",
+            'height' => $user->details->height . "",
+            'dob' => Carbon::createFromTimestampMs($user->details->dob)->format("D-M-Y") . "",
+            'coach' => $user->timelines()->first()->timeline->coach->fullname,
+            'username' => $user->username,
+            'firstname' => $user->first_name,
+            'lastname' => $user->last_name,
+            'timeline' => $user->timelines()->first()->timeline->name,
+            'event_count' => $user->timelines()->first()->timeline->items->count(),
+            'avatar' => $user->avatar,
+        ]);
+    }
+    public function updateProfileAvatar(Request $request)
+    {
+        if ($request->hasFile("files")) {
+            $files = $request->file('files');
+            $avatar = $files[0];
+            $user = NormalUser::where('id', Auth::id())->first();
+
+            $file = FileHelper::uploadToDocs($avatar, "public/avatars/$user->username");
+            $user->avatar = Str::replace("public/", "", $file);
+            $user->update();
+        }
+        $user = $user->format();
+        unset($user->password);
+        return $this->returnData(
+            "user",
+            $user,
+        );
+    }
+    public function sendPremiumRequest(Request $request)
+    {
+        $user = NormalUser::where('id', Auth::id())->with('user_premium_request')->first();
+        if (!empty($user->user_premium_request) || isset($user->user_premium_request)) {
+            return $this->returnError(
+                "you already requsted premium,",
+                403,
+                ["status" => $user->user_premium_request->status]
+            );
+        }
+        $premium_requset = UserPremiumRequest::create([
+            'user_id' => $user->id,
+            'payment_process_code' => $request->input('code'),
+            'others' => json_encode(["provider" => 'syriatel_cash', 'via' => 'mobile_flutter']),
+        ]);
+        return $this->returnData('response', $premium_requset, 'request stored,waiting on admin approval.');
+    }
+    public function getCoachConversationWithMe()
+    {
+        $user = NormalUser::where('id', Auth::id())->first();
+        if (!$user->isPro)
+            return $this->returnError("you dont have access to this featcher", 403);
+        $channel = $user->timelines()->first()->timeline->coach->privateChannel();
+        // check if this user has conversation on this channel 
+        $conversations = Conversation::where('channel_id', $channel->id)
+            ->whereHas('members', fn ($query) => $query->where('user_id', $user->id))->get();
+        info($conversations);
+        info($conversations->isEmpty());
+
+        if ($conversations->isEmpty()) {
+            // create new conversation.
+            $conversation = Conversation::create([
+                "name" => $user->fullname,
+                "channel_id" => $channel->id,
+                "avatar" => $user->getRawOriginal('avatar'),
+            ]);
+            // create memebership for this user and for the coach on this conversaiton.
+            $user_member = ConversationMember::create([
+                "conversation_id" => $conversation->id,
+                "user_id" => $user->id,
+            ]);
+            $caoch_member = ConversationMember::create([
+                "conversation_id" => $conversation->id,
+                "user_id" => $user->timelines()->first()->timeline->coach->id,
+            ]);
+            
+        } else
+            $conversation = $conversations->first();
+        $channel_subscription = ChannelSubscription::where('user_id', $user->id)
+            ->where('channel_id', $channel->id)->firstOr(function () use ($user, $channel) {
+                return ChannelSubscription::create([
+                    'channel_id' => $channel->id,
+                    'user_id' => $user->id,
+                ]);
+            });
+        info($conversation);
+        return $this->returnData("conversation", (object)[
+            "id" => $conversation->id,
+            "name" => $conversation->name,
+            "avatar" => $conversation->avatar,
+            "channel_id" => $channel->id,
+            "channel_name" => $channel->name,
+            "channel_type" => $channel->type,
+        ]);
     }
 }

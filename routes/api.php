@@ -40,12 +40,19 @@ Route::post('/register', [AuthenticatedSessionController::class, 'register']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('authenticate_websocket_mobile', [ChatWebsocketController::class, 'authenticateUser']);
+    Route::post('authenticate_user_private_channel', [ChatWebsocketController::class, 'authenticateUserPrivateChannel']);
     Route::get('/my-channels',[UserController::class,'myChannels']);
     Route::get('/get-plan-of-goals-diseases',[UserController::class,'getGoalsDiseasesPlans']);
     Route::post('/select-plan-timeline',[UserController::class,'selectPlanTimelne']);
     Route::get('/is-premium',[UserController::class,'isPremium']);
+    Route::get('/me',[UserController::class,'me']);
     Route::get('/load-conversation-old-message/{conversation}',[UserController::class,'loadConversationOldMessage']);
     Route::post('/send-new-message',[UserController::class,'sendNewMessage']);
     Route::get('/all-notifications',[UserController::class,'allNotifications']);
+    Route::get('/get-coach-conversation-with-me',[UserController::class,'getCoachConversationWithMe']);
+    Route::post('/send-notification-seen',[UserController::class,'sendNotificationSeen']);
     Route::get('/unread-notifications',[UserController::class,'unreadNotifications']);
+    Route::get('/profile',[UserController::class,'getProfile']);
+    Route::post('/update-profile-avatar',[UserController::class,'updateProfileAvatar']);
+    Route::post('/send-premium-request',[UserController::class,'sendPremiumRequest']);
 });

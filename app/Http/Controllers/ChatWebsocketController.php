@@ -6,6 +6,7 @@ use App\Models\Channel;
 use App\Models\ChannelSubscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Pusher\Pusher;
 
 class ChatWebsocketController extends Controller
@@ -17,8 +18,6 @@ class ChatWebsocketController extends Controller
         $channelName = str_replace('presence-', '', $channelName);
         // check channel if exists in database.
         $channel = Channel::where('name', $channelName)->get();
-        info($channelName);
-        info($channel);
         if ($channel->isEmpty())
             return $this->returnError("channel not found.", 404);
         $channel = $channel->first();
@@ -44,6 +43,21 @@ class ChatWebsocketController extends Controller
         }
 
         return response()->json(['error' => 'Authentication failed'], 401);
+    }
+    public function authenticateUserPrivateChannel(Request $request)
+    {
+        $channelName = $request->input('channelName') ?? $request->input('channel_name');
+        $socketId = $request->input('socketId') ??  $request->input('socket_id');
+        info($channelName);
+        $_channelName = str_replace('presence-', '', $channelName);
+        info($_channelName);
+        $user = Auth::user();
+        if ($_channelName != $user->username) {
+            throw new \Exception("$user->username try to connect to channel not his, channel name : $channelName");
+        }
+        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'));
+        $auth = $pusher->authorizePresenceChannel($channelName, $socketId, $user->id);
+        return $auth;
     }
     public function authenticateUserMobile(Request $request)
     {
