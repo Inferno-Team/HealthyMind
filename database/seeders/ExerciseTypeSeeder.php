@@ -26,6 +26,7 @@ class ExerciseTypeSeeder extends Seeder
             "Deadlift",
             "Leg",
             "Pull-up",
+            "Forearm flexors",
         ];
         foreach ($types as $type) {
             ExerciseType::create(['name' => $type]);

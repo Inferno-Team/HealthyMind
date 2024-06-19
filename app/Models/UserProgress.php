@@ -16,7 +16,7 @@ class UserProgress extends Model
     ];
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(NormalUser::class, 'user_id');
     }
     public function progress(): BelongsTo
     {

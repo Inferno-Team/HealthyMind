@@ -13,6 +13,7 @@ class TraineeTimeline extends Model
     protected $fillable = [
         'trainee_id',
         'timeline_id',
+        // 'enabled',
     ];
 
     public function trainee(): BelongsTo
@@ -22,5 +23,14 @@ class TraineeTimeline extends Model
     public function timeline(): BelongsTo
     {
         return $this->belongsTo(CoachTimeline::class, 'timeline_id');
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function (self $item) {
+            if ($item->trainee->timelines->count() == 0) {
+                $item->forceFill(['enabled' => true]);
+            }
+        });
     }
 }

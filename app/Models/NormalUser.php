@@ -40,6 +40,20 @@ class NormalUser extends User
     {
         return $this->hasMany(TraineeTimeline::class, 'trainee_id');
     }
+    public function enabled_timeline(): TraineeTimeline
+    {
+        $enableds = $this->timelines->filter(fn ($item) => $item->enabled)->values();
+        if ($enableds->count() > 1) {
+            info("This Normal User " . $this->fullname . ' has multi enabled timeline.');
+        }
+        return $enableds->first();
+    }
+
+    public function timelinePorgesss(): HasMany
+    {
+        return $this->hasMany(UserProgress::class, 'user_id');
+    }
+
 
     public function user_premium_request(): HasOne
     {

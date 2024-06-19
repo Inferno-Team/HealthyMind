@@ -48,6 +48,17 @@ class Exercise extends Model
         );
     }
 
+    public function duration(): Attribute
+    {
+        return Attribute::make(
+            get: function ($attr) {
+                if (!empty($attr)) {
+                    return "$attr Min";
+                }
+            }
+        );
+    }
+
     public function type(): BelongsTo
     {
         return $this->belongsTo(ExerciseType::class, 'type_id');
@@ -60,5 +71,17 @@ class Exercise extends Model
     public function equipment(): BelongsTo
     {
         return $this->belongsTo(ExerciseEquipment::class, 'equipment_id');
+    }
+    public function format()
+    {
+        return (object)[
+            "id" => $this->id,
+            "name" => $this->name,
+            "media" => $this->media,
+            "type" => $this->type->name,
+            "equipment" => $this->equipment->name,
+            "duration" => $this->duration,
+            "description" => $this->description,
+        ];
     }
 }

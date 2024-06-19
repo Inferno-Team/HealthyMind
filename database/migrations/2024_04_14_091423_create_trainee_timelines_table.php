@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('trainee_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreignId('timeline_id')->nullable()->references('id')->on('coach_timelines')->nullOnDelete();
+            $table->boolean('enabled')->default(false);
             $table->timestamps();
         });
     }

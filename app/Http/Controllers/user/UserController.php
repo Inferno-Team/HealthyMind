@@ -307,7 +307,6 @@ class UserController extends Controller
                 "conversation_id" => $conversation->id,
                 "user_id" => $user->timelines()->first()->timeline->coach->id,
             ]);
-            
         } else
             $conversation = $conversations->first();
         $channel_subscription = ChannelSubscription::where('user_id', $user->id)
@@ -317,7 +316,6 @@ class UserController extends Controller
                     'user_id' => $user->id,
                 ]);
             });
-        info($conversation);
         return $this->returnData("conversation", (object)[
             "id" => $conversation->id,
             "name" => $conversation->name,
@@ -326,5 +324,22 @@ class UserController extends Controller
             "channel_name" => $channel->name,
             "channel_type" => $channel->type,
         ]);
+    }
+
+    public function getTimelineTodayEvents()
+    {
+        $user = NormalUser::find(Auth::id());
+        $trainee_timeline = $user->enabled_timeline();
+        $coach_timeline = $trainee_timeline->timeline;
+        $items = $coach_timeline->items()->with('item')->whereDate('event_date_start', Carbon::today())->orderBy('event_date_start', 'asc')->get()->map->format($user->id);
+        return $this->returnData('events', $items);
+    }
+    public function getTimelineEvents()
+    {
+        $user = NormalUser::find(Auth::id());
+        $trainee_timeline = $user->enabled_timeline();
+        $coach_timeline = $trainee_timeline->timeline;
+        $items = $coach_timeline->items()->with('item')->orderBy('event_date_start', 'asc')->get()->map->format($user->id);
+        return $this->returnData('events', $items);
     }
 }

@@ -165,7 +165,7 @@
             autoProcessQueue: false,
             addRemoveLinks: true,
             maxFilesize: 1024 * 1024, // on byte => 1 MB
-            acceptedFiles: "image/*",
+//            acceptedFiles: "image/*",
             maxFiles:1,
             dictDefaultMessage: "",
             init: function() {

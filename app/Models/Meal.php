@@ -32,4 +32,16 @@ class Meal extends Model
     {
         return $this->belongsTo(Coach::class, 'coach_id');
     }
+    public function format()
+    {
+        return (object)[
+            "id" => $this->id,
+            "name" => $this->name,
+            "type" => $this->type->name,
+            "qty_type" => $this->qty_type->title,
+            "qty" => "" . $this->qty,
+            "ingredients" => $this->ingredients,
+            "description" => $this->description,
+        ];
+    }
 }

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class TimelineItem extends Model
@@ -27,6 +28,11 @@ class TimelineItem extends Model
     {
         return $this->morphTo();
     }
+
+    public function progress(): HasMany
+    {
+        return $this->hasMany(UserProgress::class, 'timeline_item_id');
+    }
     public function findDiff($delta): array
     {
         // info($delta);
@@ -43,5 +49,18 @@ class TimelineItem extends Model
         $event_date_start = $event_date_start->addRealMilliseconds($all)->format('Y-m-d H:i:s');
         $event_date_end = $event_date_end->addRealMilliseconds($all)->format('Y-m-d H:i:s');
         return [$event_date_start, $event_date_end];
+    }
+
+    public function format($normal_user_id)
+    {
+        $item_type_string = explode('\\', $this->item_type);
+        return (object)[
+            "id" => $this->id,
+            "item_type" => end($item_type_string),
+            "event_date_start" => $this->event_date_start,
+            "event_date_end" => $this->event_date_end,
+            "event_item" => $this->item->format($normal_user_id),
+            'progress' => $this->progress()->where('user_id', $normal_user_id)->first()?->percentage ?? 0,
+        ];
     }
 }
