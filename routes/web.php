@@ -9,6 +9,8 @@ use App\Http\Controllers\coach\CoachController;
 use App\Http\Controllers\user\AuthenticatedSessionController;
 use App\Http\Controllers\user\RegisteredUserController;
 use App\Models\ChannelSubscription;
+use App\Models\Coach;
+use App\Models\CoachTimeline;
 use App\Models\MessageStatus;
 use App\Models\SubscriptionMessage;
 use App\Models\User;
@@ -67,7 +69,19 @@ Route::get('/t', function () {
         ]);
     }
 })->middleware('auth');
-Route::get('/', [AuthenticatedSessionController::class, 'findNextRoute'])->middleware('auth');
+// Route::get('/', [AuthenticatedSessionController::class, 'findNextRoute'])->middleware('auth');
+Route::get('/', function () {
+    $images = ['c1.jpg', 'c2.jpg', 'c3.jpg', 'c4.jpg', 'c5.jpg', 'c6.jpg'];
+    $timelines = CoachTimeline::withCount('timeline_trainees')->orderBy('timeline_trainees_count', 'desc')->get()
+        ->map(function (CoachTimeline $item) use ($images) {
+            $index = random_int(0, count($images) - 1);
+            $item->image = $images[$index];
+            unset($images[$index]);
+            return $item;
+        });
+    $coaches = Coach::where('status', User::APPROVED)->withCount('timeline_trainees')->orderBy('timeline_trainees_count', 'desc')->get()->take(3);
+    return view('landing_page', compact('timelines', 'coaches'));
+})->name('home');
 Route::post('authenticate_websocket', [ChatWebsocketController::class, 'authenticateUser'])->middleware('auth');
 
 
@@ -98,7 +112,7 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::get('/meals.new', [CoachController::class, 'add_new_meal'])->name('coach.meals.new');
     Route::get('/exercises', [CoachController::class, 'show_all_exercises'])->name('coach.exercises.all');
     Route::get('/exercises.new', [CoachController::class, 'new_exerciese_view'])->name('coach.exercises.new');
-    
+
     Route::post('chats/load', [CoachController::class, 'loadChat'])->name('chat.load');
     Route::post('/timelines.new', [CoachController::class, 'new_timeline_store'])->name('coach.timelines.new.store');
     Route::post('/timelines.items/new', [CoachController::class, 'timeline_item_store'])->name('coach.timelines.item.new.store');
@@ -110,7 +124,7 @@ Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 
     Route::post('chats/message/new', [CoachController::class, 'newMessage'])->name('chat.message.new');
     Route::post('/meals.new', [CoachController::class, 'store_new_meal']);
     Route::post('/exercises.new', [CoachController::class, 'store_new_exercise']);
-    
+
     Route::delete('/timelines', [CoachController::class, 'timeline_delete'])->name('coach.timelines.delete');
     Route::delete('/meal.del', [CoachController::class, 'meal_delete'])->name('coach.meal.delete');
 });

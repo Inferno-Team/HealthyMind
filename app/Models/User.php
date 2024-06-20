@@ -23,6 +23,9 @@ class User extends Authenticatable
      */
     protected $appends = ['fullname'];
     protected $table = 'users';
+    public const APPROVED = "approved";
+    public const DECLINED = "declined";
+    public const WAITING = "waiting";
     protected $fillable = [
         'first_name',
         'last_name',

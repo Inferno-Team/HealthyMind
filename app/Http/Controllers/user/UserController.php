@@ -331,7 +331,7 @@ class UserController extends Controller
         $user = NormalUser::find(Auth::id());
         $trainee_timeline = $user->enabled_timeline();
         $coach_timeline = $trainee_timeline->timeline;
-        $items = $coach_timeline->items()->with('item')->whereDate('event_date_start', Carbon::today())->orderBy('event_date_start', 'asc')->get()->map->format($user->id);
+        $items = $coach_timeline->items()->with('item')->whereDate('event_date_start', Carbon::today())->orderBy('event_date_start', 'asc')->get()->filter(fn ($item) => $item->item->status == 'approved')->values()->map->format($user->id);
         return $this->returnData('events', $items);
     }
     public function getTimelineEvents()
@@ -339,7 +339,7 @@ class UserController extends Controller
         $user = NormalUser::find(Auth::id());
         $trainee_timeline = $user->enabled_timeline();
         $coach_timeline = $trainee_timeline->timeline;
-        $items = $coach_timeline->items()->with('item')->orderBy('event_date_start', 'asc')->get()->map->format($user->id);
+        $items = $coach_timeline->items()->with('item')->orderBy('event_date_start', 'asc')->get()/* ->filter(fn ($item) => $item->item->status == 'approved')->values() */->map->format($user->id);
         return $this->returnData('events', $items);
     }
 }
