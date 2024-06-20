@@ -382,7 +382,7 @@ class CoachController extends Controller
             $conversation = Conversation::create([
                 "name" => "$timeline->name-$trainee->fullname",
                 "channel_id" => $private_channel->id,
-                "avatar" => $trainee->getOriginal('avatar'),
+                "type" => Conversation::ONE_ON_ONE_CONV,
             ]);
             ConversationMember::create([
                 "conversation_id" => $conversation->id,
@@ -436,6 +436,7 @@ class CoachController extends Controller
                     "user_id" => Auth::id(),
                 ]);
             }
+            info( $conversation->avatar);
             return (object)[
                 "avatar" => $conversation->avatar,
                 "full_name" => $conversation->name,

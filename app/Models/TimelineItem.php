@@ -51,7 +51,7 @@ class TimelineItem extends Model
         return [$event_date_start, $event_date_end];
     }
 
-    public function format($normal_user_id)
+    public function format($normal_user_id = null)
     {
         $item_type_string = explode('\\', $this->item_type);
         return (object)[
@@ -59,8 +59,8 @@ class TimelineItem extends Model
             "item_type" => end($item_type_string),
             "event_date_start" => $this->event_date_start,
             "event_date_end" => $this->event_date_end,
-            "event_item" => $this->item->format($normal_user_id),
-            'progress' => $this->progress()->where('user_id', $normal_user_id)->first()?->percentage ?? 0,
+            "event_item" => $this->item->format(),
+            'progress' => $normal_user_id == null ? 0 : $this->progress()->where('user_id', $normal_user_id)->first()?->percentage ?? 0,
         ];
     }
 }

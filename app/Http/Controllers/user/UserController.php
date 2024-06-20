@@ -18,9 +18,11 @@ use App\Models\MessageStatus;
 use App\Models\NormalUser;
 use App\Models\Plan;
 use App\Models\SubscriptionMessage;
+use App\Models\TimelineItem;
 use App\Models\TraineeTimeline;
 use App\Models\User;
 use App\Models\UserPremiumRequest;
+use App\Models\UserProgress;
 use App\Notifications\coach\NewTraineeNotification;
 use App\Notifications\NewMessage;
 use Carbon\Carbon;
@@ -296,7 +298,7 @@ class UserController extends Controller
             $conversation = Conversation::create([
                 "name" => $user->fullname,
                 "channel_id" => $channel->id,
-                "avatar" => $user->getRawOriginal('avatar'),
+                "type" => Conversation::ONE_ON_ONE_CONV,
             ]);
             // create memebership for this user and for the coach on this conversaiton.
             $user_member = ConversationMember::create([
@@ -339,7 +341,32 @@ class UserController extends Controller
         $user = NormalUser::find(Auth::id());
         $trainee_timeline = $user->enabled_timeline();
         $coach_timeline = $trainee_timeline->timeline;
-        $items = $coach_timeline->items()->with('item')->orderBy('event_date_start', 'asc')->get()/* ->filter(fn ($item) => $item->item->status == 'approved')->values() */->map->format($user->id);
+        $items = $coach_timeline->items()->with('item')->orderBy('event_date_start', 'asc')->get()->filter(fn ($item) => $item->item->status == 'approved')->values()->map->format();
         return $this->returnData('events', $items);
+    }
+    public function getTimelineEventsWithMyPorgress()
+    {
+        $user = NormalUser::find(Auth::id());
+        $trainee_timeline = $user->enabled_timeline();
+        $coach_timeline = $trainee_timeline->timeline;
+        $items = $coach_timeline->items()->with('item')->orderBy('event_date_start', 'asc')->get()->filter(fn ($item) => $item->item->status == 'approved')->values()->map->format($user->id);
+        return $this->returnData('events', $items);
+    }
+    public function addProgress(Request $request)
+    {
+        $timeline_item = TimelineItem::find($request->id);
+        $progress_item = $timeline_item->progress()->where('user_id', Auth::id())->get();
+        if ($progress_item->isEmpty()) {
+            $progress_item = UserProgress::create([
+                "user_id" => Auth::id(),
+                "timeline_item_id" => $request->id,
+                "percentage" => $request->value,
+            ]);
+        } else {
+            $progress_item = $progress_item->first();
+            $progress_item->percentage = $request->value;
+            $progress_item->update();
+        }
+        return $this->returnData('item', $timeline_item->format(Auth::id()));
     }
 }

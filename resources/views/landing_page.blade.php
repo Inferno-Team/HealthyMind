@@ -51,7 +51,8 @@
                 </div>
                 <div class="col-lg-4 col-sm-4 menu-top-right">
                     @auth
-                        <a href="{{ route('logout') }}"><span class="lnr lnr-exit"><span>Dashboard</span></span></a>
+                        <a href="{{ url('/find-next-route') }}"><span
+                                class="lnr lnr-exit"><span>Dashboard</span></span></a>
                         <a href="{{ route('logout') }}"><span class="lnr lnr-exit"><span>Logout</span></span></a>
                     @else
                         <a href="{{ route('login') }}">
@@ -76,6 +77,11 @@
                 </nav><!-- #nav-menu-container -->
             </div>
         </div>
+        @if (session()->has('msg'))
+            <div class="alert alert-danger" style="text-align:center">
+                {{ session('msg') }}
+            </div>
+        @endif
     </header><!-- #header -->
 
     <!-- start banner Area -->

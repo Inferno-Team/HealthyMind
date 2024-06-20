@@ -39,6 +39,10 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
         if (Auth::user()->type == 'coach')
             return redirect(RouteServiceProvider::COACH_HOME);
+        if (Auth::user()->type == 'normal') {
+            Auth::logout();
+            return redirect("/")->with('msg', 'use mobile application to login as trainee');
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

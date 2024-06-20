@@ -57,4 +57,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/send-premium-request', [UserController::class, 'sendPremiumRequest']);
     Route::get('/timeline/today-events', [UserController::class, 'getTimelineTodayEvents']);
     Route::get('/timeline/events', [UserController::class, 'getTimelineEvents']);
+    Route::get('/timeline/events-with-my-progress', [UserController::class, 'getTimelineEventsWithMyPorgress']);
+    Route::post('/timeline/send-add-progress', [UserController::class, 'addProgress']);
 });

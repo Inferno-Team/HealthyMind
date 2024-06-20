@@ -8,24 +8,38 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Facades\Auth;
 
 class Conversation extends Model
 {
     use HasFactory;
+    protected $appends = ['avatar'];
     protected $fillable = [
         "name",
         "channel_id",
-        "avatar",
+        'type',
     ];
+    public const ONE_ON_ONE_CONV = 'one-on-one';
+    public const PUBLIC_CONV = 'public-conv';
 
     public function avatar(): Attribute
     {
         return Attribute::make(
             get: function ($value, $attr) {
-                if (empty($value) || empty($attr))
+                if ($attr['type'] == self::ONE_ON_ONE_CONV) {
+                    // get the other user avatar.
+                    $other_member = $this->members()->whereNot('id', Auth::id())->first();
+                    if (!empty($other_member->user->avatar)) {
+                        return  $other_member->user->avatar;
+                    }
                     return null;
-                $prefix = env('APP_URL');
-                return "$prefix/storage/$value";
+                } else {
+                    return asset('/img/team-1.jpg');
+                }
+                // if (empty($value) || empty($attr))
+                //     return null;
+                // $prefix = env('APP_URL');
+                // return "$prefix/storage/$value";
             }
         );
     }

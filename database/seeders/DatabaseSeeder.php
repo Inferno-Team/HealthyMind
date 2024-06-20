@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
         Conversation::create([
             "name" => "Public Conversation",
             "channel_id" => $channel->id,
+            "type" => Conversation::PUBLIC_CONV,
         ]);
         User::factory(1)->create([
             'first_name' => 'Healthy',

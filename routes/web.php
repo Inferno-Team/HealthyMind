@@ -15,9 +15,12 @@ use App\Models\MessageStatus;
 use App\Models\SubscriptionMessage;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -69,8 +72,8 @@ Route::get('/t', function () {
         ]);
     }
 })->middleware('auth');
-// Route::get('/', [AuthenticatedSessionController::class, 'findNextRoute'])->middleware('auth');
-Route::get('/', function () {
+Route::get('/find-next-route', [AuthenticatedSessionController::class, 'findNextRoute'])->middleware('auth');
+Route::get('/', function (Request $request) {
     $images = ['c1.jpg', 'c2.jpg', 'c3.jpg', 'c4.jpg', 'c5.jpg', 'c6.jpg'];
     $timelines = CoachTimeline::withCount('timeline_trainees')->orderBy('timeline_trainees_count', 'desc')->get()
         ->map(function (CoachTimeline $item) use ($images) {
