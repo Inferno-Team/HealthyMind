@@ -13,9 +13,10 @@ class FileHelper
         if (empty($file)) return "";
         $folder_container = explode('/', $filePath);
         $folder_container = end($folder_container);
-        if (!Storage::directoryExists($folder_container)) {
+        info($folder_container);
+        if (!Storage::directoryExists($filePath)) {
             // mkdir($filePath, 0777, true);
-            Storage::makeDirectory($folder_container);
+            Storage::makeDirectory($filePath);
         } else {
             Storage::deleteDirectory($folder_container);
             Storage::makeDirectory($filePath);
