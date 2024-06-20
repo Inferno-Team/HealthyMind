@@ -54,12 +54,15 @@ class AdminController extends Controller
     }
     public function updateSelfAvatar(Request $request)
     {
-        $avatar = $request->file('avatar');
-        $name = FileHelper::uploadToDocs($avatar, 'public/avatars');
-        $user = User::where('id', Auth::id())->first();
-        $user->avatar = Str::replace('public', '', $name);
-        $user->update();
-        return $this->returnMessage('updated');
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $name = FileHelper::uploadToDocs($avatar, 'public/avatars');
+            $user = User::where('id', Auth::id())->first();
+            $user->avatar = Str::replace('public', '', $name);
+            $user->update();
+            return $this->returnMessage('updated');
+        }
+        return $this->returnMessage('please upload image');
     }
 
     public function newCoachRequestsView(): View
