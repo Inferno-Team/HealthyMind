@@ -11,7 +11,8 @@ class FileHelper
     public static function uploadToDocs(UploadedFile $file, $filePath = '', $filename = null)
     {
         if (empty($file)) return "";
-        $folder_container = explode('/',$filePath);
+        $folder_container = explode('/', $filePath);
+        $folder_container = end($folder_container);
         if (!Storage::directoryExists($folder_container)) {
             // mkdir($filePath, 0777, true);
             Storage::makeDirectory($folder_container);
