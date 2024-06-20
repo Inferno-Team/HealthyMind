@@ -253,7 +253,7 @@ class UserController extends Controller
             $avatar = $files[0];
             $user = NormalUser::where('id', Auth::id())->first();
 
-            $file = FileHelper::uploadToDocs($avatar, "public/avatars/$user->username");
+            $file = FileHelper::uploadToDocs($avatar, "public/trainee_avatars/$user->username");
             $user->avatar = Str::replace("public/", "", $file);
             $user->update();
         }

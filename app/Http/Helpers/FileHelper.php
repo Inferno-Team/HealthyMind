@@ -11,14 +11,11 @@ class FileHelper
     public static function uploadToDocs(UploadedFile $file, $filePath = '', $filename = null)
     {
         if (empty($file)) return "";
-        $folder_container = explode('/', $filePath);
-        $folder_container = end($folder_container);
-        info($folder_container);
         if (!Storage::directoryExists($filePath)) {
             // mkdir($filePath, 0777, true);
             Storage::makeDirectory($filePath);
         } else {
-            Storage::deleteDirectory($folder_container);
+            Storage::deleteDirectory($filePath);
             Storage::makeDirectory($filePath);
         }
         $fileExtension = $file->getClientOriginalExtension();
