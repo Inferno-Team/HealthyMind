@@ -171,43 +171,37 @@
     </script>
     <script>
         var ctx1 = document.getElementById("chart-line").getContext("2d");
+        let borderWidth = 60;
+        let maxBarThickness = 60;
+        let fill = true;
 
         new Chart(ctx1, {
-            type: "line",
+            type: "bar",
             data: {
                 labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 datasets: [{
                         label: "Meals",
-                        tension: 0.4,
-                        borderWidth: 0,
-                        pointRadius: 0,
                         borderColor: "#2dcecc",
-                        borderWidth: 3,
-                        fill: true,
+                        borderWidth: borderWidth,
+                        fill: fill,
                         data: JSON.parse('{!! json_encode($mealsTimelineValues) !!}'),
-                        maxBarThickness: 6
+                        maxBarThickness: maxBarThickness
                     },
                     {
                         label: "Events",
-                        tension: 0.4,
-                        borderWidth: 0,
-                        pointRadius: 0,
                         borderColor: "#fb6340",
-                        borderWidth: 3,
-                        fill: true,
+                        borderWidth: borderWidth,
+                        fill: fill,
                         data: JSON.parse('{!! json_encode($eventsTimelineValues) !!}'),
-                        maxBarThickness: 6
+                        maxBarThickness: maxBarThickness
                     },
                     {
                         label: "Trainees",
-                        tension: 0.4,
-                        borderWidth: 0,
-                        pointRadius: 0,
                         borderColor: "#f5365c",
-                        borderWidth: 3,
-                        fill: true,
+                        borderWidth: borderWidth,
+                        fill: fill,
                         data: JSON.parse('{!! json_encode($traineesTimelineValues) !!}'),
-                        maxBarThickness: 6
+                        maxBarThickness: maxBarThickness
                     },
 
                 ],
@@ -255,10 +249,10 @@
                         },
                         ticks: {
                             display: true,
-                            color: '#ccc',
+                            color: 'black',
                             padding: 20,
                             font: {
-                                size: 11,
+                                size: 15,
                                 family: "Open Sans",
                                 style: 'normal',
                                 lineHeight: 2

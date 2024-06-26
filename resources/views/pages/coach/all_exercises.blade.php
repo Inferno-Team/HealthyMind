@@ -10,13 +10,13 @@
                     <img src="{{ asset('img/no-users-found.png') }}" style="margin:auto;width:500px">
 
                 </div>
-                <div class="card mb-4 h-75"
-                    style="overflow:auto;min-height:500px;display:{{ count($exercises) == 0 ? 'none' : 'block' }}"
+                <div class="card mb-4"
+                    style="overflow:auto;min-height:500px;height: 28rem;display:{{ count($exercises) == 0 ? 'none' : 'block' }}"
                     id="table-container">
                     <div class="card-header pb-0">
                         <h6>Exercises Table</h6>
                     </div>
-                    <div class="card-body px-0 pt-0 pb-2 ">
+                    <div class="card-body px-0 pt-0 pb-2" style="overflow: auto">
                         <div class="table-responsive p-0">
                             <table class="table align-items-center mb-0">
                                 <thead>

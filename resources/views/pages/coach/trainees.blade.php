@@ -11,12 +11,12 @@
 
                 </div>
                 <div class="card mb-4 h-75"
-                    style="overflow:auto;min-height:500px;display:{{ count($trainees) == 0 ? 'none' : 'block' }}"
+                    style="overflow:auto;min-height:500px;height: 28rem;display:{{ count($trainees) == 0 ? 'none' : 'block' }}"
                     id="table-container">
                     <div class="card-header pb-0">
                         <h6>Trainees Table</h6>
                     </div>
-                    <div class="card-body px-0 pt-0 pb-2 ">
+                    <div class="card-body px-0 pt-0 pb-2 " style="overflow: auto">
                         <div class="table-responsive p-0">
                             <table class="table align-items-center mb-0">
                                 <thead>
@@ -66,7 +66,9 @@
                                             </td>
 
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0 timeline clickable" data-id="{{ $trainee->timeline->id }}">{{ $trainee->timeline->name }}</p>
+                                                <p class="text-xs font-weight-bold mb-0 timeline clickable"
+                                                    data-id="{{ $trainee->timeline->id }}">{{ $trainee->timeline->name }}
+                                                </p>
                                             </td>
                                             <td>
                                                 <span
@@ -108,6 +110,5 @@
             let id = $(this).attr('data-id');
             window.location.href = `/coach/timelines/${id}`;
         })
-        
     </script>
 @endsection
