@@ -88,13 +88,13 @@ Route::get('/', function (Request $request) {
 Route::post('authenticate_websocket', [ChatWebsocketController::class, 'authenticateUser'])->middleware('auth');
 
 
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('guest:web', 'menu:admin');
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('guest:web');
 Route::post('/login-store', [AuthenticatedSessionController::class, 'store'])->name('login.perform')->middleware('guest:web');
 
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout')->middleware('auth');
 
-Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-Route::post('/register-store', [RegisteredUserController::class, 'store'])->name('register.perform');
+Route::get('register', [RegisteredUserController::class, 'create'])->middleware('guest')->name('register');
+Route::post('/register-store', [RegisteredUserController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::group(['middleware' => ['auth']], function () {
     Route::post('/users/self/update', [AdminController::class, 'updateSelf'])->name('user.self.update');
     Route::post('/users/self/update-avatar', [AdminController::class, 'updateSelfAvatar'])->name('user.self.update.avatar');

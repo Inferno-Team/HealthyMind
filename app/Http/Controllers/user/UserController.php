@@ -2,33 +2,37 @@
 
 namespace App\Http\Controllers\user;
 
+use Carbon\Carbon;
+use App\Models\Goal;
+use App\Models\Plan;
+use App\Models\User;
+use App\Models\Admin;
+use App\Models\Coach;
+use App\Models\Channel;
+use App\Models\Disease;
+use App\Models\NormalUser;
+use Illuminate\Support\Str;
+use App\Models\Conversation;
+use App\Models\TimelineItem;
+use App\Models\UserProgress;
+use Illuminate\Http\Request;
+use App\Models\CoachTimeline;
+use App\Models\MessageStatus;
+use App\Models\GoalPlanDisease;
+use App\Models\TraineeTimeline;
+use App\Http\Helpers\FileHelper;
+use App\Notifications\NewMessage;
+use App\Models\ConversationMember;
+use App\Models\UserPremiumRequest;
+use App\Models\ChannelSubscription;
+use App\Models\SubscriptionMessage;
 use App\Events\core\NewMessageEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Helpers\FileHelper;
-use App\Models\Channel;
-use App\Models\ChannelSubscription;
-use App\Models\Coach;
-use App\Models\CoachTimeline;
-use App\Models\Conversation;
-use App\Models\ConversationMember;
-use App\Models\Disease;
-use App\Models\Goal;
-use App\Models\GoalPlanDisease;
-use App\Models\MessageStatus;
-use App\Models\NormalUser;
-use App\Models\Plan;
-use App\Models\SubscriptionMessage;
-use App\Models\TimelineItem;
-use App\Models\TraineeTimeline;
-use App\Models\User;
-use App\Models\UserPremiumRequest;
-use App\Models\UserProgress;
-use App\Notifications\coach\NewTraineeNotification;
-use App\Notifications\NewMessage;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use App\Http\Helpers\NotificationHelper;
+use App\Notifications\coach\NewTraineeNotification;
+use App\Notifications\admin\NewTraineeNotification as AdminNewTraineeNotification;
+use App\Notifications\admin\TraineeBecomeProNotification;
 
 class UserController extends Controller
 {
@@ -79,6 +83,7 @@ class UserController extends Controller
             'timeline_id' => $coach_timeline->id,
         ]);
         $coach = Coach::where('id', $coach_timeline->coach_id)->first();
+        NotificationHelper::notifyAdmins(new AdminNewTraineeNotification($user, $coach_timeline));
 
         $coach->notify(new NewTraineeNotification($user, $coach_timeline));
         return $this->returnMessage("plan saved.");
@@ -279,6 +284,7 @@ class UserController extends Controller
             'payment_process_code' => $request->input('code'),
             'others' => json_encode(["provider" => 'syriatel_cash', 'via' => 'mobile_flutter']),
         ]);
+        NotificationHelper::notifyAdmins(new TraineeBecomeProNotification($user, $premium_requset));
         return $this->returnData('response', $premium_requset, 'request stored,waiting on admin approval.');
     }
     public function getCoachConversationWithMe()

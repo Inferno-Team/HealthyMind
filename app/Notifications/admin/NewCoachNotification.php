@@ -2,13 +2,16 @@
 
 namespace App\Notifications\admin;
 
+use Carbon\Carbon;
 use App\Models\Coach;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class NewCoachNotification extends Notification
+class NewCoachNotification extends Notification implements ShouldQueue, ShouldBroadcast
 {
     use Queueable;
 
@@ -20,6 +23,10 @@ class NewCoachNotification extends Notification
         //
     }
 
+    public function broadcastAs()
+    {
+        return "NewMealRequestNotification";
+    }
     /**
      * Get the notification's delivery channels.
      *
@@ -27,9 +34,22 @@ class NewCoachNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'broadcast'];
+    }
+    public function broadcastOn()
+    {
+
+        return "private-admin-channel";
     }
 
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage([
+            "coach_name" => $this->coach->fullname,
+            "created_at" => $this->coach->created_at->diffForHumans(),
+            "msg" => "New Coach Request",
+        ]);
+    }
 
     /**
      * Get the array representation of the notification.
@@ -39,7 +59,7 @@ class NewCoachNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            "data" => $this->coach->fullname,
+            "coach_name" => $this->coach->fullname,
             "created_at" => $this->coach->created_at->diffForHumans(),
             "msg" => "New Coach Request",
         ];

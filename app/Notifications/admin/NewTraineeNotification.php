@@ -3,7 +3,8 @@
 namespace App\Notifications\admin;
 
 use Carbon\Carbon;
-use App\Models\Meal;
+use App\Models\NormalUser;
+use App\Models\CoachTimeline;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,21 +12,20 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class NewMealRequestNotification extends Notification implements ShouldQueue, ShouldBroadcast
+class NewTraineeNotification extends Notification implements ShouldQueue, ShouldBroadcast
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(private Meal $meal)
+    public function __construct(private NormalUser $user, private CoachTimeline $timeline)
     {
         //
     }
-
     public function broadcastAs()
     {
-        return "NewMealRequestNotification";
+        return "NewTraineeNotification";
     }
     /**
      * Get the notification's delivery channels.
@@ -45,12 +45,15 @@ class NewMealRequestNotification extends Notification implements ShouldQueue, Sh
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            "message" => "New Meal Request.",
-            'name' => $this->meal->name,
-            'coach' => $this->meal->coach,
-            'type' => $this->meal->type,
-            'qty_type' => $this->meal->qty_type,
-            'qty' => $this->meal->qty,
+            "message" => "New Trainee.",
+            "trainee" => (object)[
+                "id" => $this->user->id,
+                "fullname" => $this->user->fullname,
+            ],
+            "timeline" => (object)[
+                "id" => $this->timeline->id,
+                "name" => $this->timeline->name,
+            ],
             "created_at" => Carbon::now()->diffForHumans(),
         ]);
     }
@@ -58,11 +61,15 @@ class NewMealRequestNotification extends Notification implements ShouldQueue, Sh
     public function toArray(object $notifiable): array
     {
         return [
-            'name' => $this->meal->name,
-            'coach' => $this->meal->coach,
-            'type' => $this->meal->type,
-            'qty_type' => $this->meal->qty_type,
-            'qty' => $this->meal->qty,
+            "message" => "New Trainee.",
+            "trainee" => (object)[
+                "id" => $this->user->id,
+                "fullname" => $this->user->fullname,
+            ],
+            "timeline" => (object)[
+                "id" => $this->timeline->id,
+                "name" => $this->timeline->name,
+            ],
         ];
     }
 }
