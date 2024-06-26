@@ -2,45 +2,48 @@
 
 namespace App\Http\Controllers\coach;
 
-use App\Events\core\NewMessageEvent;
-use App\Http\Controllers\Controller;
-use App\Http\Helpers\FileHelper;
-use App\Http\Helpers\NotificationHelper;
-use App\Http\Requests\coach\CreateNewItemRequest;
-use App\Http\Requests\coach\CreateNewTimelineRequest;
-use App\Models\Channel;
-use App\Models\ChannelSubscription;
-use App\Models\Coach;
-use App\Models\CoachTimeline;
-use App\Models\Conversation;
-use App\Models\ConversationMember;
+use Carbon\Carbon;
 use App\Models\Day;
+use App\Models\Goal;
+use App\Models\Meal;
+use App\Models\Plan;
+use App\Models\User;
+use App\Models\Coach;
+use App\Models\Channel;
 use App\Models\Disease;
 use App\Models\Exercise;
-use App\Models\ExerciseEquipment;
-use App\Models\ExerciseType;
-use App\Models\Goal;
-use App\Models\GoalPlanDisease;
-use App\Models\Meal;
 use App\Models\MealType;
-use App\Models\MessageStatus;
 use App\Models\NormalUser;
-use App\Models\Plan;
+use App\Models\Conversation;
+use App\Models\ExerciseType;
 use App\Models\QuantityType;
-use App\Models\SubscriptionMessage;
 use App\Models\TimelineItem;
-use App\Models\User;
-use App\Notifications\admin\NewExerciseRequestNotification;
-use App\Notifications\admin\NewMealRequestNotification;
-use Carbon\Carbon;
-use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\CoachTimeline;
+use App\Models\MessageStatus;
+use App\Models\GoalPlanDisease;
+use App\Http\Helpers\FileHelper;
+use App\Models\ExerciseEquipment;
+use App\Models\ConversationMember;
 use Illuminate\Support\Facades\DB;
+use App\Models\ChannelSubscription;
+use App\Models\SubscriptionMessage;
+use Illuminate\Contracts\View\View;
+use App\Events\core\NewMessageEvent;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Helpers\CalculationHelper;
+use App\Http\Helpers\NotificationHelper;
+use Illuminate\Database\Eloquent\Collection;
+use App\Http\Requests\coach\CreateNewItemRequest;
+use App\Http\Requests\coach\CreateNewTimelineRequest;
+use App\Notifications\admin\NewMealRequestNotification;
+use App\Notifications\admin\NewExerciseRequestNotification;
 
 class CoachController extends Controller
 {
+
+
     public function home_view(): View
     {
         // get all this user channels
@@ -52,50 +55,52 @@ class CoachController extends Controller
         $beforeLastWeekEvents = $allCoachEvents->where('created_at', '>=', Carbon::now()->subWeeks(2))
             ->where('created_at', '<', Carbon::now()->subWeeks(1))
             ->count();
-        if ($beforeLastWeekEvents > $lastWeekEvents) {
-            $diffBetweenWeeksEvents = $beforeLastWeekEvents - $lastWeekEvents;
-            $per = round(100 * $diffBetweenWeeksEvents / $beforeLastWeekEvents);
-            $differenceEventPercentage = -1 * $per;
-        } else if ($lastWeekEvents > 0) {
-            $diffBetweenWeeksEvents =  $lastWeekEvents - $beforeLastWeekEvents;
-            $differenceEventPercentage = round(100 * $diffBetweenWeeksEvents / $lastWeekEvents);
-        } else $differenceEventPercentage = 0;
+        $differenceEventPercentage = CalculationHelper::calculateDifference($lastWeekEvents, $beforeLastWeekEvents);
         $trainees = NormalUser::whereHas('timelines.timeline', fn ($query) => $query->where('coach_id', Auth::id()))->with('timelines.timeline')->get();
         $lastWeekTrainees = $trainees->filter(fn ($item) => $item->timelines->where('created_at', '>=', Carbon::now()->subWeek())->count())->count();
         $beforeWeekTrainees = $trainees->filter(fn ($item) =>
         $item->timelines->where('created_at', '<', Carbon::now()->subWeek())
             ->where('created_at', '>=', Carbon::now()->subWeeks(2))
             ->count())->count();
-        if ($beforeWeekTrainees > $lastWeekTrainees) {
-            $diffBetweenWeeksTrainees = $beforeWeekTrainees - $lastWeekTrainees;
-            $per = round(100 * $diffBetweenWeeksTrainees / $beforeWeekTrainees);
-            $differenceTraineesPercentage = -1 * $per;
-        } else if ($lastWeekTrainees > 0) {
-            $diffBetweenWeeksTrainees =  $lastWeekTrainees - $beforeWeekTrainees;
-            $differenceTraineesPercentage = round(100 * $diffBetweenWeeksTrainees / $lastWeekTrainees);
-        } else $differenceTraineesPercentage = 0;
+        $differenceTraineesPercentage = CalculationHelper::calculateDifference($lastWeekTrainees, $beforeWeekTrainees);
+
         $exercisesCount = Exercise::count();
         $myMeals = Coach::where('id', Auth::id())->with('meals')->first()->meals;
         $lastWeekMeals = $myMeals->where('created_at', '>=', Carbon::now()->subWeek())->count();
-
         $beforeLastWeekMeals = $myMeals
             ->where('created_at', '>=', Carbon::now()->subWeeks(2))
             ->where('created_at', '<', Carbon::now()->subWeeks(1))
             ->count();
-        if ($beforeLastWeekMeals > $lastWeekMeals) {
-            $diffBetweenWeeksMeals = $beforeLastWeekMeals - $lastWeekMeals;
-            $per = round(100 * $diffBetweenWeeksMeals / $beforeLastWeekMeals);
-            $differenceMealsPercentage = -1 * $per;
-        } else if ($lastWeekMeals > 0) {
-            $diffBetweenWeeksMeals =  $lastWeekMeals - $beforeLastWeekMeals;
-            $differenceMealsPercentage = round(100 * $diffBetweenWeeksMeals / $lastWeekMeals);
-        } else $differenceMealsPercentage = 0;
+        $differenceMealsPercentage = CalculationHelper::calculateDifference($lastWeekMeals, $beforeLastWeekMeals);
+
+        // Retrieve exercises for the authenticated coach
+        $myExercises = Coach::where('id', Auth::id())->with('exercises')->first()->exercises;
+
+        // Count exercises from the last week
+        $lastWeekExercises = $myExercises->where('created_at', '>=', Carbon::now()->subWeek())->count();
+
+        // Count exercises from the week before last week
+        $beforeLastWeekExercises = $myExercises
+            ->where('created_at', '>=', Carbon::now()->subWeeks(2))
+            ->where('created_at', '<', Carbon::now()->subWeek())
+            ->count();
+
+        // Calculate the difference in the number of exercises between the two weeks
+        $differenceExercisesPercentage = CalculationHelper::calculateDifference($lastWeekExercises, $beforeLastWeekExercises);
+
         $myMealThisYear = $myMeals->filter(function (Meal $meal) {
             $nowYear = Carbon::now()->year;
             $mealYear = Carbon::parse($meal->created_at)->year;
             return $nowYear == $mealYear;
         });
+        $myExercisesThisYear = $myExercises->filter(function (Exercise $exercise) {
+            $nowYear = Carbon::now()->year;
+            $exerciseYear = Carbon::parse($exercise->created_at)->year;
+            return $nowYear == $exerciseYear;
+        });
+
         $mealsTimeline = $myMealThisYear->groupBy(fn ($item) => $item->created_at->format('M'));
+        $myExercisesThisYear = $myExercisesThisYear->groupBy(fn ($item) => $item->created_at->format('M'));
         $allCoachEventsTimeline = $allCoachEvents->groupBy(fn ($item) => $item->created_at->format('M'));
         $traineesTimeline = $trainees->filter(
             function ($item) {
@@ -113,6 +118,7 @@ class CoachController extends Controller
         ];
         $eventsTimelineValues = array_merge([], $mealsTimelineValues);
         $traineesTimelineValues = array_merge([], $mealsTimelineValues);
+        $exercisesTimelineValues = array_merge([], $mealsTimelineValues);
         foreach ($mealsTimeline as $month => $value) {
             $mealsTimelineValues[$month] = $value->count();
         }
@@ -122,16 +128,20 @@ class CoachController extends Controller
         foreach ($traineesTimeline as $month => $value) {
             $traineesTimelineValues[$month] = $value->count();
         }
+        foreach ($myExercisesThisYear as $month => $value) {
+            $exercisesTimelineValues[$month] = $value->count();
+        }
 
         return view('pages.coach.dashboard', compact(
             'channels',
             'differenceEventPercentage',
             'differenceTraineesPercentage',
             'differenceMealsPercentage',
-            'exercisesCount',
+            'differenceExercisesPercentage',
             'mealsTimelineValues',
             'eventsTimelineValues',
             'traineesTimelineValues',
+            'exercisesTimelineValues',
         ));
     }
     public function coach_profile(): View

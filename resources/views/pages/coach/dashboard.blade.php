@@ -108,8 +108,14 @@
 
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder"></span>
-                                        {{ $exercisesCount }}
+                                        @if ($differenceExercisesPercentage > 0)
+                                            <span
+                                                class="text-success text-sm font-weight-bolder">+{{ $differenceExercisesPercentage }}%</span>
+                                        @else
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ $differenceExercisesPercentage }}%</span>
+                                        @endif
+                                        since last week
                                     </p>
                                 </div>
                             </div>
@@ -174,7 +180,7 @@
         let borderWidth = 60;
         let maxBarThickness = 60;
         let fill = true;
-
+        let minBarLength = 5;
         new Chart(ctx1, {
             type: "bar",
             data: {
@@ -185,7 +191,17 @@
                         borderWidth: borderWidth,
                         fill: fill,
                         data: JSON.parse('{!! json_encode($mealsTimelineValues) !!}'),
-                        maxBarThickness: maxBarThickness
+                        maxBarThickness: maxBarThickness,
+                        minBarLength: minBarLength,
+                    },
+                    {
+                        label: "Exercises",
+                        borderColor: "rgb(153, 102, 255)",
+                        borderWidth: borderWidth,
+                        fill: fill,
+                        data: JSON.parse('{!! json_encode($exercisesTimelineValues) !!}'),
+                        maxBarThickness: maxBarThickness,
+                        minBarLength: minBarLength,
                     },
                     {
                         label: "Events",
@@ -193,7 +209,8 @@
                         borderWidth: borderWidth,
                         fill: fill,
                         data: JSON.parse('{!! json_encode($eventsTimelineValues) !!}'),
-                        maxBarThickness: maxBarThickness
+                        maxBarThickness: maxBarThickness,
+                        minBarLength: minBarLength,
                     },
                     {
                         label: "Trainees",
@@ -201,7 +218,8 @@
                         borderWidth: borderWidth,
                         fill: fill,
                         data: JSON.parse('{!! json_encode($traineesTimelineValues) !!}'),
-                        maxBarThickness: maxBarThickness
+                        maxBarThickness: maxBarThickness,
+                        minBarLength: minBarLength,
                     },
 
                 ],

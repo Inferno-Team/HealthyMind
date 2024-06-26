@@ -13,7 +13,7 @@
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $first_name
@@ -63,7 +63,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -93,7 +93,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $channel_id
@@ -119,7 +119,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $first_name
@@ -138,6 +138,8 @@ namespace App\Models{
  * @property-read int|null $channels_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ConversationMember> $conversationMembership
  * @property-read int|null $conversation_membership_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Exercise> $exercises
+ * @property-read int|null $exercises_count
  * @property-read mixed $fullname
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Meal> $meals
  * @property-read int|null $meals_count
@@ -175,7 +177,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -206,7 +208,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -235,7 +237,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $conversation_id
@@ -260,7 +262,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -279,7 +281,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -317,7 +319,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -338,7 +340,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -357,7 +359,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -376,7 +378,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $plan_id
@@ -402,7 +404,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -438,7 +440,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -459,7 +461,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $message_id
@@ -484,7 +486,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $first_name
@@ -542,7 +544,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name
@@ -561,7 +563,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $en_title
@@ -586,7 +588,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $member_id
@@ -610,7 +612,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $timeline_id
@@ -641,7 +643,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $trainee_id
@@ -666,7 +668,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $first_name
@@ -677,7 +679,7 @@ namespace App\Models{
  * @property string $password
  * @property string $type
  * @property string $status
- * @property string|null $avatar
+ * @property-read string|null $avatar
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -717,7 +719,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $user_id
@@ -745,7 +747,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $goal_plan_disease_id
@@ -768,7 +770,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $user_id
@@ -794,7 +796,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $user_id

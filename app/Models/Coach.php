@@ -19,6 +19,10 @@ class Coach extends User
     {
         return $this->hasMany(Meal::class, 'coach_id');
     }
+    public function exercises(): HasMany
+    {
+        return $this->hasMany(Exercise::class, 'coach_id');
+    }
     public function timeline_trainees()
     {
         return $this->hasManyThrough(TraineeTimeline::class, CoachTimeline::class, 'coach_id', 'timeline_id');

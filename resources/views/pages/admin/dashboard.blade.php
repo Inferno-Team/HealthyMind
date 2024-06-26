@@ -15,9 +15,14 @@
                                         {{ $coachs_count }}
                                     </h5>
                                     <p class="mb-0">
-                                        <span
-                                            class="text-success text-sm font-weight-bolder">+{{ $coachs_percentage }}%</span>
-                                        since yesterday
+                                        @if ($differenceCoachesPercentage > 0)
+                                            <span
+                                                class="text-success text-sm font-weight-bolder">+{{ $differenceCoachesPercentage }}%</span>
+                                        @else
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ $differenceCoachesPercentage }}%</span>
+                                        @endif
+                                        since last week
                                     </p>
                                 </div>
                             </div>
@@ -36,13 +41,18 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
-                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">User Count</p>
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Trainee Count</p>
                                     <h5 class="font-weight-bolder">
-                                        {{ $users_count }}
+                                        {{ $trainees_count }}
                                     </h5>
                                     <p class="mb-0">
-                                        <span
-                                            class="text-success text-sm font-weight-bolder">+{{ $users_percentage }}%</span>
+                                        @if ($differenceTraineesPercentage > 0)
+                                            <span
+                                                class="text-success text-sm font-weight-bolder">+{{ $differenceTraineesPercentage }}%</span>
+                                        @else
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ $differenceTraineesPercentage }}%</span>
+                                        @endif
                                         since last week
                                     </p>
                                 </div>
@@ -68,8 +78,14 @@
                                         {{ $meals_count }}
                                     </h5>
                                     <p class="mb-0">
-                                        <span class="text-success text-sm font-weight-bolder">{{ $new_meals_count }}</span>
-                                        since last month
+                                        @if ($differenceMealsPercentage > 0)
+                                            <span
+                                                class="text-success text-sm font-weight-bolder">+{{ $differenceMealsPercentage }}%</span>
+                                        @else
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ $differenceMealsPercentage }}%</span>
+                                        @endif
+                                        since last week
                                     </p>
                                 </div>
                             </div>
@@ -93,9 +109,14 @@
                                         {{ $exercises_count }}
                                     </h5>
                                     <p class="mb-0">
-                                        <span
-                                            class="text-success text-sm font-weight-bolder">{{ $new_exercises_count }}</span>
-                                        since last month
+                                        @if ($differenceExercisesPercentage > 0)
+                                            <span
+                                                class="text-success text-sm font-weight-bolder">+{{ $differenceExercisesPercentage }}%</span>
+                                        @else
+                                            <span
+                                                class="text-danger text-sm font-weight-bolder">{{ $differenceExercisesPercentage }}%</span>
+                                        @endif
+                                        since last week
                                     </p>
                                 </div>
                             </div>
@@ -113,11 +134,7 @@
             <div class="col-lg-12 mb-lg-0 mb-4">
                 <div class="card  h-100">
                     <div class="card-header pb-0 pt-3 bg-transparent">
-                        <h6 class="text-capitalize">Sales overview</h6>
-                        <p class="text-sm mb-0">
-                            <i class="fa fa-arrow-up text-success"></i>
-                            <span class="font-weight-bold">4% more</span> in 2021
-                        </p>
+                        <h6 class="text-capitalize">Overview</h6>
                     </div>
                     <div class="card-body p-3">
                         <div class="chart">
@@ -136,28 +153,52 @@
     <script>
         var ctx1 = document.getElementById("chart-line").getContext("2d");
 
-        var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
-
-        gradientStroke1.addColorStop(1, 'rgba(251, 99, 64, 0.2)');
-        gradientStroke1.addColorStop(0.2, 'rgba(251, 99, 64, 0.0)');
-        gradientStroke1.addColorStop(0, 'rgba(251, 99, 64, 0)');
+        let borderWidth = 60;
+        let maxBarThickness = 60;
+        let fill = true;
+        let minBarLength = 5;
         new Chart(ctx1, {
-            type: "line",
+            type: "bar",
             data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 datasets: [{
-                    label: "Mobile apps",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    borderColor: "#fb6340",
-                    backgroundColor: gradientStroke1,
-                    borderWidth: 3,
-                    fill: true,
-                    data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                    maxBarThickness: 6
+                        label: "Trainees",
+                        borderColor: "#f5365c",
+                        borderWidth: borderWidth,
+                        fill: fill,
+                        data: JSON.parse('{!! json_encode($traineesTimelineValues) !!}'),
+                        maxBarThickness: maxBarThickness,
+                        minBarLength: minBarLength,
+                    },
+                    {
+                        label: "Coaches",
+                        borderColor: "#fb6340",
+                        borderWidth: borderWidth,
+                        fill: fill,
+                        data: JSON.parse('{!! json_encode($coachsTimelineValues) !!}'),
+                        maxBarThickness: maxBarThickness,
+                        minBarLength: minBarLength,
 
-                }],
+                    },
+                    {
+                        label: "Meals",
+                        borderColor: "#2dcecc",
+                        borderWidth: borderWidth,
+                        fill: fill,
+                        data: JSON.parse('{!! json_encode($mealsTimelineValues) !!}'),
+                        maxBarThickness: maxBarThickness,
+                        minBarLength: minBarLength,
+                    },
+                    {
+                        label: "Exercises",
+                        borderColor: "rgb(153, 102, 255)",
+                        borderWidth: borderWidth,
+                        fill: fill,
+                        data: JSON.parse('{!! json_encode($exercisesTimelineValues) !!}'),
+                        maxBarThickness: maxBarThickness,
+                        minBarLength: minBarLength
+                    }
+                ],
             },
             options: {
                 responsive: true,
@@ -174,16 +215,17 @@
                 scales: {
                     y: {
                         grid: {
-                            drawBorder: false,
+                            drawBorder: true,
                             display: true,
                             drawOnChartArea: true,
                             drawTicks: false,
-                            borderDash: [5, 5]
+                            borderDash: [5, 5],
+
                         },
                         ticks: {
                             display: true,
-                            padding: 10,
-                            color: '#fbfbfb',
+                            // padding: 10,
+                            color: 'black',
                             font: {
                                 size: 11,
                                 family: "Open Sans",
@@ -202,10 +244,10 @@
                         },
                         ticks: {
                             display: true,
-                            color: '#ccc',
+                            color: 'black',
                             padding: 20,
                             font: {
-                                size: 11,
+                                size: 15,
                                 family: "Open Sans",
                                 style: 'normal',
                                 lineHeight: 2
