@@ -23,15 +23,19 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="imeline-name" class="form-control-label">Timeline Name</label>
+                                        <label for="imeline-name" class="form-control-label">Timeline Name<span
+                                                class="text-danger">*</span></label>
                                         <input class="form-control" type="text" name="timeline-name" id="timeline-name"
                                             placeholder="Timeline Name ..." autocomplete="off">
+                                        <div class="invalid-feedback">
+                                            this field is required.
+                                        </div>
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-control-label">Goal</label>
+                                        <label class="form-control-label">Goal<span class="text-danger">*</span></label>
                                         <select class="form-select " id="goals" data-placeholder="Choose Goals"
                                             multiple>
                                             @foreach ($goals as $goal)
@@ -46,7 +50,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Plan</label>
+                                        <label for="example-text-input" class="form-control-label">Plan<span
+                                                class="text-danger">*</span></label>
                                         <select class="form-control" id="plans">
                                             <option data-id="0">Please Select a Plan</option>
                                             @foreach ($plans as $plan)
@@ -60,7 +65,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Disease</label>
+                                        <label for="example-text-input" class="form-control-label">Disease<span
+                                                class="text-danger">*</span></label>
                                         <select class="form-select" id="diseases" data-placeholder="Choose Diseases"
                                             multiple>
                                             @foreach ($diseases as $disease)
@@ -74,8 +80,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Description</label>
-                                        <textarea class="form-control" name="description" id="description"></textarea>
+                                        <label for="example-text-input" class="form-control-label">Description<span
+                                                class="text-danger">(Optinal)</span></label>
+                                        <textarea class="form-control" rows="5" name="description" id="description"></textarea>
 
                                     </div>
                                 </div>
@@ -142,6 +149,11 @@
                     $('#goals').addClass('is-invalid');
                     isSelectedTrue = false;
                 }
+                if ($('#timeline-name').val() == '') {
+                    $('#timeline-name').addClass('is-invalid');
+                    isSelectedTrue = false;
+                }
+
                 if (selectedPlan == 0 || selectedPlan == '0') {
                     $('#plans').addClass('is-invalid');
                     isSelectedTrue = false;

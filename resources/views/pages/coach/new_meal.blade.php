@@ -13,52 +13,76 @@
                         <div class="row p-3 m-0">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="item-name" class="form-control-label">Meal Name</label>
+                                    <label for="item-name" class="form-control-label">Meal Name<span
+                                            class="text-danger">*</span></label>
                                     <input class="form-control" type="text" name="meal-name" id="meal-name"
                                         placeholder="Meal Name ..." autocomplete="off">
+                                    <div class="invalid-feedback">
+                                        this field is required.
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="meal-qty" class="form-control-label">meal quantity</label>
+                                    <label for="meal-qty" class="form-control-label">meal quantity<span
+                                            class="text-danger">*</span></label>
                                     <input class="form-control" type="number" min="0" name="meal-qty" id="meal-qty"
                                         placeholder="meal qty" autocomplete="off"
                                         oninput="this.value = this.value.replace(/[^\d]/, ''); if(parseInt(this.value) < 0) this.value = '0';">
+                                    <div class="invalid-feedback">
+                                        this field is required.
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="meal-qty_type-select" class="form-control-label">Meal Quantity Type</label>
+                                    <label for="meal-qty_type-select" class="form-control-label">Meal Quantity Type<span
+                                            class="text-danger">*</span></label>
                                     <select class="form-control" id="meal-qty_type-select">
                                         <option id="none"> Please select qty type</option>
                                         @foreach ($qty_types as $type)
                                             <option id="{{ $type->id }}">{{ $type->title }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="invalid-feedback">
+                                        Please select one option.
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="meal-type-select" class="form-control-label">Meal Type</label>
+                                    <label for="meal-type-select" class="form-control-label">Meal Type<span
+                                            class="text-danger">*</span></label>
                                     <select class="form-control" id="meal-type-select">
                                         <option id="none"> Please select meal type</option>
                                         @foreach ($types as $type)
                                             <option id="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
                                     </select>
+                                    <div class="invalid-feedback">
+                                        Please select one option.
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="equipment-select" class="form-control-label">Ingredients</label>
+                                    <label for="equipment-select" class="form-control-label">Ingredients<span
+                                            class="text-danger">*</span></label>
                                     <textarea class="form-control" id="ingredients" rows="5"></textarea>
+                                    <div class="invalid-feedback">
+                                        this field is required.
+                                    </div>
                                 </div>
 
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="equipment-select" class="form-control-label">Description</label>
+                                    <label for="equipment-select" class="form-control-label">Description<span
+                                            class="text-danger">*</span></label>
                                     <textarea class="form-control" id="description" rows="5"></textarea>
+                                    <div class="invalid-feedback">
+                                        this field is required.
+                                    </div>
                                 </div>
 
                             </div>
@@ -68,7 +92,7 @@
                                 <button type="button" class="btn btn-primary" style="width:100%"
                                     onclick="onCreateClicked()">Create</button>
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -88,7 +112,33 @@
             let mealQTY = $("#meal-qty").val();
             let ingredients = $("#ingredients").val();
             let description = $("#description").val();
-            //TODO validation fields.
+            let isSelectedTrue = true;
+            if (mealName == '') {
+                $("#meal-name").addClass('is-invalid');
+                isSelectedTrue = false;
+            }
+            if (mealQTY == '') {
+                $("#meal-qty").addClass('is-invalid');
+                isSelectedTrue = false;
+            }
+            if (ingredients == '') {
+                $("#ingredients").addClass('is-invalid');
+                isSelectedTrue = false;
+            }
+            if (description == '') {
+                $("#description").addClass('is-invalid');
+                isSelectedTrue = false;
+            }
+            if (mealType == 'none') {
+                $("#meal-type-select").addClass('is-invalid');
+                isSelectedTrue = false;
+            }
+            if (mealQtyType == 'none') {
+                $("#meal-qty_type-select").addClass('is-invalid');
+                isSelectedTrue = false;
+            }
+
+            if (!isSelectedTrue) return;
             axios.post("{{ route('coach.meals.new') }}", {
                     name: mealName,
                     type: mealType,
