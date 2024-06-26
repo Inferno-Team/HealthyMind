@@ -63,7 +63,7 @@ class AdminController extends Controller
             $name = FileHelper::uploadToDocs($avatar, 'public/avatars');
             $user = User::where('id', Auth::id())->first();
             $user->avatar = Str::replace('public', '', $name);
-            $user->update();
+            $user->save();
             return $this->returnMessage('updated');
         }
         return $this->returnMessage('please upload image');
@@ -100,12 +100,12 @@ class AdminController extends Controller
         $user = NormalUser::where('id', $id)->first();
         return view('pages.admin.user-profile', compact('user'));
     }
-  
+
     public function changeStatusCoachRequest(ChangeCoachRequest $request): JsonResponse
     {
         $user = Coach::where('id', $request->input('id'))->first();
         $user->status = $request->input('status');
-        $user->update();
+        $user->save();
         return $this->returnData("newStatus", $user->status, 'Coach Status Updated, New Status : ' . $user->status);
     }
     public function changeStatusPremiumRequest(ChangePremiumRequest $request): JsonResponse
@@ -148,7 +148,7 @@ class AdminController extends Controller
         if (empty($user))
             return $this->returnError('user not found.', 404);
         $user->status = $request->input('status');
-        $user->update();
+        $user->save();
         return $this->returnData("newStatus", $user->status, 'User Status Updated, New Status : ' . $user->status);
     }
 

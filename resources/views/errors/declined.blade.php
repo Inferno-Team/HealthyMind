@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Error 403 - Forbidden</title>
+    <title>403 - Declined</title>
     <meta name="viewport" content="width=device-width">
     <style type="text/css">
         @import url(http://fonts.googleapis.com/css?family=Droid+Sans);
@@ -346,16 +346,17 @@
 
             <h1>Restricted Access</h1>
 
-            <h2>Server Error: 403 (Forbidden)</h2>
+            <h2>User Declined: 403 (Forbidden)</h2>
 
             <hr>
 
             <h3>What does this mean?</h3>
 
             <p>
-                We couldn't find the page you requested on our servers. We're really sorry
-                about that. It's our fault, not yours. We'll work hard to get this page
-                back online as soon as possible.
+                you're account is in declined status now
+                if you think there is a problem please contact support to
+                resolve your account's problem
+                <b>support@healthmind.com</b>
             </p>
 
             <p>

@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Session;
 Route::get('/t', function () {
     $channel_id = 3;
     $messageText = "hello from test";
-    //we have channel id and user id => subscription id 
+    //we have channel id and user id => subscription id
     $subscription = ChannelSubscription::where('channel_id', $channel_id)
         ->where('user_id', Auth::id())->with('channel')->get();
     // check if this user is subscripted to this channel
@@ -84,7 +84,7 @@ Route::get('/', function (Request $request) {
         });
     $coaches = Coach::where('status', User::APPROVED)->withCount('timeline_trainees')->orderBy('timeline_trainees_count', 'desc')->get()->take(3);
     return view('landing_page', compact('timelines', 'coaches'));
-})->name('home');
+})->name('landing_page');
 Route::post('authenticate_websocket', [ChatWebsocketController::class, 'authenticateUser'])->middleware('auth');
 
 
@@ -101,7 +101,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/notification.read', [HomeController::class, 'readNotification'])->name('notification.read');
 });
 
-Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach'], 'prefix' => 'coach'], function () {
+Route::view('/errors/declined', 'errors.declined')->middleware(['declined'])->name('errors.declined');
+Route::view('/errors/not-verified', 'errors.not-verified')->middleware(['not-verified'])->name('errors.not-verified');
+Route::group(['middleware' => ['auth', 'menu:coach', 'type:coach', 'verified'], 'prefix' => 'coach'], function () {
     Route::get('home', [CoachController::class, 'home_view']);
     Route::get('/profile', [CoachController::class, 'coach_profile'])->name('coach.profile');
     Route::get('/trainees', [CoachController::class, 'trainnes_view'])->name('coach.trainees');

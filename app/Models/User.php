@@ -38,6 +38,15 @@ class User extends Authenticatable
         'avatar',
     ];
 
+    public function isDeclined()
+    {
+        return $this->status == self::DECLINED;
+    }
+    public function notVerified()
+    {
+        return $this->status != self::APPROVED;
+    }
+
     public function avatar(): Attribute
     {
         return Attribute::make(
