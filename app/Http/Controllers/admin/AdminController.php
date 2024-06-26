@@ -22,7 +22,9 @@ use App\Http\Requests\admin\ChangeCoachRequest;
 use App\Http\Requests\admin\ChangePremiumRequest;
 use App\Http\Requests\admin\CreateNewUserRequest;
 use App\Events\user\PremiumRequestStatusChangeEvent;
+use App\Notifications\coach\ExerciseStatusChangeNotification;
 use App\Notifications\coach\MealStatusChangeNotification;
+use App\Notifications\coach\TraineeBecomeProNotification;
 
 class AdminController extends Controller
 {
@@ -115,6 +117,10 @@ class AdminController extends Controller
         $premiumRequest->update();
         $user = NormalUser::where('id', $premiumRequest->user_id)->first();
         event(new PremiumRequestStatusChangeEvent($user?->username, $premiumRequest->status));
+        if ($premiumRequest->status == 'approved') {
+            $coachTimeline = $user->enabled_timeline()?->timeline;
+            $coachTimeline->coach->notify(new TraineeBecomeProNotification($user, $coachTimeline));
+        }
         return $this->returnData("newStatus", $premiumRequest->status, 'Request Status Updated, New Status : ' . $premiumRequest->status);
     }
     public function changeStatusMealRequest(Request $request): JsonResponse
@@ -135,9 +141,9 @@ class AdminController extends Controller
         if (empty($exercise))
             return $this->returnError('Exercise not found.', 404);
         $exercise->status = $request->input('status');
-        $exercise->update();
+        $exercise->save();
         $coach = Coach::find($exercise->coach_id);
-        // $coach->notify(new ExerciseStatusChangeNotification($exercise));
+        $coach->notify(new ExerciseStatusChangeNotification($exercise));
         return $this->returnData("newStatus", $exercise->status, 'Request Status Updated, New Status : ' . $exercise->status);
     }
 

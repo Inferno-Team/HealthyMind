@@ -108,7 +108,7 @@ class UserController extends Controller
     public function sendNewMessage(Request $request)
     {
 
-        //we have channel id and user id => subscription id 
+        //we have channel id and user id => subscription id
         $conversation = Conversation::where('id', $request->input('conversation'))
             ->whereHas('members', fn ($query) => $query->where('user_id', Auth::id()))->get();
 
@@ -255,7 +255,7 @@ class UserController extends Controller
 
             $file = FileHelper::uploadToDocs($avatar, "public/trainee_avatars/$user->username");
             $user->avatar = Str::replace("public/", "", $file);
-            $user->update();
+            $user->save();
         }
         $user = $user->format();
         unset($user->password);
@@ -287,7 +287,7 @@ class UserController extends Controller
         if (!$user->isPro)
             return $this->returnError("you dont have access to this featcher", 403);
         $channel = $user->timelines()->first()->timeline->coach->privateChannel();
-        // check if this user has conversation on this channel 
+        // check if this user has conversation on this channel
         $conversations = Conversation::where('channel_id', $channel->id)
             ->whereHas('members', fn ($query) => $query->where('user_id', $user->id))->get();
         info($conversations);

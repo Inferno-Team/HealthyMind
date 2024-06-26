@@ -3,8 +3,7 @@
 namespace App\Notifications\coach;
 
 use Carbon\Carbon;
-use App\Models\NormalUser;
-use App\Models\CoachTimeline;
+use App\Models\Exercise;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,20 +11,20 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class NewTraineeNotification extends Notification implements ShouldQueue, ShouldBroadcast
+class ExerciseStatusChangeNotification extends Notification implements ShouldQueue, ShouldBroadcast
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(private NormalUser $user, private CoachTimeline $timeline)
+    public function __construct(private Exercise $exercise)
     {
         //
     }
     public function broadcastAs()
     {
-        return "NewTraineeNotification";
+        return "ExerciseNotification";
     }
     /**
      * Get the notification's delivery channels.
@@ -39,37 +38,29 @@ class NewTraineeNotification extends Notification implements ShouldQueue, Should
     public function broadcastOn()
     {
 
-        return "private-Coach." . $this->timeline->coach_id;
+        return "private-Coach." . $this->exercise->coach_id;
     }
-
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            "message" => "New Trainee Choose your plan.",
-            "trainee" => (object)[
-                "id" => $this->user->id,
-                "fullname" => $this->user->fullname,
+            "message" => "Admin Changed Exercise Status",
+            "exercise" => (object)[
+                "id" => $this->exercise->id,
+                "name" => $this->exercise->name,
             ],
-            "timeline" => (object)[
-                "id" => $this->timeline->id,
-                "name" => $this->timeline->name,
-            ],
+            "status" => $this->exercise->status,
             "created_at" => Carbon::now()->diffForHumans(),
         ]);
     }
-
     public function toArray(object $notifiable): array
     {
         return [
-            "message" => "New Trainee Choose your plan.",
-            "trainee" => (object)[
-                "id" => $this->user->id,
-                "fullname" => $this->user->fullname,
+            "message" => "Admin Changed Exercise Status",
+            "exercise" => (object)[
+                "id" => $this->exercise->id,
+                "name" => $this->exercise->name,
             ],
-            "timeline" => (object)[
-                "id" => $this->timeline->id,
-                "name" => $this->timeline->name,
-            ],
+            "status" => $this->exercise->status,
         ];
     }
 }

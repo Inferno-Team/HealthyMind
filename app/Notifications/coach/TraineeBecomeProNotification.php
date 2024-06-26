@@ -12,7 +12,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class NewTraineeNotification extends Notification implements ShouldQueue, ShouldBroadcast
+class TraineeBecomeProNotification extends Notification implements ShouldQueue, ShouldBroadcast
 {
     use Queueable;
 
@@ -23,9 +23,10 @@ class NewTraineeNotification extends Notification implements ShouldQueue, Should
     {
         //
     }
+
     public function broadcastAs()
     {
-        return "NewTraineeNotification";
+        return "TraineeBecomeProNotification";
     }
     /**
      * Get the notification's delivery channels.
@@ -37,6 +38,7 @@ class NewTraineeNotification extends Notification implements ShouldQueue, Should
         return ['database', 'broadcast'];
     }
     public function broadcastOn()
+
     {
 
         return "private-Coach." . $this->timeline->coach_id;
@@ -61,7 +63,7 @@ class NewTraineeNotification extends Notification implements ShouldQueue, Should
     public function toArray(object $notifiable): array
     {
         return [
-            "message" => "New Trainee Choose your plan.",
+            "message" => "Trainee Become Pro.",
             "trainee" => (object)[
                 "id" => $this->user->id,
                 "fullname" => $this->user->fullname,
