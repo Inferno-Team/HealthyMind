@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Events\user\PremiumRequestStatusChangeEvent;
-use App\Http\Controllers\Controller;
-use App\Http\Helpers\FileHelper;
-use App\Http\Requests\admin\ChangeCoachRequest;
-use App\Http\Requests\admin\ChangeMealRequest;
-use App\Http\Requests\admin\ChangePremiumRequest;
-use App\Http\Requests\admin\CreateNewUserRequest;
+use App\Models\Goal;
+use App\Models\Meal;
+use App\Models\User;
 use App\Models\Admin;
 use App\Models\Coach;
 use App\Models\Exercise;
-use App\Models\Meal;
 use App\Models\NormalUser;
-use App\Models\User;
-use App\Models\UserPremiumRequest;
-use App\Notifications\coach\MealStatusChangeNotification;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Helpers\FileHelper;
+use Illuminate\Http\JsonResponse;
+use App\Models\UserPremiumRequest;
+use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\admin\ChangeMealRequest;
+use App\Http\Requests\admin\ChangeCoachRequest;
+use App\Http\Requests\admin\ChangePremiumRequest;
+use App\Http\Requests\admin\CreateNewUserRequest;
+use App\Events\user\PremiumRequestStatusChangeEvent;
+use App\Notifications\coach\MealStatusChangeNotification;
 
 class AdminController extends Controller
 {
@@ -42,8 +43,11 @@ class AdminController extends Controller
     }
     public function storeUser(CreateNewUserRequest $request)
     {
-        // info($request->all());
-        $user = User::create($request->values());
+        info($request->all());
+        if ($request->coach == 'on')
+            $user = Coach::create($request->values());
+        else
+            $user = NormalUser::create($request->values());
         return back();
     }
     public function updateSelf(Request $request)
@@ -86,6 +90,17 @@ class AdminController extends Controller
         $requests = Exercise::where('status', '=', 'pending')->with('coach', 'type', 'equipment')->get();
         return view('pages.admin.exercise-requests', compact('requests'));
     }
+    public function showCoachProfile(int $id): View
+    {
+        $user = Coach::where('id', $id)->with('timelines')->first();
+        return view('pages.admin.coach-profile', compact('user'));
+    }
+    public function showUserProfile(int $id): View
+    {
+        $user = NormalUser::where('id', $id)->first();
+        return view('pages.admin.user-profile', compact('user'));
+    }
+  
     public function changeStatusCoachRequest(ChangeCoachRequest $request): JsonResponse
     {
         $user = Coach::where('id', $request->input('id'))->first();
@@ -118,12 +133,23 @@ class AdminController extends Controller
     {
         $exercise = Exercise::where('id', $request->input('id'))->first();
         if (empty($exercise))
-            return $this->returnError('Meal not found.', 404);
+            return $this->returnError('Exercise not found.', 404);
         $exercise->status = $request->input('status');
         $exercise->update();
         $coach = Coach::find($exercise->coach_id);
-        // $coach->notify(new MealStatusChangeNotification($exercise));
+        // $coach->notify(new ExerciseStatusChangeNotification($exercise));
         return $this->returnData("newStatus", $exercise->status, 'Request Status Updated, New Status : ' . $exercise->status);
+    }
+
+
+    public function changeStatusUser(Request $request): JsonResponse
+    {
+        $user = User::where('id', $request->input('id'))->first();
+        if (empty($user))
+            return $this->returnError('user not found.', 404);
+        $user->status = $request->input('status');
+        $user->update();
+        return $this->returnData("newStatus", $user->status, 'User Status Updated, New Status : ' . $user->status);
     }
 
 

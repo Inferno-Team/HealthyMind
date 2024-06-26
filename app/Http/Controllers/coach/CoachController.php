@@ -271,6 +271,7 @@ class CoachController extends Controller
             'name' => $request->name,
             'goal_plan_disease_id' => $gps,
             'coach_id' => Auth::id(),
+            'description' => $request->description,
         ]);
         return $this->returnData('timeline', $timeline, 'Timeline created successfully.');
     }
@@ -436,7 +437,7 @@ class CoachController extends Controller
                     "user_id" => Auth::id(),
                 ]);
             }
-            info( $conversation->avatar);
+            info($conversation->avatar);
             return (object)[
                 "avatar" => $conversation->avatar,
                 "full_name" => $conversation->name,
@@ -514,7 +515,7 @@ class CoachController extends Controller
     public function newMessage(Request $request)
     {
 
-        //we have channel id and user id => subscription id 
+        //we have channel id and user id => subscription id
         $conversation = Conversation::where('id', $request->input('conversation'))
             ->whereHas('members', fn ($query) => $query->where('user_id', Auth::id()))->get();
 

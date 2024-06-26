@@ -155,7 +155,7 @@
 
         // get user notifications
         let notes = `{!! json_encode($notifications, true) !!}`
-        generate_notifications(JSON.parse(notes))
+        // generate_notifications(JSON.parse(notes))
         // check if is dark mode saved.
         let themeMode = localStorage.getItem('theme-mode');
         let item = document.getElementById('dark-version')

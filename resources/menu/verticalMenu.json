@@ -58,6 +58,57 @@
                     "slug": "new-exercise"
                 }
             ]
+        },
+        {
+            "name": "Goals",
+            "icon": "menu-icon tf-icons bx bx-grid",
+            "slug": "goals",
+            "submenu": [
+                {
+                    "url": "/admin/goals",
+                    "name": "All Goals",
+                    "slug": "goals.all.view"
+                },
+                {
+                    "url": "/admin/goals/new",
+                    "name": "New Goal",
+                    "slug": "goals.new.view"
+                }
+            ]
+        },
+        {
+            "name": "Plans",
+            "icon": "menu-icon tf-icons bx bxl-redux",
+            "slug": "plans",
+            "submenu": [
+                {
+                    "url": "/admin/plans",
+                    "name": "All Plans",
+                    "slug": "plans.all.view"
+                },
+                {
+                    "url": "/admin/plans/new",
+                    "name": "New Plan",
+                    "slug": "plans.new.view"
+                }
+            ]
+        },
+        {
+            "name": "Diseases",
+            "icon": "menu-icon tf-icons bx bx-accessibility",
+            "slug": "diseases",
+            "submenu": [
+                {
+                    "url": "/admin/diseases",
+                    "name": "All Diseases",
+                    "slug": "diseases.all.view"
+                },
+                {
+                    "url": "/admin/diseases/new",
+                    "name": "New Disease",
+                    "slug": "diseases.new.view"
+                }
+            ]
         }
     ]
 }

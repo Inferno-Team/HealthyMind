@@ -11,7 +11,7 @@
 
                 </div>
                 <div class="card mb-4 h-75"
-                    style="overflow:auto;min-height:500px;display:{{ count($requests) == 0 ? 'none' : 'block' }}"
+                    style="overflow:auto;min-height:500px;display:{{ count($requests) == 0 ? 'none' : 'block' }};width:65rem"
                     id="table-container">
                     <div class="card-header pb-0">
                         <h6>Exercise Request Table</h6>
@@ -122,7 +122,7 @@
                         <p>Do you want to accept this meal request ?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Accept</button>
+                        <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Approve</button>
                         <button type="button" class="btn btn-danger" onclick="onDeclinedClicked()">Decline</button>
                         <button type="button" class="btn btn-secondary"
                             onclick="$('#request-changer-modal').modal('hide')">Close</button>

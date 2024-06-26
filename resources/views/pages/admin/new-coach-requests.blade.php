@@ -4,8 +4,7 @@
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12" style="z-index:1">
-                <div id="no-users-container"
-                    style="flex-direction:column;display:{{ count($users) > 0 ? 'none' : 'flex' }}">
+                <div id="no-users-container" style="flex-direction:column;display:{{ count($users) > 0 ? 'none' : 'flex' }}">
                     <h6 style="text-align: center;font-size: 2rem;color:white">No Request Found</h6>
                     <img src="{{ asset('img/no-users-found.png') }}" style="margin:auto;width:500px">
 
@@ -98,7 +97,7 @@
                         <p>Do you want to accept this coach join request ?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Accept</button>
+                        <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Approve</button>
                         <button type="button" class="btn btn-danger" onclick="onDeclinedClicked()">Decline</button>
                         <button type="button" class="btn btn-secondary"
                             onclick="$('#request-changer-modal').modal('hide')">Close</button>
@@ -145,7 +144,7 @@
                     $.toast({
                         text: msg,
                         loaderBg: '#fb6340',
-                        bgColor: status == 'approved' ? 'rgb(51 141 4)':'#fb4040',
+                        bgColor: status == 'approved' ? 'rgb(51 141 4)' : '#fb4040',
                         hideAfter: 5000,
                     })
 

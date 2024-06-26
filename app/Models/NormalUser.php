@@ -40,7 +40,7 @@ class NormalUser extends User
     {
         return $this->hasMany(TraineeTimeline::class, 'trainee_id');
     }
-    public function enabled_timeline(): TraineeTimeline
+    public function enabled_timeline(): ?TraineeTimeline
     {
         $enableds = $this->timelines->filter(fn ($item) => $item->enabled)->values();
         if ($enableds->count() > 1) {

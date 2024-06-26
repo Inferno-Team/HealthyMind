@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Coach extends User
 {
+    use HasSlug;
+
     public function timelines(): HasMany
     {
         return $this->hasMany(CoachTimeline::class, 'coach_id');
@@ -48,5 +52,14 @@ class Coach extends User
                 'user_id' => $user->id,
             ]);
         });
+    }
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(["first_name", "last_name"])
+            ->saveSlugsTo('username')
+            ->slugsShouldBeNoLongerThan(25)
+            ->usingSeparator('_')
+            ->preventOverwrite();
     }
 }

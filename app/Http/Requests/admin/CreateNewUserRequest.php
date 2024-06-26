@@ -24,24 +24,27 @@ class CreateNewUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|unique:users,username',
             'email' => 'required|unique:users,email|email',
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'phone' => 'nullable|unique:users,phone',
+            'password' => 'required|string|min:8',
         ];
     }
     public function values()
     {
         return [
-            "username" => $this->input('username'),
             "email" => $this->input('email'),
             "first_name" => $this->input('first_name'),
             "last_name" => $this->input('last_name'),
             "phone" => $this->input('phone'),
-            "password" => Hash::make('password'),
+            "password" => Hash::make($this->input('password')),
             'type' => $this->has('coach') && $this->input('coach') == 'on' ? 'coach' : 'normal',
             'status' => 'approved',
         ];
     }
+    // protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    // {
+    //     info($validator->errors());
+    // }
 }

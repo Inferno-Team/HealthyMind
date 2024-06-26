@@ -102,7 +102,7 @@
                         <p>Do you want to accept this premium request ?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Accept</button>
+                        <button type="button" class="btn btn-primary" onclick="onAcceptClicked()">Approve</button>
                         <button type="button" class="btn btn-danger" onclick="onDeclinedClicked()">Decline</button>
                         <button type="button" class="btn btn-secondary"
                             onclick="$('#request-changer-modal').modal('hide')">Close</button>

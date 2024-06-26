@@ -13,7 +13,8 @@ class CoachTimeline extends Model
     protected $fillable = [
         "name",
         "coach_id",
-        "goal_plan_disease_id"
+        "goal_plan_disease_id",
+        "description",
     ];
 
     public function coach(): BelongsTo

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('coach_id')->nullable()->references('id')->on('users')->nullOnDelete();
             $table->foreignId('goal_plan_disease_id')->references('id')->on('goal_plan_diseases');
+            $table->longText('description')->nullable();
             $table->timestamps();
         });
     }
