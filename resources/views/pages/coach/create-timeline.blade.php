@@ -1,108 +1,108 @@
 @extends('pages.coach.app', ['class' => 'g-sidenav-show bg-gray-100'])
 @section('custom-style')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 @endsection
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Create Timeline'])
-    <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <form role="form" method="POST" action="{{ route('coach.timelines.new.store') }}"
-                        id="store-new-timeline-form">
-                        @csrf
-                        <div class="card-header pb-0">
-                            <div class="d-flex align-items-center">
-                                <p class="mb-0 ">New Timeline</p>
-                                <button type="submit" class="btn btn-primary btn-sm ms-auto">Save</button>
-                            </div>
+@include('layouts.navbars.auth.topnav', ['title' => 'Create Timeline'])
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form role="form" method="POST" action="{{ route('coach.timelines.new.store') }}"
+                    id="store-new-timeline-form">
+                    @csrf
+                    <div class="card-header pb-0">
+                        <div class="d-flex align-items-center">
+                            <p class="mb-0 ">New Timeline</p>
+                            <button type="submit" class="btn btn-primary btn-sm ms-auto">Save</button>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="imeline-name" class="form-control-label">Timeline Name<span
-                                                class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="timeline-name" id="timeline-name"
-                                            placeholder="Timeline Name ..." autocomplete="off">
-                                        <div class="invalid-feedback">
-                                            this field is required.
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Goal<span class="text-danger">*</span></label>
-                                        <select class="form-select " id="goals" data-placeholder="Choose Goals"
-                                            multiple>
-                                            @foreach ($goals as $goal)
-                                                <option data-id="{{ $goal->id }}">{{ $goal->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Please select one option at least.
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Plan<span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-control" id="plans">
-                                            <option data-id="0">Please Select a Plan</option>
-                                            @foreach ($plans as $plan)
-                                                <option data-id="{{ $plan->id }}">{{ $plan->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Please select an option.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Disease<span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-select" id="diseases" data-placeholder="Choose Diseases"
-                                            multiple>
-                                            @foreach ($diseases as $disease)
-                                                <option data-id="{{ $disease->id }}">{{ $disease->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Please select one option at least.
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Description<span
-                                                class="text-danger">(Optinal)</span></label>
-                                        <textarea class="form-control" rows="5" name="description" id="description"></textarea>
-
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="imeline-name" class="form-control-label">Timeline Name<span
+                                            class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="timeline-name" id="timeline-name"
+                                        placeholder="Timeline Name ..." autocomplete="off">
+                                    <div class="invalid-feedback">
+                                        this field is required.
                                     </div>
                                 </div>
 
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Goal<span class="text-danger">*</span></label>
+                                    <select class="form-select " id="goals" data-placeholder="Choose Goals" multiple>
+                                        @foreach ($goals as $goal)
+                                        <option data-id="{{ $goal->id }}">{{ $goal->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select one option at least.
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Plan<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-control" id="plans">
+                                        <option data-id="0">Please Select a Plan</option>
+                                        @foreach ($plans as $plan)
+                                        <option data-id="{{ $plan->id }}">{{ $plan->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select an option.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Disease<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select" id="diseases" data-placeholder="Choose Diseases"
+                                        multiple>
+                                        @foreach ($diseases as $disease)
+                                        <option data-id="{{ $disease->id }}">{{ $disease->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select one option at least.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Description<span
+                                            class="text-danger">(Optinal)</span></label>
+                                    <textarea class="form-control" rows="5" name="description"
+                                        id="description"></textarea>
+
+                                </div>
+                            </div>
+
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
-
         </div>
-        @include('layouts.footers.auth.footer')
+
     </div>
+    @include('layouts.footers.auth.footer')
+</div>
 @endsection
 @push('js')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
 
 
-    <script>
-        $('#goals').select2({
+<script>
+    $('#goals').select2({
             theme: "bootstrap-5",
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
             placeholder: $(this).data('placeholder'),
@@ -117,6 +117,11 @@
             allowClear: true,
         });
         $(document).ready(function() {
+            $('#plans').on('focus', function() {
+                $(this).children('option:first').hide();
+            }).on('blur', function() {
+                $(this).children('option:first').show();
+            });
             $('#store-new-timeline-form').submit(function(event) {
                 event.preventDefault();
                 let selectedPlan = $('#plans option:selected').attr('data-id');
@@ -218,5 +223,5 @@
             });
 
         });
-    </script>
+</script>
 @endpush

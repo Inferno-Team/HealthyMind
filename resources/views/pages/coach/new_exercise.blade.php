@@ -144,6 +144,24 @@
 @push('js')
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#targeted-muscle-select').on('focus', function() {
+                $(this).children('option:first').hide();
+            }).on('blur', function() {
+                $(this).children('option:first').show();
+            });
+            $('#exercise-type-select').on('focus', function() {
+                $(this).children('option:first').hide();
+            }).on('blur', function() {
+                $(this).children('option:first').show();
+            });
+            $('#equipment-select').on('focus', function() {
+                $(this).children('option:first').hide();
+            }).on('blur', function() {
+                $(this).children('option:first').show();
+            });
+        });
+
         function onCreateClicked() {
             let formData = new FormData();
             if (myDropzone) {

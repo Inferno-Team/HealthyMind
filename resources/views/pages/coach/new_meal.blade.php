@@ -105,6 +105,19 @@
 @endsection
 @push('js')
     <script>
+        $(document).ready(function() {
+            $('#meal-qty_type-select').on('focus', function() {
+                $(this).children('option:first').hide();
+            }).on('blur', function() {
+                $(this).children('option:first').show();
+            });
+            $('#meal-type-select').on('focus', function() {
+                $(this).children('option:first').hide();
+            }).on('blur', function() {
+                $(this).children('option:first').show();
+            });
+        });
+
         function onCreateClicked() {
             let mealName = $("#meal-name").val();
             let mealType = $("#meal-type-select option:selected").attr('id');
