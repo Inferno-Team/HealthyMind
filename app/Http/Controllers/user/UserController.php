@@ -60,6 +60,7 @@ class UserController extends Controller
                         "id" => $timeline->id,
                         "name" => $timeline->name,
                         "coach_name" => $timeline->coach->fullname,
+                        "description" => $timeline->description,
                     ];
                 });
                 return [
@@ -69,6 +70,13 @@ class UserController extends Controller
                 ];
             });
         return $this->returnData("plans", $goal_plan_diseases);
+    }
+    public function removeMyAccount()
+    {
+        $normalUser = NormalUser::whereid(Auth::id())->first();
+        $normalUser->delete();
+        info($normalUser);
+        return $this->returnMessage('account deleted.');
     }
 
     public function selectPlanTimelne(Request $request)

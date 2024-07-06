@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+@extends('pages.coach.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Your Profile'])
@@ -22,7 +22,7 @@
                         </p>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>

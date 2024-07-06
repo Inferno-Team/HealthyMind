@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+@extends('pages.coach.app', ['class' => 'g-sidenav-show bg-gray-100'])
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Trainees'])
     <div class="container-fluid py-4">
@@ -66,7 +66,7 @@
                                             </td>
 
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0 timeline clickable"
+                                                <p class="text-xs font-weight-bold mb-0 my-timeline clickable"
                                                     data-id="{{ $trainee->timeline->id }}">{{ $trainee->timeline->name }}
                                                 </p>
                                             </td>
@@ -106,7 +106,7 @@
             let id = $(this).attr('data-id');
             window.location.href = `/coach/chat/${id}`;
         })
-        $(".timeline").on('click', function() {
+        $(".my-timeline").on('click', function() {
             let id = $(this).attr('data-id');
             window.location.href = `/coach/timelines/${id}`;
         })

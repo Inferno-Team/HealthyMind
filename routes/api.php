@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('authenticate_user_private_channel', [ChatWebsocketController::class, 'authenticateUserPrivateChannel']);
     Route::get('/my-channels', [UserController::class, 'myChannels']);
     Route::get('/get-plan-of-goals-diseases', [UserController::class, 'getGoalsDiseasesPlans']);
+    Route::post('/remove-my-account', [UserController::class, 'removeMyAccount']);
     Route::post('/select-plan-timeline', [UserController::class, 'selectPlanTimelne']);
     Route::get('/is-premium', [UserController::class, 'isPremium']);
     Route::get('/me', [UserController::class, 'me']);
