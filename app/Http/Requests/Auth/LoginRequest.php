@@ -2,18 +2,20 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Http\Helpers\ResponseHelper;
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
+use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Lockout;
+use App\Http\Helpers\ResponseHelper;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class LoginRequest extends FormRequest
 {
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -30,7 +32,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required_if:username,' . Null, 'string', 'email'],
+            'email' => ['required_if:username,' . Null, 'string', 'email', 'exists:users,email'],
             'username' => ['required_if:email,' . Null, 'string'],
             'password' => ['required', 'string'],
         ];
@@ -47,9 +49,9 @@ class LoginRequest extends FormRequest
 
         if (!Auth::guard($guard)->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
-
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                // 'password' => trans('auth.failed'),
+                'password' => 'Wrong password.',
             ]);
         }
         RateLimiter::clear($this->throttleKey());
@@ -85,8 +87,8 @@ class LoginRequest extends FormRequest
     {
         return Str::transliterate(Str::lower($this->input('email')) . '|' . $this->ip());
     }
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json(['message' => 'Login Failed', 'errors' => $validator->getMessageBag(),], 400));
-    }
+    // protected function failedValidation(Validator $validator)
+    // {
+    //     throw new HttpResponseException(response()->json(['message' => 'Login Failed', 'errors' => $validator->getMessageBag(),], 400));
+    // }
 }

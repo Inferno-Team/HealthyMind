@@ -5,6 +5,7 @@ namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ResponseHelper;
+use App\Http\Requests\auth\api\LoginRequestViaAPI;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\auth\RegisterRequest;
 use App\Models\NormalUser;
@@ -47,7 +48,7 @@ class AuthenticatedSessionController extends Controller
     }
 
 
-    public function loginApi(LoginRequest $request)
+    public function loginApi(LoginRequestViaAPI $request)
     {
         $user = NormalUser::where('email', "like", $request->email)->with('channels')->first();
         if (empty($user))
