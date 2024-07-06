@@ -254,7 +254,7 @@ class CoachController extends Controller
 
     public function show_all_exercises(): View
     {
-        $exercises = Exercise::with('type')->get();
+        $exercises = Exercise::where('coach_id', Auth::id())->with('type')->get();
         return view('pages.coach.all_exercises', compact('exercises'));
     }
     public function new_exerciese_view(): View
