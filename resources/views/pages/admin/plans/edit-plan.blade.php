@@ -27,7 +27,7 @@
                                             class="text-danger">*</span></label>
                                     <input class="form-control @error('name') is-invalid @enderror" type="text"
                                         name="name" placeholder="plan name" value="{{ $plan->name ?? old('name') }}"
-                                        autocomplete="off">
+                                        autocomplete="off" required>
                                     @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

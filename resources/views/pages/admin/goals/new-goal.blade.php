@@ -25,8 +25,8 @@
                                     <label for="name" class="form-control-label">Name<span
                                             class="text-danger">*</span></label>
                                     <input class="form-control @error('name') is-invalid @enderror" type="text"
-                                        name="name" placeholder="goal name" value="{{ old('name') }}"
-                                        autocomplete="off">
+                                        name="name" placeholder="goal name" value="{{ old('name') }}" autocomplete="off"
+                                        required>
                                     @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
