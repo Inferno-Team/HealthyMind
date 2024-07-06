@@ -189,8 +189,8 @@ class CoachController extends Controller
     {
         $timeline_id = $id;
         $items = TimelineItem::where('timeline_id', $id)->has('item')->with('item.type')->orderBy('event_date_start')->get();
-        $exercises = Exercise::with('type')->get();
-        $meals = Meal::where('coach_id', auth::id())->where('status', '<>', 'declined')->with('type')->get();
+        $exercises = Exercise::where('coach_id', auth::id())->where('status', 'approved')->with('type')->get();
+        $meals = Meal::where('coach_id', auth::id())->where('status', 'approved')->with('type')->get();
         return view('pages.coach.show-cal-timeline', compact('items', 'timeline_id', 'meals', 'exercises'));
     }
     // public function show_timeline_add_item_view(int $timeline_id): View
