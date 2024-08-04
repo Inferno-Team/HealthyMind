@@ -34,7 +34,8 @@
                 <li class="nav-item dropdown pe-2  px-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-white p-0" data-bs-toggle="dropdown"
                         aria-expanded="false" id="dropdownMenuButton2">
-                        <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+                        <i class='bx bxs-cog fixed-plugin-button-nav cursor-pointer'></i>
+                        {{-- <i class="fa fa-cog "></i> --}}
                     </a>
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                         aria-labelledby="dropdownMenuButton2">
@@ -66,7 +67,8 @@
                 <li class="nav-item dropdown pe-2 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-white p-0" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-bell cursor-pointer"></i>
+                        <i class='bx bxs-bell  cursor-pointer'></i>
+                        {{-- <i class="fa fa-bell"></i> --}}
                     </a>
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                         aria-labelledby="dropdownMenuButton" id='notifications'>
