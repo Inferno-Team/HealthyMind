@@ -33,6 +33,7 @@ use App\Http\Helpers\NotificationHelper;
 use App\Notifications\coach\NewTraineeNotification;
 use App\Notifications\admin\NewTraineeNotification as AdminNewTraineeNotification;
 use App\Notifications\admin\TraineeBecomeProNotification;
+use App\Notifications\trainne\NewEventNotification;
 
 class UserController extends Controller
 {
@@ -213,6 +214,29 @@ class UserController extends Controller
             }
             return $notification;
         });
+        $user = NormalUser::where('id', auth::id())->first();
+        $nots = $user->unreadNotifications->map(function ($notification) {
+            if ($notification->type == NewMessage::class) {
+                $data = $notification->data;
+                return (object)[
+                    "id" => $notification->id,
+                    "title" => $data['conversation']['name'],
+                    "body" => $data['sender']['fullname'] . " : " . $data['message']['message'],
+                    "timestamp" => Carbon::parse($data['message']['created_at'])->unix(),
+                ];
+            }
+            if ($notification->type == NewEventNotification::class) {
+                $data = $notification->data;
+                return (object)[
+                    "id" => $notification->id,
+                    "title" => $data['title'],
+                    "body" => $data['message'],
+                    "timestamp" => Carbon::parse($data['created_at'])->unix(),
+                ];
+            }
+            return $notification;
+        });
+        $notifications->concat($nots);
         return $this->returnData("notifications", $notifications);
     }
     public function sendNotificationSeen(Request $request)
@@ -346,16 +370,16 @@ class UserController extends Controller
     {
         $user = NormalUser::find(Auth::id());
         $trainee_timeline = $user->enabled_timeline();
-        $coach_timeline = $trainee_timeline->timeline;
-        $items = $coach_timeline->items()->with('item')->whereDate('event_date_start', Carbon::today())->orderBy('event_date_start', 'asc')->get()->filter(fn ($item) => $item->item->status == 'approved')->values()->map->format($user->id);
+        $coach_timeline = $trainee_timeline?->timeline;
+        $items = $coach_timeline?->items()->with('item')->whereDate('event_date_start', Carbon::today())->orderBy('event_date_start', 'asc')->get()->filter(fn ($item) => $item->item->status == 'approved')->values()->map->format($user->id) ?? [];
         return $this->returnData('events', $items);
     }
     public function getTimelineEvents()
     {
         $user = NormalUser::find(Auth::id());
         $trainee_timeline = $user->enabled_timeline();
-        $coach_timeline = $trainee_timeline->timeline;
-        $items = $coach_timeline->items()->with('item')->orderBy('event_date_start', 'asc')->get()->filter(fn ($item) => $item->item->status == 'approved')->values()->map->format();
+        $coach_timeline = $trainee_timeline?->timeline;
+        $items = $coach_timeline?->items()->with('item')->orderBy('event_date_start', 'asc')->get()->filter(fn ($item) => $item->item->status == 'approved')->values()->map->format() ?? [];
         return $this->returnData('events', $items);
     }
     public function getTimelineEventsWithMyPorgress()

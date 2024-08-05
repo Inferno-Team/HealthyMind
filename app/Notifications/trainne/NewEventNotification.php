@@ -2,6 +2,7 @@
 
 namespace App\Notifications\trainne;
 
+use App\Models\Meal;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -19,7 +20,7 @@ class NewEventNotification extends Notification implements ShouldQueue, ShouldBr
     /**
      * Create a new notification instance.
      */
-    public function __construct(private TimelineItem $item, private int $coach_id)
+    public function __construct(private TimelineItem $item, private string $trainee_username)
     {
         //
     }
@@ -27,7 +28,7 @@ class NewEventNotification extends Notification implements ShouldQueue, ShouldBr
     public function broadcastOn()
     {
 
-        return "private-Coach." . $this->coach_id;
+        return "presence-" . $this->trainee_username;
     }
     public function broadcastAs()
     {
@@ -40,13 +41,17 @@ class NewEventNotification extends Notification implements ShouldQueue, ShouldBr
      */
     public function via(object $notifiable): array
     {
-        return ['database','broadcast'];
+        return ['database', 'broadcast'];
     }
 
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'item' => $this->item,
+            "title" => "New Timeline Event",
+            "message" => "New Item has been added to timeline that you are subscribed to",
+            "item_name" => $this->item->item->name,
+            "created_at" => $this->item->created_at,
+            "is_meal" => $this->item->item instanceof Meal,
         ]);
     }
 
@@ -58,7 +63,11 @@ class NewEventNotification extends Notification implements ShouldQueue, ShouldBr
     public function toArray(object $notifiable): array
     {
         return [
-            'item' => $this->item,
+            "title" => "New Timeline Event",
+            "message" => "New Item has been added to timeline that you are subscribed to",
+            "item_name" => $this->item->item->name,
+            "created_at" => $this->item->created_at,
+            "is_meal" => $this->item->item instanceof Meal,
         ];
     }
 }

@@ -301,11 +301,11 @@ class CoachController extends Controller
         $timelineItem->item()->associate($item);
         $timelineItem->save();
         $timelineItem = TimelineItem::where('id', $timelineItem->id)->with('item.type')->first();
-        $coachTimeline = CoachTimeline::where('id',$request->timeline_id)->first();
-        $trainees = TraineeTimeline::where('timeline_id',$request->timeline_id)->with('trainee')->get()->map(fn($item)=>$item->trainee);
-        foreach($trainees as $trainee){
+        $coachTimeline = CoachTimeline::where('id', $request->timeline_id)->first();
+        $trainees = TraineeTimeline::where('timeline_id', $request->timeline_id)->with('trainee')->get()->map(fn ($item) => $item->trainee);
+        foreach ($trainees as $trainee) {
             // event(new NewEventNotification('',$timelineItem));
-            $trainee->notify(new NewEventNotification($timelineItem,$coachTimeline->coach_id));
+            $trainee->notify(new NewEventNotification($timelineItem, $trainee->username));
             info($trainee);
         }
 
