@@ -176,7 +176,7 @@
                             </div>
                             <span class="course-status">{{ $timeline->timeline_trainees_count }} Trainees</span>
                             <a href="#">
-                                <h4>{{ $timeline->name }} <span>{{ $timeline->coach->fullname }}</span></h4>
+                                <h4>{{ $timeline->name }} <span>{{ $timeline->coach?->fullname }}</span></h4>
                             </a>
                         </div>
                     </div>
