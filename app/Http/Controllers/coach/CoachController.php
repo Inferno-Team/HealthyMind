@@ -234,24 +234,32 @@ class CoachController extends Controller
     }
     public function store_new_exercise(Request $request)
     {
-        $media_path = '';
-        if ($request->hasFile('media')) {
-            $media = $request->file('media');
-            $media_path = FileHelper::uploadToDocs($media, 'public/media');
+
+        DB::beginTransaction();
+        try {
+            $exercise = Exercise::create([
+                "name" => $request->input('exerciseName'),
+                "media" => '',
+                "coach_id" => Auth::id(),
+                "type_id" => $request->input('exerciseType'),
+                "muscle" => $request->input('targetedMuscle'),
+                "equipment_id" => $request->input('equipment'),
+                "description" => $request->input('exerciseDescription'),
+                "duration" => $request->input('exerciseDuration'),
+            ]);
+            $media_path = '';
+            if ($request->hasFile('media')) {
+                $media = $request->file('media');
+                $media_path = FileHelper::uploadToDocs($media, "public/media/$exercise->id");
+            }
+            $exercise->update(["media" => $media_path]);
+            // notify all admins.
+            NotificationHelper::notifyAdmins(new NewExerciseRequestNotification($exercise));
+            DB::commit();
+            return $this->returnMessage('Exercise created successfully, waiting admin approval.');
+        } catch (\Exception $e) {
+            DB::rollback();
         }
-        $exercise = Exercise::create([
-            "name" => $request->input('exerciseName'),
-            "media" => $media_path,
-            "coach_id" => Auth::id(),
-            "type_id" => $request->input('exerciseType'),
-            "muscle" => $request->input('targetedMuscle'),
-            "equipment_id" => $request->input('equipment'),
-            "description" => $request->input('exerciseDescription'),
-            "duration" => $request->input('exerciseDuration'),
-        ]);
-        // notify all admins.
-        NotificationHelper::notifyAdmins(new NewExerciseRequestNotification($exercise));
-        return $this->returnMessage('Exercise created successfully, waiting admin approval.');
     }
 
     public function show_all_exercises(): View
